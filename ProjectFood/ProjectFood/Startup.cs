@@ -8,6 +8,7 @@ namespace ProjectFood
     {
         public void Configuration(IAppBuilder app)
         {
+            // derp
             ConfigureAuth(app);
         }
     }
