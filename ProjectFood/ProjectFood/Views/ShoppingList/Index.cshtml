@@ -2,23 +2,44 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Indkøbsliste";
+    @model ProjectFood.Models.ShoppingList
 }
+
 
 <h2>Din Indkøbsliste</h2>
 
-<div class="input-group">
-    <label for="Item">Indtast Varenavn</label>
-    <input type="text" class="form-control" id="Item" placeholder="Indtast varens navn">
-</div>
 <p></p>
 
-<table class="table table-striped">
-    <th>
-        <td>Varenavn</td>
-        <td>Tilbud</td>
-        <td>Butik</td>
-        <td>Pris</td>
-    </th>
-    <tr></tr>
-</table>
+<form role="form">
+    <div class="form-group">
+        <div class="col-lg-4">
+            <div class="input-group">
+                <input type="text" class="form-control" id="Item" placeholder="Indtast varens navn">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" onclick="location.href=">Tilføj Vare</button>
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <table class="table table-striped">
+            <tr>
+                <th>Varenavn</th>
+                <th>Kategori</th>
+                <th>Tilbud</th>
+                <th>Butik</th>
+                <th>Pris</th>
+                <th> </th>
+            </tr>            
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                </tr>
+                <tr></tr>
 
+            }
+        </table>
+    </div>
+</form>
