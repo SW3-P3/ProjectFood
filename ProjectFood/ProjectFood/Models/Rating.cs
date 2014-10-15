@@ -6,7 +6,7 @@ namespace ProjectFood.Models
     public class Rating
     {
         public readonly User User;
-        public decimal Rating { get; set; }
+        public decimal Score { get; set; }
         public readonly Recipe Recipe;
     }
 }
