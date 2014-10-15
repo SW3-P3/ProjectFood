@@ -1,5 +1,24 @@
-﻿@{
+﻿@using System.Web.UI.WebControls
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Indkøbsliste";
 }
 
+<h2>Din Indkøbsliste</h2>
+
+<div class="input-group">
+    <label for="Item">Indtast Varenavn</label>
+    <input type="text" class="form-control" id="Item" placeholder="Indtast varens navn">
+</div>
+<p></p>
+
+<table class="table table-striped">
+    <th>
+        <td>Varenavn</td>
+        <td>Tilbud</td>
+        <td>Butik</td>
+        <td>Pris</td>
+    </th>
+    <tr></tr>
+</table>
 
