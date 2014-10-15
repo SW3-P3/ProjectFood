@@ -1,4 +1,6 @@
-﻿@using System.Web.UI.WebControls
+﻿@using System.Activities.Expressions
+@using System.Web.UI.WebControls
+@using ProjectFood.Models
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Indkøbsliste";
@@ -14,14 +16,14 @@
     <div class="form-group">
         <div class="col-lg-4">
             <div class="input-group">
-                <input type="text" class="form-control" id="Item" placeholder="Indtast varens navn">
+                <input type="text" class="form-control" id="derpn" placeholder="Indtast varens navn">
                 <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button" onclick="">Tilføj vare</button>
+                    <button class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Add","ShoppingList", new { name = "kk"})'">Tilføj</button>
                 </span>
             </div>
         </div>
     </div>
-    
+
     <div class="form-group">
         <table class="table table-striped">
             <tr>
@@ -31,7 +33,7 @@
                 <th>Butik</th>
                 <th>Pris</th>
                 <th> </th>
-            </tr>            
+            </tr>
             @foreach (var item in Model.Items)
             {
                 <tr>

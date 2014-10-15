@@ -9,27 +9,35 @@ namespace ProjectFood.Controllers
 {
     public class ShoppingListController : Controller
     {
-        
-        private ShoppingList shoppinglist = new ShoppingList();
-
         // GET: /ShoppingList/
         public ActionResult Index()
-        {   Item item = new Item("Torsk");
-            shoppinglist.Items.Add(item);
-            Item item2 = new Item("Torsk");
-            shoppinglist.Items.Add(item2);
-            Item item3 = new Item("Torsk");
-            shoppinglist.Items.Add(item3);
-            Item item4 = new Item("Torsk");
-            shoppinglist.Items.Add(item4);
-            return View(shoppinglist);
+        {   
+            return View(Perm.DerpShoppingList);
         }
 
         public void AddItem(string nameOfItem)
         {
             Item item = new Item(nameOfItem);
-            shoppinglist.Items.Add(item);
+            Perm.DerpShoppingList.Items.Add(item);
             Index();
         }
+
+        public ActionResult Adds()
+        {
+            Item item = new Item("Derp");
+            Perm.DerpShoppingList.Items.Add(item);
+            return RedirectToAction("Index", "ShoppingList");
+        }
+
+        public ActionResult Add(string name)
+        {
+            Item item = new Item(name);
+            Perm.DerpShoppingList.Items.Add(item);
+            return RedirectToAction("Index", "ShoppingList");
+        }
+
+
+
+
 	}
 }

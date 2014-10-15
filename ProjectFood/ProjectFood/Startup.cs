@@ -1,5 +1,7 @@
-﻿using Microsoft.Owin;
+﻿using System.Collections.Generic;
+using Microsoft.Owin;
 using Owin;
+using ProjectFood.Models;
 
 [assembly: OwinStartupAttribute(typeof(ProjectFood.Startup))]
 namespace ProjectFood
@@ -8,8 +10,19 @@ namespace ProjectFood
     {
         public void Configuration(IAppBuilder app)
         {
-            // derp
+            /* Add a single item to the shoppingList this is temp */
+            Item item = new Item("Torsk");
+            Perm.DerpShoppingList.Items.Add(item);
+            /* END */
+
             ConfigureAuth(app);
         }
+    }
+
+    static public class Perm
+    {
+        public static ShoppingList DerpShoppingList = new ShoppingList();
+
+        
     }
 }
