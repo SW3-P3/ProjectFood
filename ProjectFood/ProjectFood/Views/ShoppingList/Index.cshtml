@@ -6,23 +6,29 @@
     ViewBag.Title = "Indkøbsliste";
     @model ProjectFood.Models.ShoppingList
 }
+<script type="text/javascript" src="scripts/jquery-1.4.1.js"></script>
+<script type="text/javascript">
+    
+    var addButton = document.getElementById('addButton');
+    addButton.addEventListener('click',testing);
 
+    function testing() {
+        window.alert("DET VIRKER");
+    }
+
+</script>
 
 <h2>Din Indkøbsliste</h2>
 
 <p></p>
 
-<form role="form">
-    <div class="form-group">
-        <div class="col-lg-4">
-            <div class="input-group">
-                <input type="text" class="form-control" id="derpn" placeholder="Indtast varens navn">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button" onclick="location.href='@Url.Action("Add","ShoppingList", new { name = "kk"})'">Tilføj</button>
-                </span>
-            </div>
-        </div>
-    </div>
+@using (Html.BeginForm("Add", "ShoppingList"))
+{
+    @Html.TextBox("name")
+    <input type="submit" value="Tilføj Vare" />
+}
+
+
 
     <div class="form-group">
         <table class="table table-striped">
