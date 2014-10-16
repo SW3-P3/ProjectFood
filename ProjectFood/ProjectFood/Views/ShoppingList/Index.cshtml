@@ -7,49 +7,42 @@
     @model ProjectFood.Models.ShoppingList
 }
 
-
 <h2>Din Indkøbsliste</h2>
-
-<p></p>
-
 
 @using (Html.BeginForm("Add", "ShoppingList"))
 {
     <div class="col-lg-3">
-        @Html.TextBox("name", null , new {@class = "form-control input-sm", @placeholder = "Indtast Varenavn"})
+        @Html.TextBox("name", null, new { @class = "form-control input-sm", @placeholder = "Indtast Varenavn" })
     </div>
     <div class="col-lg-6">
         <input type="submit" value="Tilføj Vare" class="btn btn-primary" />
     </div>
 }
 
-    <div class="form-group">
-        <table class="table table-striped">
+<div class="form-group">
+    <table class="table table-striped">
+        <tr>
+            <th class="col-md-1"> </th>
+            <th>Varenavn</th>
+            <th>Kategori</th>
+            <th>Tilbudspris</th>
+            <th>Butik</th>
+        </tr>
+        @foreach (var item in Model.Items)
+        {
             <tr>
-                <th class="col-md-1"> </th>
-                <th>Varenavn</th>
-                <th>Kategori</th>
-                <th>Tilbudspris</th>
-                <th>Butik</th>
+                <td>
+                    @using (Html.BeginForm("Remove", "ShoppingList"))
+                    {
+                        <input type="submit" value="Fjern" class="btn btn-danger" />
+                        <input type="hidden" name="id" value="@Model.Items.IndexOf(item)" />
+                    }
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.DisplayFor(modelItem => item.Offers.First().Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Offers.First().Store)</td>
             </tr>
-            @foreach (var item in Model.Items)
-            {
-                <tr>
-                    <td>@using(Html.BeginForm("Remove","ShoppingList"))
-                        {
-                            <input type="submit" value="Fjern" class="btn btn-danger" />
-                            <input type="hidden" name="id" value="@Model.Items.IndexOf(item)" />
-                        }
-                    </td>
-
-                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Category)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Offers.First().Price)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Offers.First().Store)</td>
-                </tr>
-                <tr></tr>
-
-            }
-        </table>
-    </div>
-</form>
+        }
+    </table>
+</div>
