@@ -15,20 +15,6 @@ namespace ProjectFood.Controllers
             return View(Perm.DerpShoppingList);
         }
 
-        public void AddItem(string nameOfItem)
-        {
-            Item item = new Item(nameOfItem);
-            Perm.DerpShoppingList.Items.Add(item);
-            Index();
-        }
-
-        public ActionResult Adds()
-        {
-            Item item = new Item("Derp");
-            Perm.DerpShoppingList.Items.Add(item);
-            return RedirectToAction("Index", "ShoppingList");
-        }
-
         public ActionResult Add(string name)
         {
             Item item = new Item(name);
@@ -36,8 +22,11 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Index", "ShoppingList");
         }
 
+        public ActionResult Remove(string id)
+        {
 
-
-
-	}
+            Perm.DerpShoppingList.Items.RemoveAt(int.Parse(id));
+            return RedirectToAction("Index", "ShoppingList");
+        }
+    }
 }
