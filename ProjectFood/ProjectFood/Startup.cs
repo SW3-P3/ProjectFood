@@ -12,17 +12,10 @@ namespace ProjectFood
         {
             /* Add a single item to the shoppingList this is temp */
             Item item = new Item("Torsk");
-            Perm.DerpShoppingList.Items.Add(item);
+            Global.GlobalShoppingList.Items.Add(item);
             /* END */
 
             ConfigureAuth(app);
         }
-    }
-
-    static public class Perm
-    {
-        public static ShoppingList DerpShoppingList = new ShoppingList();
-
-        
     }
 }

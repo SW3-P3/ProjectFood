@@ -12,20 +12,20 @@ namespace ProjectFood.Controllers
         // GET: /ShoppingList/
         public ActionResult Index()
         {   
-            return View(Perm.DerpShoppingList);
+            return View(Global.GlobalShoppingList);
         }
 
         public ActionResult Add(string name)
         {
             Item item = new Item(name);
-            Perm.DerpShoppingList.Items.Add(item);
+            Global.GlobalShoppingList.Items.Add(item);
             return RedirectToAction("Index", "ShoppingList");
         }
 
         public ActionResult Remove(string id)
         {
 
-            Perm.DerpShoppingList.Items.RemoveAt(int.Parse(id));
+            Global.GlobalShoppingList.Items.RemoveAt(int.Parse(id));
             return RedirectToAction("Index", "ShoppingList");
         }
     }
