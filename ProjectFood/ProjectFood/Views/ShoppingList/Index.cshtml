@@ -7,15 +7,19 @@
     @model ProjectFood.Models.ShoppingList
 }
 
-<h2>Din Indkøbsliste</h2>
+<h1>Din Indkøbsliste</h1>
 
-@using (Html.BeginForm("Add", "ShoppingList"))
+@using (Html.BeginForm("Add", "ShoppingList", new { @class = "bs-component"}))
 {
-    <div class="col-lg-3">
-        @Html.TextBox("name", null, new { @class = "form-control input-sm", @placeholder = "Indtast Varenavn" })
-    </div>
-    <div class="col-lg-6">
-        <input type="submit" value="Tilføj Vare" class="btn btn-primary" />
+    <div class="col-lg-4">
+        <div class="form-group">
+            <div class="input-group">
+                @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+                <span class="input-group-btn">
+                    <input type="submit" value="Tilføj Vare" class="btn btn-default" />
+                </span>
+            </div>
+        </div>
     </div>
 }
 
@@ -34,7 +38,7 @@
                 <td>
                     @using (Html.BeginForm("Remove", "ShoppingList"))
                     {
-                        <input type="submit" value="Fjern" class="btn btn-danger" />
+                        <input type="submit" value="Fjern" class="btn btn-danger btn-xs" />
                         <input type="hidden" name="id" value="@Model.Items.IndexOf(item)" />
                     }
                 </td>
