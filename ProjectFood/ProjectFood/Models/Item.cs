@@ -13,8 +13,7 @@ namespace ProjectFood.Models
         {
             Name = name;
             Category = String.Empty;
-            Offers.Add(new Offer(){Store = "Bilka", Price = 10.3M}
-);
+            Offers.Add(new Offer(){Store = "Erotica", Price = 999999.3M});
         }
     }
 }
