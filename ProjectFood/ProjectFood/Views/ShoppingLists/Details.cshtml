@@ -7,7 +7,7 @@
 <h2>Details</h2>
 
 <div>
-    <h4>ShoppingList</h4>
+    <h4>ShoppingList @Model.Items.Count().ToString()</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -53,10 +53,10 @@
                         <input type="hidden" name="itemId" value="@Model.Items.IndexOf(item)" />
                     }
                 </td>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.Category)</td>
-                <td>@Html.DisplayFor(modelItem => item.Offers.First().Price)</td>
-                <td>@Html.DisplayFor(modelItem => item.Offers.First().Store)</td>
+                <td>@Html.DisplayFor(modelItems => item.Name)</td>
+                <!--<td>@Html.DisplayFor(modelItems => item.Category)</td>
+                <td>@Html.DisplayFor(modelItems => item.Offers.First().Price)</td>
+                <td>@Html.DisplayFor(modelItems => item.Offers.First().Store)</td>-->
             </tr>
         }
     </table>

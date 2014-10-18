@@ -1,6 +1,8 @@
 namespace ProjectFood.Migrations
 {
+    using ProjectFood.Models;
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
@@ -14,6 +16,18 @@ namespace ProjectFood.Migrations
 
         protected override void Seed(ProjectFood.Models.ShoppingListDBContext context)
         {
+            context.ShoppingLists.AddOrUpdate(i => i.Title,
+                new ShoppingList
+                {
+                    Title = "Aftensmad",
+                    Items = new List<Item>(),
+                },
+                 new ShoppingList
+                {
+                    Title = "Morgenmad",
+                    Items = new List<Item>(),
+                }
+                );
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

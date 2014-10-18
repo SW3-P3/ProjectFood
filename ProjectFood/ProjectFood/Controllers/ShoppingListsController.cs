@@ -110,6 +110,7 @@ namespace ProjectFood.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             ShoppingList shoppingList = db.ShoppingLists.Find(id);
+            shoppingList.Items.Clear();
             db.ShoppingLists.Remove(shoppingList);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -129,7 +130,8 @@ namespace ProjectFood.Controllers
         {
             Item item = new Item(name);
             ShoppingList shoppingList = db.ShoppingLists.Find(id);
-            db.Items.Add(item);
+            shoppingList.Items.Add(item);
+            db.SaveChanges();
             return RedirectToAction("Details/" + id);
         }
 

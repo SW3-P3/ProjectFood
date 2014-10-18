@@ -162,21 +162,15 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\ShoppingListController.cs" />
     <Compile Include="Controllers\ShoppingListsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201410181617392_Initial.cs" />
-    <Compile Include="Migrations\201410181617392_Initial.Designer.cs">
-      <DependentUpon>201410181617392_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410181631003_Initial1.cs" />
-    <Compile Include="Migrations\201410181631003_Initial1.Designer.cs">
-      <DependentUpon>201410181631003_Initial1.cs</DependentUpon>
+    <Compile Include="Migrations\201410181827377_Initial.cs" />
+    <Compile Include="Migrations\201410181827377_Initial.Designer.cs">
+      <DependentUpon>201410181827377_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Global.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Catalogue.cs" />
     <Compile Include="Models\Group.cs" />
@@ -607,7 +601,6 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\ShoppingList\Index.cshtml" />
     <Content Include="Views\Item\Index.cshtml" />
     <Content Include="Views\ShoppingLists\Create.cshtml" />
     <Content Include="Views\ShoppingLists\Delete.cshtml" />
@@ -626,11 +619,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201410181617392_Initial.resx">
-      <DependentUpon>201410181617392_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410181631003_Initial1.resx">
-      <DependentUpon>201410181631003_Initial1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410181827377_Initial.resx">
+      <DependentUpon>201410181827377_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
