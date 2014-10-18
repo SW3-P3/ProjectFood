@@ -123,5 +123,21 @@ namespace ProjectFood.Controllers
             }
             base.Dispose(disposing);
         }
+
+        //[HttpPost, ActionName("Add")]
+        public ActionResult Add(int? id, string name)
+        {
+            Item item = new Item(name);
+            ShoppingList shoppingList = db.ShoppingLists.Find(id);
+            db.Items.Add(item);
+            return RedirectToAction("Details/" + id);
+        }
+
+        public ActionResult Remove(int? id, string itemId)
+        {
+            ShoppingList shoppingList = db.ShoppingLists.Find(id);
+            shoppingList.Items.RemoveAt(int.Parse(itemId));
+            return RedirectToAction("Details", "ShoppingLists");
+        }
     }
 }

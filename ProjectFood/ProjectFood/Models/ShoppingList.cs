@@ -8,18 +8,20 @@ namespace ProjectFood.Models
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public List<Item> Items = new List<Item>();
-        public List<Item> BoughtItems = new List<Item>();
+        public List<Item> Items { get; set;}
+        public List<Item> BoughtItems { get; set; }
 
         public ShoppingList()
         {
-            Title = "liste";
-
+            Items = new List<Item>();
+            //Items.Add(new Item("Havregryn"));
+            BoughtItems = new List<Item>();
         }
 
     }
     public class ShoppingListDBContext : DbContext
     {
         public DbSet<ShoppingList> ShoppingLists { get; set; }
+        public DbSet<Item> Items { get; set; }
     }
 }
