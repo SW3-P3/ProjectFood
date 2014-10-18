@@ -1,0 +1,53 @@
+﻿@model ProjectFood.Models.ShoppingList
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ShoppingList</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+    </dl>
+</div>
+<div class="form-group">
+    <table class="table table-striped">
+        <tr>
+            <th class="col-md-1"> </th>
+            <th>Varenavn</th>
+            <th>Kategori</th>
+            <th>Tilbudspris</th>
+            <th>Butik</th>
+        </tr>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>
+                    @using (Html.BeginForm("Remove", "ShoppingList"))
+                    {
+                        <input type="submit" value="Fjern" class="btn btn-danger btn-xs" />
+                        <input type="hidden" name="id" value="@Model.Items.IndexOf(item)" />
+                    }
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.DisplayFor(modelItem => item.Offers.First().Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Offers.First().Store)</td>
+            </tr>
+        }
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
