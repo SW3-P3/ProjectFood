@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ProjectFood.Models.ShoppingList>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h1>Indkøbslister</h1>
+
+<p>
+    @Html.ActionLink("Opret ny indkøbsliste", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var list in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => list.Title)
+        </td>
+        <td>
+            @Html.ActionLink("Rediger titel", "Edit", new { id=list.ID }) |
+            @Html.ActionLink("Tilføj og fjern varer", "Details", new { id=list.ID }) |
+            @Html.ActionLink("Slet", "Delete", new { id=list.ID })
+        </td>
+    </tr>
+}
+
+</table>
