@@ -14,8 +14,6 @@ namespace ProjectFood.Models
         public ShoppingList()
         {
             Items = new List<Item>();
-            //Items.Add(new Item("Havregryn"));
         }
-
     }
 }
