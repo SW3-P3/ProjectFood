@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 
 namespace ProjectFood.Models
@@ -8,7 +9,7 @@ namespace ProjectFood.Models
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public List<Item> Items { get; set;}
+        public ICollection<Item> Items { get; set;}
 
         public ShoppingList()
         {
@@ -16,9 +17,5 @@ namespace ProjectFood.Models
             //Items.Add(new Item("Havregryn"));
         }
 
-    }
-    public class ShoppingListDBContext : DbContext
-    {
-        public DbSet<ShoppingList> ShoppingLists { get; set; }
     }
 }

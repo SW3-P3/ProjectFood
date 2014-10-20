@@ -8,13 +8,14 @@ namespace ProjectFood.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
-        public List<Offer> Offers = new List<Offer>();
+        public ICollection<ShoppingList> OnLists { get; set; }
 
-        public Item(string name)
+        //public List<Offer> Offers = new List<Offer>();
+
+        public Item()
         {
-            Name = name;
-            Category = String.Empty;
-            Offers.Add(new Offer(){Store = "Erotica", Price = 999999.3M});
+            OnLists = new List<ShoppingList>();
+            //Offers.Add(new Offer(){Store = "Erotica", Price = 999999.3M});
         }
     }
 }

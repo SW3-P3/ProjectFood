@@ -12,7 +12,7 @@ namespace ProjectFood.Controllers
 {
     public class ShoppingListsController : Controller
     {
-        private ShoppingListDBContext db = new ShoppingListDBContext();
+        private ShoppingListContext db = new ShoppingListContext();
 
         // GET: ShoppingLists
         public ActionResult Index()
@@ -27,7 +27,12 @@ namespace ProjectFood.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ShoppingList shoppingList = db.ShoppingLists.Find(id);
+            var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
+            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+            // ShoppingList shoppingList = db.ShoppingLists.Find(id);
+            System.Diagnostics.Debug.WriteLine(tmp.ToString());
+            System.Diagnostics.Debug.WriteLine(shoppingList.Items.Count.ToString());
+            
             if (shoppingList == null)
             {
                 return HttpNotFound();
@@ -110,7 +115,6 @@ namespace ProjectFood.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             ShoppingList shoppingList = db.ShoppingLists.Find(id);
-            shoppingList.Items.Clear();
             db.ShoppingLists.Remove(shoppingList);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -125,21 +129,31 @@ namespace ProjectFood.Controllers
             base.Dispose(disposing);
         }
 
-        //[HttpPost, ActionName("Add")]
-        public ActionResult Add(int? id, string name)
+        public ActionResult AddItem(int id, string name)
         {
-            Item item = new Item(name);
+            Item tmp = new Item();
+            tmp.Name = name;
+            tmp.Category = "Diverse";
+
             ShoppingList shoppingList = db.ShoppingLists.Find(id);
-            shoppingList.Items.Add(item);
+            
+            shoppingList.Items.Add(tmp);
+
             db.SaveChanges();
             return RedirectToAction("Details/" + id);
         }
 
-        public ActionResult Remove(int? id, string itemId)
+        public ActionResult RemoveItem(int id, int itemID)
         {
-            ShoppingList shoppingList = db.ShoppingLists.Find(id);
-            shoppingList.Items.RemoveAt(int.Parse(itemId));
-            return RedirectToAction("Details", "ShoppingLists");
+            var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
+            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+
+            var rmItem = shoppingList.Items.ToList().Find(x => x.ID == itemID);
+            shoppingList.Items.Remove(rmItem);
+            
+            db.SaveChanges();
+
+            return RedirectToAction("Details/" + id);
         }
     }
 }

@@ -4,10 +4,10 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Details bitch @Model.Items.Count()</h2>
 
 <div>
-    <h4>ShoppingList @Model.Items.Count().ToString()</h4>
+    <h4>ShoppingList</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -20,43 +20,44 @@
 
     </dl>
 </div>
-@using (Html.BeginForm("Add", "ShoppingLists", FormMethod.Get , new { @class = "bs-component"}))
+
+@using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Get , new { @class = "bs-component" }))
 {
-<input type="hidden" name="id" value="@Model.ID" />
-<div class="col-lg-4">
-    <div class="form-group">
-        <div class="input-group">
-            @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
-            <span class="input-group-btn">
-                <button type="submit" class="btn btn-default">Tilføj vare</button>
-            </span>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <div class="input-group">
+                @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+                <input type="hidden" name="id" value="@Model.ID"/>
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default">Tilføj vare</button>
+                </span>
+            </div>
         </div>
     </div>
-</div>
 }
+
 <div class="form-group">
     <table class="table table-striped">
         <tr>
             <th class="col-md-1"> </th>
             <th>Varenavn</th>
             <th>Kategori</th>
-            <th>Tilbudspris</th>
-            <th>Butik</th>
+            <!-- <th>Tilbudspris</th>
+            <th>Butik</th>-->
         </tr>
         @foreach (var item in Model.Items)
         {
             <tr>
                 <td>
-                    @using (Html.BeginForm("Remove", "ShoppingLists/Details", FormMethod.Get))
+                    @using (Html.BeginForm("RemoveItem", "ShoppingLists", FormMethod.Get))
                     {
                         <input type="submit" value="Fjern" class="btn btn-danger btn-xs" />
-                        <input type="hidden" name="itemId" value="@Model.Items.IndexOf(item)" />
+                        <input type="hidden" name="id" value="@Model.ID" />
+                        <input type="hidden" name="itemID" value="@item.ID" />
                     }
                 </td>
-                <td>@Html.DisplayFor(modelItems => item.Name)</td>
-                <!--<td>@Html.DisplayFor(modelItems => item.Category)</td>
-                <td>@Html.DisplayFor(modelItems => item.Offers.First().Price)</td>
-                <td>@Html.DisplayFor(modelItems => item.Offers.First().Store)</td>-->
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
             </tr>
         }
     </table>
