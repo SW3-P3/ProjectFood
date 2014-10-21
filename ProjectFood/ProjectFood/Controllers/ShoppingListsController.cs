@@ -29,9 +29,6 @@ namespace ProjectFood.Controllers
             }
             var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
             ShoppingList shoppingList = tmp.Find(x => x.ID == id);
-            // ShoppingList shoppingList = db.ShoppingLists.Find(id);
-            System.Diagnostics.Debug.WriteLine(tmp.ToString());
-            System.Diagnostics.Debug.WriteLine(shoppingList.Items.Count.ToString());
             
             if (shoppingList == null)
             {

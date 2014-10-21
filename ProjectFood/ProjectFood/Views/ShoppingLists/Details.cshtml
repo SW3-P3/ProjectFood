@@ -1,27 +1,12 @@
 ﻿@model ProjectFood.Models.ShoppingList
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = Html.DisplayFor(model => model.Title);
 }
 
-<h2>Details bitch @Model.Items.Count()</h2>
+<h1>@Html.DisplayFor(model => model.Title)</h1>
 
-<div>
-    <h4>ShoppingList</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-
-    </dl>
-</div>
-
-@using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Get , new { @class = "bs-component" }))
+@using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post , new { @class = "bs-component" }))
 {
     <div class="col-lg-4">
         <div class="form-group">
@@ -39,7 +24,7 @@
 <div class="form-group">
     <table class="table table-striped">
         <tr>
-            <th class="col-md-1"> </th>
+            <th class="col-lg-1"> </th>
             <th>Varenavn</th>
             <th>Kategori</th>
             <!-- <th>Tilbudspris</th>
@@ -49,7 +34,7 @@
         {
             <tr>
                 <td>
-                    @using (Html.BeginForm("RemoveItem", "ShoppingLists", FormMethod.Get))
+                    @using (Html.BeginForm("RemoveItem", "ShoppingLists", FormMethod.Post))
                     {
                         <input type="submit" value="Fjern" class="btn btn-danger btn-xs" />
                         <input type="hidden" name="id" value="@Model.ID" />
@@ -63,6 +48,6 @@
     </table>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Ændre navn på listen", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Tilbage til dine lister", "Index")
 </p>
