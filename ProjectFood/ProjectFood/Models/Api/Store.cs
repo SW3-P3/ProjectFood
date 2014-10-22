@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eTilbudsharp.Api
+namespace ProjectFood.Models.Api
 {
     public class Store
     {

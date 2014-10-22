@@ -1,4 +1,4 @@
-﻿namespace eTilbudsharp.Api
+﻿namespace ProjectFood.Models.Api
 {
     public class Si
     {

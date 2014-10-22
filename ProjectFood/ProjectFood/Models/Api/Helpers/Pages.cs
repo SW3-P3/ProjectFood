@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace eTilbudsharp.Api
+namespace ProjectFood.Models.Api
 {
     public class Pages
     {

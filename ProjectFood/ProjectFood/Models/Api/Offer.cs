@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace eTilbudsharp.Api
+namespace ProjectFood.Models.Api
 {
 
     public class Offer

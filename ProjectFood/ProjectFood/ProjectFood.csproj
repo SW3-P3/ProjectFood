@@ -176,6 +176,27 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Api\Catalog.cs" />
+    <Compile Include="Models\Api\Global.cs" />
+    <Compile Include="Models\Api\Helpers\Branding.cs" />
+    <Compile Include="Models\Api\Helpers\Country.cs" />
+    <Compile Include="Models\Api\Helpers\Currency.cs" />
+    <Compile Include="Models\Api\Helpers\Dimensions.cs" />
+    <Compile Include="Models\Api\Helpers\Images.cs" />
+    <Compile Include="Models\Api\Helpers\Links.cs" />
+    <Compile Include="Models\Api\Helpers\Pageflip.cs" />
+    <Compile Include="Models\Api\Helpers\Pages.cs" />
+    <Compile Include="Models\Api\Helpers\Permissions.cs" />
+    <Compile Include="Models\Api\Helpers\Pieces.cs" />
+    <Compile Include="Models\Api\Helpers\Pricing.cs" />
+    <Compile Include="Models\Api\Helpers\Quantity.cs" />
+    <Compile Include="Models\Api\Helpers\Si.cs" />
+    <Compile Include="Models\Api\Helpers\Size.cs" />
+    <Compile Include="Models\Api\Helpers\Unit.cs" />
+    <Compile Include="Models\Api\Offer.cs" />
+    <Compile Include="Models\Api\Session.cs" />
+    <Compile Include="Models\Api\Store.cs" />
+    <Compile Include="Models\Api\Stores.cs" />
     <Compile Include="Models\Catalogue.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\IdentityModels.cs" />
