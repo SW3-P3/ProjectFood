@@ -24,7 +24,7 @@ namespace ProjectFood
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/simplex.bootstrap.css",
+                      "~/Content/paper.bootstrap.css",
                       "~/Content/site.css"));
 
             // Set EnableOptimizations to false for debugging. For more information,
