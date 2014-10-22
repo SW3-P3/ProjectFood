@@ -16,6 +16,8 @@ namespace ProjectFood.Controllers
 
         public ActionResult ImportOffers()
         {
+
+
             return RedirectToAction("Index");
         }
     }
