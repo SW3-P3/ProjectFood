@@ -13,5 +13,10 @@ namespace ProjectFood.Controllers
         {
             return View();
         }
+
+        public ActionResult ImportOffers()
+        {
+            return RedirectToAction("Index");
+        }
     }
 }
