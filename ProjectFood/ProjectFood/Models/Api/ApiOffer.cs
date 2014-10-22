@@ -3,13 +3,14 @@
 namespace ProjectFood.Models.Api
 {
 
-    public class Offer
+    public class ApiOffer
     {
         public string id { get; set; }
         public string ern { get; set; }
         public string heading { get; set; }
         public string description { get; set; }
         public int catalog_page { get; set; }
+        public Branding branding { get; set; }
         public Pricing pricing { get; set; }
         public Quantity quantity { get; set; }
         public Images images { get; set; }

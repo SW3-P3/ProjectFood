@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
+using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
 using RestSharp.Deserializers;
@@ -19,10 +20,13 @@ namespace ProjectFood.Controllers
 {
     public class OfferController : Controller
     {
+
+        private ShoppingListContext db = new ShoppingListContext();
+
         // GET: Offer
         public ActionResult Index()
         {
-            return View();
+            return View(db.Offers.ToList());
         }
 
         public ActionResult ImportOffers()
@@ -82,12 +86,26 @@ namespace ProjectFood.Controllers
             offersRequest.AddParameter("catalog_ids", string.Join(",", catalogsResult.Select(x => x.id)));
             offersRequest.AddParameter("limit", "50");
 
-            var offersResult = client.Execute<List<Offer>>(offersRequest).Data;
+            var offersResult = client.Execute<List<ApiOffer>>(offersRequest).Data;
 
+            foreach( var a in db.Offers)
+            {
+                db.Offers.Remove(a);
+            }
+           
             foreach (var o in offersResult)
             {
-                // add each to db list
+                var tmp = new Offer();
+                tmp.Heading = o.heading;
+                tmp.Begin = DateTime.Today;
+                tmp.End = DateTime.Today.AddDays(1);
+                tmp.Store = o.branding.name;
+                tmp.Price = o.pricing.price;
+                tmp.Unit = o.quantity.unit != null? o.quantity.size.from + " " + o.quantity.unit.symbol : " ";
+                db.Offers.Add(tmp);
             }
+
+            db.SaveChanges();
 
             return RedirectToAction("Index");
         }

@@ -170,9 +170,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201410220814439_Initial.cs" />
-    <Compile Include="Migrations\201410220814439_Initial.Designer.cs">
-      <DependentUpon>201410220814439_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201410221104377_Initial.cs" />
+    <Compile Include="Migrations\201410221104377_Initial.Designer.cs">
+      <DependentUpon>201410221104377_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410221120137_Initial1.cs" />
+    <Compile Include="Migrations\201410221120137_Initial1.Designer.cs">
+      <DependentUpon>201410221120137_Initial1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -193,7 +197,7 @@
     <Compile Include="Models\Api\Helpers\Si.cs" />
     <Compile Include="Models\Api\Helpers\Size.cs" />
     <Compile Include="Models\Api\Helpers\Unit.cs" />
-    <Compile Include="Models\Api\Offer.cs" />
+    <Compile Include="Models\Api\ApiOffer.cs" />
     <Compile Include="Models\Api\Session.cs" />
     <Compile Include="Models\Api\Store.cs" />
     <Compile Include="Models\Api\Stores.cs" />
@@ -646,8 +650,11 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201410220814439_Initial.resx">
-      <DependentUpon>201410220814439_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410221104377_Initial.resx">
+      <DependentUpon>201410221104377_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410221120137_Initial1.resx">
+      <DependentUpon>201410221120137_Initial1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
