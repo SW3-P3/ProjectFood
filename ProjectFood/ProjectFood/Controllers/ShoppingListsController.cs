@@ -129,6 +129,10 @@ namespace ProjectFood.Controllers
 
         public ActionResult AddItem(int id, string name)
         {
+            if (name.Trim() == string.Empty)
+            {
+                return RedirectToAction("Details/" + id);
+            }
             Item tmp = new Item();
             tmp.Name = name;
             tmp.Category = "Diverse";
