@@ -25,7 +25,8 @@ namespace ProjectFood.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index");
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
             ShoppingList shoppingList = tmp.Find(x => x.ID == id);

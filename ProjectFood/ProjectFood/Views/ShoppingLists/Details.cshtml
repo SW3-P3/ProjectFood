@@ -4,7 +4,9 @@
     ViewBag.Title = Html.DisplayFor(model => model.Title);
 }
 
+<div class="page-header">
 <h1>@Html.DisplayFor(model => model.Title)</h1>
+    </div>
 
 @using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post , new { @class = "bs-component" }))
 {
@@ -42,6 +44,15 @@
                 <td>@Html.DisplayFor(modelItem => item.Category)</td>
             </tr>
         }
+        <tr>
+            <td></td><td>
+            @using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post))
+            {
+                            @Html.TextBox("name", null, new { @class = "input-sm", @placeholder = "tilføj vare (tryk enter)" })
+                            <input type="hidden" name="id" value="@Model.ID" />
+            }
+            </td><td></td>
+        </tr>
     </table>
 </div>
 <p>

@@ -1,33 +1,55 @@
 ﻿@model IEnumerable<ProjectFood.Models.ShoppingList>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Indkøbslister";
 }
 
-<h1>Indkøbslister</h1>
+<div class="page-header">
+    <h1>Indkøbslister</h1>
+</div>
 
-<p>
-    @Html.ActionLink("Opret ny indkøbsliste", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th></th>
-    </tr>
+@if (Model.ToList().Count == 0)
+{
+    using (Html.BeginForm("Create", "ShoppingLists", FormMethod.Post, new { @class = "bs-component" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="alert alert-warning">
+            <!--<button type="button" class="close" data-dismiss="alert">×</button>-->
+            <h4>Åh nej!</h4>
+            <p>
+                Der er endnu ikke oprettet nogle indkøbslister! <br /><br />
+                <div class="input-group col-lg-3">
+                    @Html.TextBox("Title", "", new { @placeholder = "navn på indkøbsliste", @class = "form-control" })
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default">Opret!</button>
+                    </span>
+                </div>
 
-@foreach (var list in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => list.Title)
-        </td>
-        <td>
-            @Html.ActionLink("Rediger titel", "Edit", new { id=list.ID }) |
-            @Html.ActionLink("Tilføj og fjern varer", "Details", new { id=list.ID }) |
-            @Html.ActionLink("Slet", "Delete", new { id=list.ID })
-        </td>
-    </tr>
+
+            </p>
+        </div>
+    }
+}
+else
+{
+    <table class="table table-striped">
+        @foreach (var list in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => list.Title)
+                </td>
+                <td>
+                    @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-xs" })
+                    @Html.ActionLink("Slet", "Delete", new { id = list.ID }, new { @class = "btn btn-danger btn-xs" })
+                </td>
+            </tr>
+        }
+
+    </table>
+    <p>
+        @Html.ActionLink("Opret ny indkøbsliste", "Create", null, new { @class = "btn btn-default btn-lg btn-block" })
+    </p>
 }
 
-</table>
+
