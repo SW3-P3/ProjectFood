@@ -82,6 +82,13 @@ namespace ProjectFood.Controllers
             offersRequest.AddParameter("catalog_ids", string.Join(",", catalogsResult.Select(x => x.id)));
             offersRequest.AddParameter("limit", "50");
 
+            var offersResult = client.Execute<List<Offer>>(offersRequest).Data;
+
+            foreach (var o in offersResult)
+            {
+                // add each to db list
+            }
+
             return RedirectToAction("Index");
         }
     }
