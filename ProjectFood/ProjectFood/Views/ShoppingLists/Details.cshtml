@@ -34,12 +34,9 @@
         {
             <tr>
                 <td>
-                    @using (Html.BeginForm("RemoveItem", "ShoppingLists", FormMethod.Post))
-                    {
-                        <input type="submit" value="Fjern" class="btn btn-danger btn-xs" />
-                        <input type="hidden" name="id" value="@Model.ID" />
-                        <input type="hidden" name="itemID" value="@item.ID" />
-                    }
+                    @Html.ActionLink("Fjern", "RemoveItem", 
+                        new { id = Model.ID, itemID = item.ID }, 
+                        new { @class = "btn btn-danger btn-xs" })
                 </td>
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.Category)</td>
