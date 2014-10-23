@@ -26,6 +26,17 @@ namespace ProjectFood.Controllers
         // GET: Offer
         public ActionResult Index()
         {
+            var StoreList = new List<string>();
+
+            var StoreQry = from d in db.Offers
+                           orderby d.Store
+                           select d.Store;
+
+            StoreList.AddRange(StoreQry.Distinct());
+            StoreList.Remove("Elgiganten");
+            StoreList.Remove("Imerco");
+            ViewBag.Stores = StoreList;
+
             return View(db.Offers.ToList());
         }
 
@@ -84,7 +95,7 @@ namespace ProjectFood.Controllers
             offersRequest.AddHeader("X-Token", Global.Session.Token);
             offersRequest.AddHeader("X-Signature", Global.Session.Signature);
             offersRequest.AddParameter("catalog_ids", string.Join(",", catalogsResult.Select(x => x.id)));
-            offersRequest.AddParameter("limit", "50");
+            offersRequest.AddParameter("limit", "100");
 
             var offersResult = client.Execute<List<ApiOffer>>(offersRequest).Data;
 
@@ -97,8 +108,8 @@ namespace ProjectFood.Controllers
             {
                 var tmp = new Offer();
                 tmp.Heading = o.heading;
-                tmp.Begin = DateTime.Today;
-                tmp.End = DateTime.Today.AddDays(1);
+                tmp.Begin = o.run_from;//DateTime.Today;
+                tmp.End = o.run_till;//DateTime.Today.AddDays(1);
                 tmp.Store = o.branding.name;
                 tmp.Price = o.pricing.price;
                 tmp.Unit = o.quantity.unit != null? o.quantity.size.from + " " + o.quantity.unit.symbol : " ";
@@ -108,6 +119,21 @@ namespace ProjectFood.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult AddOfferToShoppingList(int id, int offerID)
+        {
+            var tmpItem = new Item();
+            tmpItem.Name = db.Offers.Find(offerID).Heading;
+
+            var shoppingList = db.ShoppingLists.First();
+
+            shoppingList.Items.Add(tmpItem);
+
+            db.SaveChanges();
+
+            return Json(null);
         }
     }
 }
