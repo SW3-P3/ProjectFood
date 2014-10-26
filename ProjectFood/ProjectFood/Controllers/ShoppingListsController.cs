@@ -131,6 +131,8 @@ namespace ProjectFood.Controllers
         {
             if (name.Trim() == string.Empty)
             {
+                // TODO: make a proper error message (Use: http://lipis.github.io/bootstrap-sweetalert/ ??)
+                // Tilføj snackbar i else ?!
                 return RedirectToAction("Details/" + id);
             }
             Item tmp = new Item();
