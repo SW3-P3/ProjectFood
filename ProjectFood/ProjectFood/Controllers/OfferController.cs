@@ -76,17 +76,6 @@ namespace ProjectFood.Controllers
             /* Copy the sessionobj to a globalSession */
             Global.Session = sessionobj;
 
-            /* Catalog request */
-            var catalogsRequest = new RestRequest("v2/catalogs", Method.GET);
-            catalogsRequest.AddParameter("r_lat", Global.Latitude);
-            catalogsRequest.AddParameter("r_lng", Global.Longitude);
-            catalogsRequest.AddParameter("r_radius", Global.Radius);
-            catalogsRequest.AddHeader("X-Token", Global.Session.Token);
-            catalogsRequest.AddHeader("X-Signature", Global.Session.Signature);
-
-            var catalogsResult = client.Execute<List<Catalog>>(catalogsRequest).Data;
-            Console.WriteLine("\n" + catalogsResult.First().images.view);
-
             /* Offers request (Every offer from the catalog found above */
             var offersRequest = new RestRequest("v2/offers", Method.GET);
             offersRequest.AddParameter("r_lat", Global.Latitude);
@@ -94,17 +83,27 @@ namespace ProjectFood.Controllers
             offersRequest.AddParameter("r_radius", Global.Radius);
             offersRequest.AddHeader("X-Token", Global.Session.Token);
             offersRequest.AddHeader("X-Signature", Global.Session.Signature);
-            offersRequest.AddParameter("catalog_ids", string.Join(",", catalogsResult.Select(x => x.id)));
+            //offersRequest.AddParameter("catalog_ids", string.Join(",", catalogsResult.Select(x => x.id)));
             offersRequest.AddParameter("limit", "100");
+            offersRequest.AddParameter("dealer_ids", "9ba51"); //8c4da,bdf5A,11deC,c1edq,71c90,101cD,0b1e8,ecddz,8c4da,1e1eB,d311fg
 
-            var offersResult = client.Execute<List<ApiOffer>>(offersRequest).Data;
+            //TODO: This should be converted to an Async method for each store if we need a speed-up
+            List<ApiOffer> offersResult = client.Execute<List<ApiOffer>>(offersRequest).Data;
+            List<ApiOffer> listofApiOffers = offersResult;
+            while (offersResult.Count == 100)
+            {
+                var nextOffersRequest = offersRequest;
+                nextOffersRequest.AddParameter("offset", listofApiOffers.Count);
+                offersResult = client.Execute<List<ApiOffer>>(nextOffersRequest).Data;
+                listofApiOffers.AddRange(offersResult);
+            }
 
             foreach( var a in db.Offers)
             {
                 db.Offers.Remove(a);
             }
-           
-            foreach (var o in offersResult)
+
+            foreach (var o in listofApiOffers)
             {
                 var tmp = new Offer();
                 tmp.Heading = o.heading;
