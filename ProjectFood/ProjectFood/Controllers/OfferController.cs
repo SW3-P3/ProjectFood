@@ -1,43 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
-using System.Web;
 using System.Web.Mvc;
 using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
-using RestSharp.Deserializers;
 
 namespace ProjectFood.Controllers
 {
     public class OfferController : Controller
     {
 
-        private ShoppingListContext db = new ShoppingListContext();
+        private readonly ShoppingListContext _db = new ShoppingListContext();
 
         // GET: Offer
         public ActionResult Index()
         {
-            var StoreList = new List<string>();
+            ViewBag.Stores = _db.Offers.OrderBy(d => d.Store).Select(x => x.Store).Distinct();
 
-            var StoreQry = from d in db.Offers
-                           orderby d.Store
-                           select d.Store;
-
-            StoreList.AddRange(StoreQry.Distinct());
-            StoreList.Remove("Elgiganten");
-            StoreList.Remove("Imerco");
-            ViewBag.Stores = StoreList;
-
-            return View(db.Offers.ToList());
+            return View(_db.Offers.ToList());
         }
 
         public ActionResult ImportOffers()
@@ -59,11 +41,11 @@ namespace ProjectFood.Controllers
             var client = new RestClient("https://api.etilbudsavis.dk");
 
             /* Initiate the first request to get a session */
-            var SessionRequest = new RestRequest("v2/sessions", Method.POST);
-            SessionRequest.AddParameter("api_key", apikey);
+            var sessionRequest = new RestRequest("v2/sessions", Method.POST);
+            sessionRequest.AddParameter("api_key", apikey);
 
             /* Map the response to the class "Session" */
-            IRestResponse<Session> response2 = client.Execute<Session>(SessionRequest);
+            IRestResponse<Session> response2 = client.Execute<Session>(sessionRequest);
 
             /* Save the response in an object */
             var sessionobj = response2.Data;
@@ -98,39 +80,40 @@ namespace ProjectFood.Controllers
                 listofApiOffers.AddRange(offersResult);
             }
 
-            foreach( var a in db.Offers)
+            foreach( var a in _db.Offers)
             {
-                db.Offers.Remove(a);
+                _db.Offers.Remove(a);
             }
 
             foreach (var o in listofApiOffers)
             {
-                var tmp = new Offer();
-                tmp.Heading = o.heading;
-                tmp.Begin = o.run_from;//DateTime.Today;
-                tmp.End = o.run_till;//DateTime.Today.AddDays(1);
-                tmp.Store = o.branding.name;
-                tmp.Price = o.pricing.price;
-                tmp.Unit = o.quantity.unit != null? o.quantity.size.from + " " + o.quantity.unit.symbol : " ";
-                db.Offers.Add(tmp);
+                _db.Offers.Add(new Offer
+                {
+                    Heading = o.heading,
+                    Begin = o.run_from,
+                    End = o.run_till,
+                    Store = o.branding.name,
+                    Price = o.pricing.price,
+                    Unit = o.quantity.unit != null ? o.quantity.size.@from + " " + o.quantity.unit.symbol : " "
+                });
             }
 
-            db.SaveChanges();
+            _db.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult AddOfferToShoppingList(int id, int offerID)
+        public ActionResult AddOfferToShoppingList(int id, int offerId)
         {
             var tmpItem = new Item();
-            tmpItem.Name = db.Offers.Find(offerID).Heading;
+            tmpItem.Name = _db.Offers.Find(offerId).Heading;
 
-            var shoppingList = db.ShoppingLists.First();
+            var shoppingList = _db.ShoppingLists.First();
 
             shoppingList.Items.Add(tmpItem);
 
-            db.SaveChanges();
+            _db.SaveChanges();
 
             return Json(null);
         }
