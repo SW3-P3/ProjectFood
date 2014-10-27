@@ -55,7 +55,7 @@
                         </th>
                     </tr>
                 </thead>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Take(100))
                 {
                     <tr>
                         <td>
@@ -101,7 +101,7 @@
                             </th>
                         </tr>
                     </thead>
-                    @foreach (var item in Model.Where(i => i.Store == @store))
+                    @foreach (var item in Model.Where(i => i.Store == @store).Take(100))
                     {
                         <tr>
                             <td class="col-lg-1">

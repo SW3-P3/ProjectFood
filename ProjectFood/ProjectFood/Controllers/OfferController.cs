@@ -67,14 +67,21 @@ namespace ProjectFood.Controllers
             offersRequest.AddHeader("X-Signature", Global.Session.Signature);
             //offersRequest.AddParameter("catalog_ids", string.Join(",", catalogsResult.Select(x => x.id)));
             offersRequest.AddParameter("limit", "100");
-            offersRequest.AddParameter("dealer_ids", "9ba51"); //8c4da,bdf5A,11deC,c1edq,71c90,101cD,0b1e8,ecddz,8c4da,1e1eB,d311fg
+            offersRequest.AddParameter("dealer_ids", "9ba51,8c4da,bdf5A,11deC,c1edq,71c90,101cD,0b1e8,ecddz,8c4da,1e1eB,d311fg"); //8c4da,bdf5A,11deC,c1edq,71c90,101cD,0b1e8,ecddz,8c4da,1e1eB,d311fg
 
             //TODO: This should be converted to an Async method for each store if we need a speed-up
             List<ApiOffer> offersResult = client.Execute<List<ApiOffer>>(offersRequest).Data;
             List<ApiOffer> listofApiOffers = offersResult;
             while (offersResult.Count == 100)
             {
-                var nextOffersRequest = offersRequest;
+                var nextOffersRequest = new RestRequest("v2/offers", Method.GET);
+                nextOffersRequest.AddParameter("r_lat", Global.Latitude);
+                nextOffersRequest.AddParameter("r_lng", Global.Longitude);
+                nextOffersRequest.AddParameter("r_radius", Global.Radius);
+                nextOffersRequest.AddHeader("X-Token", Global.Session.Token);
+                nextOffersRequest.AddHeader("X-Signature", Global.Session.Signature);
+                nextOffersRequest.AddParameter("limit", "100");
+                nextOffersRequest.AddParameter("dealer_ids", "9ba51,8c4da,bdf5A,11deC,c1edq,71c90,101cD,0b1e8,ecddz,8c4da,1e1eB,d311fg");
                 nextOffersRequest.AddParameter("offset", listofApiOffers.Count);
                 offersResult = client.Execute<List<ApiOffer>>(nextOffersRequest).Data;
                 listofApiOffers.AddRange(offersResult);
