@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
+using System.Threading.Tasks;
 
 namespace ProjectFood.Controllers
 {
@@ -110,6 +111,8 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Index");
         }
 
+        //Her skal vi lave et json result eller lignende, så vi kan fortælle brugeren, at varen er tilføjet.
+        //måske skal vi ændre knappen til et check-mark istedet for et plus
         [HttpPost]
         public void AddOfferToShoppingList(int offerId)
         {
@@ -121,6 +124,7 @@ namespace ProjectFood.Controllers
             shoppingList.Items.Add(tmpItem);
 
             _db.SaveChanges();
+   
         }
     }
 }
