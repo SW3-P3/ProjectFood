@@ -125,7 +125,11 @@ namespace ProjectFood.Controllers
 
             _db.SaveChanges();
 
-            return Json("test string");
+            return Json(new
+            {
+                Message = "Hej troels",
+                OfferId = offerId,
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

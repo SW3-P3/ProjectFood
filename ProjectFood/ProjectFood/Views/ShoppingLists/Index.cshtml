@@ -35,12 +35,16 @@ else
         @foreach (var list in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => list.Title)
+                <td style="vertical-align:middle">
+                        <a href="@Url.Action("Details", new { id = list.ID })">@Html.DisplayFor(modelItem => list.Title)</a>
                 </td>
-                <td>
-                    @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-xs" })
-                    @Html.ActionLink("Slet", "Delete", new { id = list.ID }, new { @class = "btn btn-danger btn-xs" })
+                <td class="col-md-2">
+                    @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
+                </td>
+                <td class ="col-md-2 text-center">
+                    <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
                 </td>
             </tr>
         }
@@ -49,6 +53,11 @@ else
     <p>
         @Html.ActionLink("Opret ny indkøbsliste", "Create", null, new { @class = "btn btn-default btn-lg btn-block" })
     </p>
+}
+
+@section Scripts {                              @*  Don't question the JavaScript-Gods!!!                             *@
+        @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+        @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }
 
 

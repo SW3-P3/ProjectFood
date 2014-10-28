@@ -10,7 +10,7 @@
 
 @using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post , new { @class = "bs-component" }))
 {
-    <div class="col-lg-4">
+    <div class="col-md-4">
         <div class="form-group">
             <div class="input-group">
                 @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
@@ -26,21 +26,21 @@
 <div class="form-group">
     <table class="table table-striped">
         <tr>
-            <th class="col-lg-1"> </th>
+            <th class="col-md-1 text-center">Fjern</th>
             <th>Varenavn</th>
             <th>Kategori</th>
-            <!-- <th>Tilbudspris</th>
-            <th>Butik</th>-->
         </tr>
         @foreach (var item in Model.Items)
         {
             <tr>
                 <td>
-                    @Html.ActionLink("Fjern", "RemoveItem", 
-                        new { id = Model.ID, itemID = item.ID }, 
-                        new { @class = "btn btn-danger btn-xs" })
+                    <a href="@Url.Action("RemoveItem", 
+                        new { id = Model.ID, itemID = item.ID })" 
+                       class="btn btn-danger btn-xs btn-block">
+                            <span class="glyphicon glyphicon-remove"></span>
+                    </a>
                 </td>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td onclick="StrikeTrough(this)">@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.Category)</td>
             </tr>
         }
@@ -57,5 +57,11 @@
 </div>
 <p>
     @Html.ActionLink("Ændre navn på listen", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Tilbage til dine lister", "Index")
+    @Html.ActionLink("Tilbage til dine lister", "Index") |
+    @Html.ActionLink("Ryd Liste", "ClearShoppingList", new { id = Model.ID })
 </p>
+
+@section Scripts {                              @*  Don't question the JavaScript-Gods!!!                             *@
+        @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+        @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+}

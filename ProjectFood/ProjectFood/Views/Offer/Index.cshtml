@@ -17,13 +17,11 @@
         }
         else
         {
-            <h1>Tilbud</h1> 
-            @Html.ActionLink("Hent tilbud fra API igen", "ImportOffers", null, new { @class = "btn btn-default btn-xs" })
+            <h1>Tilbud&nbsp;&nbsp;<span class="glyphicon glyphicon-tags"></span></h1> 
         }
    
 
 </div>
-
 
 <ul class="nav nav-tabs">
     <li class="active"><a href="#all" data-toggle="tab">Alle tilbud</a></li>
@@ -38,6 +36,7 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th class="col-md-1 text-center">Tilføj</th>
                         <th>
                             Navn
                         </th>
@@ -48,7 +47,7 @@
                             Mængde
                         </th>
                         <th>
-                            Sidste chance
+                            Udløber
                         </th>
                         <th>
                             Butik
@@ -58,6 +57,18 @@
                 @foreach (var item in Model.Take(100))
                 {
                     <tr>
+                        <td class="col-md-1">
+
+                            @using (Ajax.BeginForm(
+                                    "AddOfferToShoppingList",
+                                    new { offerID = item.ID },
+                                    new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheck" }))
+                            {
+                                <button id="AddOfferAll_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            }
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Heading)
                         </td>
@@ -86,41 +97,46 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th class="col-lg-1">I WANT</th>
-                            <th class="col-lg-7">
+                            <th class="col-md-1 text-center">Tilføj</th>
+                            <th class="col-md-7">
                                 Navn
                             </th>
-                            <th class="col-lg-1">
+                            <th class="col-md-1">
                                 Pris
                             </th>
-                            <th class="col-lg-1">
+                            <th class="col-md-1">
                                 Mængde
                             </th>
-                            <th class="col-lg-1">
-                                Sidste chance
+                            <th class="col-md-1">
+                                Udløber
                             </th>
                         </tr>
                     </thead>
                     @foreach (var item in Model.Where(i => i.Store == @store).Take(100))
                     {
                         <tr>
-                            <td class="col-lg-1">
+                            <td class="col-md-1">
 
-                                @using (Ajax.BeginForm("AddOfferToShoppingList", new { offerID = item.ID }, new AjaxOptions { HttpMethod = "POST"}))
+                                @using (Ajax.BeginForm(
+                                    "AddOfferToShoppingList", 
+                                    new { offerID = item.ID }, 
+                                    new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheck"}))
                                 {
-                                    <button type="submit" class="btn btn-danger btn-xs">+</button>
+                                    <button id="AddOffer_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
                                 }
                             </td>
-                            <td class="col-lg-7">
+                            <td class="col-md-7">
                                 @Html.DisplayFor(modelItem => item.Heading)
                             </td>
-                            <td class ="col-lg-1">
+                            <td class="col-md-1">
                                 @Html.DisplayFor(modelItem => item.Price) kr.
                             </td>
-                            <td class="col-lg-1">
+                            <td class="col-md-1">
                                 @Html.DisplayFor(modelItem => item.Unit)
                             </td>
-                            <td class="col-lg-1">
+                            <td class="col-md-1">
                                 @Html.DisplayFor(modelItem => item.End)
                             </td>
                         </tr>
@@ -132,6 +148,11 @@
     }
 </div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+<p>
+    @Html.ActionLink("Hent tilbud fra API igen", "ImportOffers", null, new { @class = "btn btn-default btn-xs" })
+</p>
+
+@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
+    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }

@@ -21,10 +21,13 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Kollektive Indkøbslister", "Index", "ShoppingLists")</li>
-                    <li>@Html.ActionLink("Tilbud", "Index", "Offer")</li>
+                    <li><a href="@Url.Action("Index", "ShoppingLists")">Indkøbslister&nbsp;&nbsp;<span class="glyphicon glyphicon-list"></span></a></li>
+                    <li><a href="@Url.Action("Index", "Offer")">Tilbud&nbsp;&nbsp;<span class="glyphicon glyphicon-tags"></span></a></li>
                 </ul>
-                @Html.Partial("_LoginPartial")
+                @*
+                    For later development
+                    @Html.Partial("_LoginPartial")
+                *@
             </div>
         </div>
     </div>

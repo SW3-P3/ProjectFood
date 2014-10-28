@@ -159,5 +159,17 @@ namespace ProjectFood.Controllers
 
             return RedirectToAction("Details/" + id);
         }
+
+        public ActionResult ClearShoppingList(int id)
+        {
+            var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
+            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+
+            shoppingList.Items.Clear();
+
+            db.SaveChanges();
+
+            return RedirectToAction("Details/" + id);
+        }
     }
 }

@@ -27,6 +27,10 @@ namespace ProjectFood
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/darkly.bootstrap.css",
                       "~/Content/site.css"));
+            
+            bundles.Add(new ScriptBundle("~/bundles/homemade").Include(
+                      "~/Scripts/shoppingList.buttons.js",
+                      "~/Scripts/offer.buttons.js"));
 
             // Set EnableOptimizations to false for debugging. For more information,
             // visit http://go.microsoft.com/fwlink/?LinkId=301862
