@@ -106,10 +106,17 @@
                         <tr>
                             <td class="col-lg-1">
 
-                                @using (Ajax.BeginForm("AddOfferToShoppingList", new { id = 1, offerID = item.ID }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "processResult" }))
+                                @using (Ajax.BeginForm("AddOfferToShoppingList", new { offerID = item.ID }, new AjaxOptions { HttpMethod = "POST"}))
                                 {
-                                    <button type ="submit" class="btn btn-danger btn-xs">+</button>
+                                    <button type="submit" class="btn btn-danger btn-xs">+</button>
                                 }
+                                @*
+    @using (Html.BeginForm("AddOfferToShoppingList", "Offer", FormMethod.Post))
+    {
+        <input type="hidden" name="offerID" value="@item.ID"/>
+        <button type="submit" class="btn btn-danger btn-xs">+</button>
+    }
+                                *@
                             </td>
                             <td class="col-lg-7">
                                 @Html.DisplayFor(modelItem => item.Heading)
