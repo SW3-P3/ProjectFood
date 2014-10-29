@@ -116,8 +116,11 @@ namespace ProjectFood.Controllers
         [HttpPost]
         public ActionResult AddOfferToShoppingList(int offerId)
         {
+            var tmpOffer = _db.Offers.Find(offerId);
+
             var tmpItem = new Item();
-            tmpItem.Name = _db.Offers.Find(offerId).Heading;
+            tmpItem.Name = tmpOffer.Heading;
+            tmpItem.Offers.Add(tmpOffer);
 
             var shoppingList = _db.ShoppingLists.First();
 

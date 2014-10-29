@@ -28,7 +28,7 @@ namespace ProjectFood.Controllers
                 return RedirectToAction("Index");
                 //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
+            var tmp = db.ShoppingLists.Include(s => s.Items.Select(x => x.Offers)).ToList();
             ShoppingList shoppingList = tmp.Find(x => x.ID == id);
             
             if (shoppingList == null)

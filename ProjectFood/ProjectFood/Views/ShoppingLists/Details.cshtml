@@ -28,7 +28,9 @@
         <tr>
             <th class="col-md-1 text-center">Fjern</th>
             <th>Varenavn</th>
-            <th>Kategori</th>
+            <th class="col-md-1">Pris</th>
+            <th class="col-md-1">Butik</th>
+            <th class="col-md-1">Udløber</th>
         </tr>
         @foreach (var item in Model.Items)
         {
@@ -41,7 +43,17 @@
                     </a>
                 </td>
                 <td onclick="StrikeTrough(this)">@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                @if (item.Offers.Count > 0)
+                {
+                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First().Price)</td>
+                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First().Store)</td>
+                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First().End)</td>
+                }
+                else
+                {
+<td></td><td></td><td></td>
+                }
+                
             </tr>
         }
         <tr>
@@ -51,7 +63,7 @@
                             @Html.TextBox("name", null, new { @class = "input-sm", @placeholder = "tilføj vare (tryk enter)" })
                             <input type="hidden" name="id" value="@Model.ID" />
             }
-            </td><td></td>
+            </td><td></td><td></td><td></td>
         </tr>
     </table>
 </div>
