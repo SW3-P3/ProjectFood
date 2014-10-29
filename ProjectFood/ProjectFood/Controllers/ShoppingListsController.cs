@@ -17,7 +17,7 @@ namespace ProjectFood.Controllers
         // GET: ShoppingLists
         public ActionResult Index()
         {
-            return View(db.ShoppingLists.ToList());
+            return View(db.ShoppingLists.Include(s => s.Items).ToList());
         }
 
         // GET: ShoppingLists/Details/5
@@ -39,9 +39,9 @@ namespace ProjectFood.Controllers
         }
 
         // GET: ShoppingLists/Create
-        public ActionResult Create()
+        public PartialViewResult Create()
         {
-            return View();
+            return PartialView("_CreateShoppingList");
         }
 
         // POST: ShoppingLists/Create

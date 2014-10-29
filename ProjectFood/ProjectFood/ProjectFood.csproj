@@ -170,13 +170,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201410221104377_Initial.cs" />
-    <Compile Include="Migrations\201410221104377_Initial.Designer.cs">
-      <DependentUpon>201410221104377_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410221120137_Initial1.cs" />
-    <Compile Include="Migrations\201410221120137_Initial1.Designer.cs">
-      <DependentUpon>201410221120137_Initial1.cs</DependentUpon>
+    <Compile Include="Migrations\201410290850448_Initial.cs" />
+    <Compile Include="Migrations\201410290850448_Initial.Designer.cs">
+      <DependentUpon>201410290850448_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -221,6 +217,7 @@
     <Content Include="Content\paper.bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\paper.bootstrap.min.css" />
+    <Content Include="Content\sweet-alert.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -595,6 +592,8 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\sweet-alert.js" />
+    <Content Include="Scripts\sweet-alert.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -635,13 +634,13 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Item\Index.cshtml" />
-    <Content Include="Views\ShoppingLists\Create.cshtml" />
     <Content Include="Views\ShoppingLists\Delete.cshtml" />
     <Content Include="Views\ShoppingLists\Details.cshtml" />
     <Content Include="Views\ShoppingLists\Edit.cshtml" />
     <Content Include="Views\ShoppingLists\Index.cshtml" />
     <Content Include="Views\Offer\Index.cshtml" />
     <Content Include="Scripts\shoppingList.buttons.js" />
+    <Content Include="Views\ShoppingLists\_CreateShoppingList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -654,11 +653,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201410221104377_Initial.resx">
-      <DependentUpon>201410221104377_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410221120137_Initial1.resx">
-      <DependentUpon>201410221120137_Initial1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410290850448_Initial.resx">
+      <DependentUpon>201410290850448_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
