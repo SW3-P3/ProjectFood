@@ -115,13 +115,17 @@ namespace ProjectFood.Controllers
         //Her skal vi lave et json result eller lignende, så vi kan fortælle brugeren, at varen er tilføjet.
         //måske skal vi ændre knappen til et check-mark istedet for et plus
         [HttpPost]
-        public ActionResult AddOfferToShoppingList(int offerId, int shoppingListId)
+        public ActionResult AddOfferToShoppingList(int offerId, int? shoppingListId)
         {
             var tmpOffer = _db.Offers.Find(offerId);
 
             var tmpItem = new Item();
             tmpItem.Name = tmpOffer.Heading;
             tmpItem.Offers.Add(tmpOffer);
+            
+            // This is a temp fix
+            if (shoppingListId == null)
+                shoppingListId = _db.ShoppingLists.First().ID;
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
 
