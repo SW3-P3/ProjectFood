@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ProjectFood.Models.ShoppingList>
+
+@{
+    ViewBag.Title = "Indkøbslister";
+}
+
+<div class="page-header">
+    <h1>Indkøbslister</h1>
+</div>
+
+<div id="createForm" style="display:none" class="well">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 col-sm-4">@Html.Partial("_CreateShoppingList")</div>
+    </div>
+</div>
+
+@if (Model.ToList().Count == 0)
+{
+    <div class="alert alert-warning">
+        <h2>Åh nej!</h2>
+        <p class="lead">Der er endnu ikke oprettet nogle indkøbslister...<br /><br /></p>
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    @Html.Partial("_CreateShoppingList")
+                </div>
+            </div>
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        @foreach (var list in Model)
+        {
+            <tr>
+                <td class="lead" style="vertical-align:middle">
+                    &nbsp;&nbsp;
+                    @Html.DisplayFor(modelItem => list.Title)
+                    <span class="badge">@list.Items.Count</span>
+                </td>
+                <td class="col-md-2">
+                    @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
+                </td>
+                <td class="col-md-2 text-center">
+                    
+                    <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                </a>
+                </td>
+            </tr>
+        }
+
+    </table>
+    <p>
+        <div onclick="$('div#createForm').show('slow')" class="btn btn-default btn-lg btn-block">Opret Indkøbsliste</div>
+    </p>
+}
+
+@section Scripts {                              @*  Don't question the JavaScript-Gods!!!                             *@
+@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+}
