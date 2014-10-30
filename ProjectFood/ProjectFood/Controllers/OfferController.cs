@@ -19,6 +19,7 @@ namespace ProjectFood.Controllers
         public ActionResult Index()
         {
             ViewBag.Stores = _db.Offers.OrderBy(d => d.Store).Select(x => x.Store).Distinct();
+            ViewBag.ShoppingLists = _db.ShoppingLists.ToList();
 
             return View(_db.Offers.ToList());
         }
@@ -114,7 +115,7 @@ namespace ProjectFood.Controllers
         //Her skal vi lave et json result eller lignende, så vi kan fortælle brugeren, at varen er tilføjet.
         //måske skal vi ændre knappen til et check-mark istedet for et plus
         [HttpPost]
-        public ActionResult AddOfferToShoppingList(int offerId)
+        public ActionResult AddOfferToShoppingList(int offerId, int shoppingListId)
         {
             var tmpOffer = _db.Offers.Find(offerId);
 
@@ -122,7 +123,7 @@ namespace ProjectFood.Controllers
             tmpItem.Name = tmpOffer.Heading;
             tmpItem.Offers.Add(tmpOffer);
 
-            var shoppingList = _db.ShoppingLists.First();
+            var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
 
             shoppingList.Items.Add(tmpItem);
 
