@@ -35,9 +35,9 @@
                           {
                               listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
                           }
-
                         <label for="Selection">Vælg indkøbsliste</label>
-                        @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control" })
+                        @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
+                        
                       }
                     }
                 </div>
@@ -86,9 +86,9 @@
                             using (Ajax.BeginForm(
                                     "AddOfferToShoppingList",
                                     new { offerID = item.ID},
-                                    new AjaxOptions { HttpMethod = "POST", OnBegin="GetSelectedList", OnSuccess = "ChangeToCheck" }))
+                                    new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheck" }))
                             {
-                                <input type="hidden" name="shoppingListId" id="shoppingListId" />
+                                <input type="hidden" name="shoppingListId" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
                                 <button id="AddOfferAll_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
                                     <span class="glyphicon glyphicon-plus"></span>
                                 </button>
@@ -147,10 +147,10 @@
                                     using (Ajax.BeginForm(
                                             "AddOfferToShoppingList",
                                             new { offerID = item.ID },
-                                            new AjaxOptions { HttpMethod = "POST", OnBegin = "GetSelectedList", OnSuccess = "ChangeToCheck" }))
+                                            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheck" }))
                                     {
-                                        <input type="hidden" name="shoppingListId" id="shoppingListId" />
-                                        <button id="AddOfferAll_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
+                                        <input type="hidden" name="shoppingListId" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
+                                        <button id="AddOffer_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </button>
                                     }
