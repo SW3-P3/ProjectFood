@@ -17,7 +17,7 @@ namespace ProjectFood.Controllers
         // GET: ShoppingLists
         public ActionResult Index()
         {
-            return View(db.ShoppingLists.ToList());
+            return View(db.ShoppingLists.Include(s => s.Items).ToList());
         }
 
         // GET: ShoppingLists/Details/5
@@ -25,9 +25,10 @@ namespace ProjectFood.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index");
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
+            var tmp = db.ShoppingLists.Include(s => s.Items.Select(x => x.Offers)).ToList();
             ShoppingList shoppingList = tmp.Find(x => x.ID == id);
             
             if (shoppingList == null)
@@ -38,9 +39,9 @@ namespace ProjectFood.Controllers
         }
 
         // GET: ShoppingLists/Create
-        public ActionResult Create()
+        public PartialViewResult Create()
         {
-            return View();
+            return PartialView("_CreateShoppingList");
         }
 
         // POST: ShoppingLists/Create
@@ -128,6 +129,12 @@ namespace ProjectFood.Controllers
 
         public ActionResult AddItem(int id, string name)
         {
+            if (name.Trim() == string.Empty)
+            {
+                // TODO: make a proper error message (Use: http://lipis.github.io/bootstrap-sweetalert/ ??)
+                // Tilføj snackbar i else ?!
+                return RedirectToAction("Details/" + id);
+            }
             Item tmp = new Item();
             tmp.Name = name;
             tmp.Category = "Diverse";
@@ -148,6 +155,18 @@ namespace ProjectFood.Controllers
             var rmItem = shoppingList.Items.ToList().Find(x => x.ID == itemID);
             shoppingList.Items.Remove(rmItem);
             
+            db.SaveChanges();
+
+            return RedirectToAction("Details/" + id);
+        }
+
+        public ActionResult ClearShoppingList(int id)
+        {
+            var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
+            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+
+            shoppingList.Items.Clear();
+
             db.SaveChanges();
 
             return RedirectToAction("Details/" + id);

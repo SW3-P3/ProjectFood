@@ -10,8 +10,9 @@ namespace ProjectFood.Models
     {
         public DbSet<ShoppingList> ShoppingLists { get; set; }
         public DbSet<Item> Items { get; set; }
+        public DbSet<Offer> Offers { get; set; }
 
-        public ShoppingListContext() : base("Foodz")
+        public ShoppingListContext() : base("Foodzz")
         {
         }
 
@@ -27,6 +28,17 @@ namespace ProjectFood.Models
                    m.MapRightKey("ItemID");
                    m.ToTable("ShoppingList_Items");
                });
+
+            modelBuilder.Entity<Item>().
+             HasMany(i => i.Offers).
+             WithMany(o => o.GenericItems).
+             Map(
+              m =>
+              {
+                  m.MapLeftKey("ItemID");
+                  m.MapRightKey("OfferID");
+                  m.ToTable("Items_Offers");
+              });
         }
     }
 }
