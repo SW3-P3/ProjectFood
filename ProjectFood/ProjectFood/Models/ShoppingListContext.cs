@@ -11,23 +11,24 @@ namespace ProjectFood.Models
         public DbSet<ShoppingList> ShoppingLists { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Offer> Offers { get; set; }
+        public DbSet<ShoppingList_Item> ShoppingList_Item { get; set; }
 
-        public ShoppingListContext() : base("Foodzz")
+        public ShoppingListContext() : base("Foodzzzzz")
         {
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ShoppingList>().
-              HasMany(c => c.Items).
-              WithMany(p => p.OnLists).
-              Map(
-               m =>
-               {
-                   m.MapLeftKey("ShoppingListID");
-                   m.MapRightKey("ItemID");
-                   m.ToTable("ShoppingList_Items");
-               });
+        //    modelBuilder.Entity<ShoppingList>().
+        //      HasMany(c => c.Items).
+        //      WithMany(p => p.OnLists).
+        //      Map(
+        //       m =>
+        //       {
+        //           m.MapLeftKey("ShoppingListID");
+        //           m.MapRightKey("ItemID");
+        //           m.ToTable("ShoppingList_Items");
+        //       });
 
             modelBuilder.Entity<Item>().
              HasMany(i => i.Offers).
