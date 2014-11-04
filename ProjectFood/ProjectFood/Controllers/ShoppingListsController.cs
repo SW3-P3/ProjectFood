@@ -137,15 +137,17 @@ namespace ProjectFood.Controllers
                 // Tilføj snackbar i else ?!
                 return RedirectToAction("Details/" + id);
             }
+            if (amount == null)
+            {
+                amount = 0;
+            }
             ShoppingList shoppingList = db.ShoppingLists.Include(s => s.Items).Where(x => x.ID == id).Single();
             Item tmpItem;
 
             //Search in GenericLItems for item
             Item knownItem = null;
             if (db.Items.Count() > 0)
-            {
                 knownItem = db.Items.Where(i => i.Name.CompareTo(name) == 0).SingleOrDefault();
-            }
             
             
             if (knownItem != null) {
