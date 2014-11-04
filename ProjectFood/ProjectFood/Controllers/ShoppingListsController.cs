@@ -23,16 +23,16 @@ namespace ProjectFood.Controllers
         // GET: ShoppingLists/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
+            if(id == null) {
                 return RedirectToAction("Index");
                 //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var tmp = db.ShoppingLists.Include(s => s.Items.Select(x => x.Offers)).ToList();
             ShoppingList shoppingList = tmp.Find(x => x.ID == id);
-            
-            if (shoppingList == null)
-            {
+
+            ViewBag.ShoppingList_Item = db.ShoppingList_Item.Where(x => x.ShoppingListID == id).ToList();
+
+            if(shoppingList == null) {
                 return HttpNotFound();
             }
             return View(shoppingList);
@@ -51,8 +51,7 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Title")] ShoppingList shoppingList)
         {
-            if (ModelState.IsValid)
-            {
+            if(ModelState.IsValid) {
                 db.ShoppingLists.Add(shoppingList);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -64,13 +63,11 @@ namespace ProjectFood.Controllers
         // GET: ShoppingLists/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
+            if(id == null) {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ShoppingList shoppingList = db.ShoppingLists.Find(id);
-            if (shoppingList == null)
-            {
+            if(shoppingList == null) {
                 return HttpNotFound();
             }
             return View(shoppingList);
@@ -83,8 +80,7 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Title")] ShoppingList shoppingList)
         {
-            if (ModelState.IsValid)
-            {
+            if(ModelState.IsValid) {
                 db.Entry(shoppingList).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -95,13 +91,11 @@ namespace ProjectFood.Controllers
         // GET: ShoppingLists/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
+            if(id == null) {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ShoppingList shoppingList = db.ShoppingLists.Find(id);
-            if (shoppingList == null)
-            {
+            if(shoppingList == null) {
                 return HttpNotFound();
             }
             return View(shoppingList);
@@ -120,28 +114,46 @@ namespace ProjectFood.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
+            if(disposing) {
                 db.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        public ActionResult AddItem(int id, string name)
+        public ActionResult AddItem(int id, string name, double? amount, string unit)
         {
-            if (name.Trim() == string.Empty)
-            {
+            if(name.Trim() == string.Empty) {
                 // TODO: make a proper error message (Use: http://lipis.github.io/bootstrap-sweetalert/ ??)
                 // Tilføj snackbar i else ?!
                 return RedirectToAction("Details/" + id);
             }
-            Item tmp = new Item();
-            tmp.Name = name;
-            tmp.Category = "Diverse";
+            if(amount == null) {
+                amount = 0;
+            }
+            ShoppingList shoppingList = db.ShoppingLists.Include(s => s.Items).Where(x => x.ID == id).Single();
+            Item tmpItem;
 
-            ShoppingList shoppingList = db.ShoppingLists.Find(id);
-            
-            shoppingList.Items.Add(tmp);
+            //Search in GenericLItems for item
+            Item knownItem = null;
+            if(db.Items.Count() > 0)
+                knownItem = db.Items.Where(i => i.Name.CompareTo(name) == 0).SingleOrDefault();
+
+
+            if(knownItem != null) {
+                tmpItem = knownItem;
+            } else {
+                tmpItem = new Item() { Name = name };
+            }
+
+            if(shoppingList.Items.Contains(tmpItem)) {
+                db.ShoppingList_Item.Where(x => x.ItemID == tmpItem.ID && x.ShoppingListID == id).Single().Amount += (double)amount;
+            } else {
+                var shoppingListItem = new ShoppingList_Item { Item = tmpItem, ShoppingList = shoppingList, Amount = (double)amount, Unit = unit };
+
+                db.ShoppingList_Item.Add(shoppingListItem);
+
+                shoppingList.Items.Add(tmpItem);
+            }
 
             db.SaveChanges();
             return RedirectToAction("Details/" + id);
@@ -149,14 +161,27 @@ namespace ProjectFood.Controllers
 
         public ActionResult RemoveItem(int id, int itemID)
         {
+            //Find relevant shoppingList and include the items
             var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
             ShoppingList shoppingList = tmp.Find(x => x.ID == id);
 
+            //Find the item to be deleted, and remove it from the shopping list
             var rmItem = shoppingList.Items.ToList().Find(x => x.ID == itemID);
             shoppingList.Items.Remove(rmItem);
-            
+
+            //Find the item in the ShoppingList_Item table
+            var rmShoppingListItem = db.ShoppingList_Item
+                .Where(x => x.ItemID == itemID
+                && x.ShoppingListID == id)
+                .SingleOrDefault();
+            //... and remove it
+            if(rmShoppingListItem != null)
+                db.ShoppingList_Item.Remove(rmShoppingListItem);
+
+            //Save the changes in the database
             db.SaveChanges();
 
+            //Update the users view of the shoppinglist
             return RedirectToAction("Details/" + id);
         }
 
