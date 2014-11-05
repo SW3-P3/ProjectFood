@@ -82,8 +82,27 @@ namespace ProjectFood.Migrations
                 .ForeignKey("dbo.Items", t => t.Item_ID, cascadeDelete: true)
                 .Index(t => t.ShoppingList_ID)
                 .Index(t => t.Item_ID);
+            CreateTable(
+                "dbo.Recipes",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Titel = c.String(),
+                        Minutes = c.Int(nullable: false),
+                        Instructions = c.String(),
+                    });
+            CreateTable(
+                "dbo.Recipe_Ingredient",
+                c => new
+                    {
+                        RecipeID = c.Int(nullable: false),
+                        ItemID = c.Int(nullable: false),
+                        Amount = c.Double(nullable: false),
+                        Unit = c.String(),
+                    });
             
         }
+        
         
         public override void Down()
         {
