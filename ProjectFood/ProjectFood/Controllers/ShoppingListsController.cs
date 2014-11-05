@@ -196,5 +196,16 @@ namespace ProjectFood.Controllers
 
             return RedirectToAction("Details/" + id);
         }
+
+        private List<Offer> GetOffersForItem(Item item)
+        {
+            return db.Offers.Where(x => x.Heading.Contains(item.Name)).ToList();
+        }
+
+        public ActionResult ShowOffersForItem(int shoppingListID, int itemID)
+        {
+            Item searchItem = db.ShoppingLists.Include(s => s.Items).ToList().Find(x=> x.ID == shoppingListID).Items.ToList().Find(x=> x.ID == itemID);
+        }
+        
     }
 }
