@@ -169,6 +169,7 @@
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OfferController.cs" />
+    <Compile Include="Controllers\RecipesController.cs" />
     <Compile Include="Controllers\ShoppingListsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -176,6 +177,10 @@
     <Compile Include="Migrations\201411032053282_Initial.cs" />
     <Compile Include="Migrations\201411032053282_Initial.Designer.cs">
       <DependentUpon>201411032053282_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411050853067_recipe.cs" />
+    <Compile Include="Migrations\201411050853067_recipe.Designer.cs">
+      <DependentUpon>201411050853067_recipe.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -208,6 +213,7 @@
     <Compile Include="Models\Offer.cs" />
     <Compile Include="Models\Rating.cs" />
     <Compile Include="Models\Recipe.cs" />
+    <Compile Include="Models\Recipe_Ingredient.cs" />
     <Compile Include="Models\ShoppingList.cs" />
     <Compile Include="Models\ShoppingListContext.cs" />
     <Compile Include="Models\ShoppingList_Item.cs" />
@@ -645,6 +651,11 @@
     <Content Include="Views\Offer\Index.cshtml" />
     <Content Include="Scripts\shoppingList.buttons.js" />
     <Content Include="Views\ShoppingLists\_CreateShoppingList.cshtml" />
+    <Content Include="Views\Recipes\Create.cshtml" />
+    <Content Include="Views\Recipes\Delete.cshtml" />
+    <Content Include="Views\Recipes\Details.cshtml" />
+    <Content Include="Views\Recipes\Edit.cshtml" />
+    <Content Include="Views\Recipes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -659,6 +670,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201411032053282_Initial.resx">
       <DependentUpon>201411032053282_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411050853067_recipe.resx">
+      <DependentUpon>201411050853067_recipe.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
