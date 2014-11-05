@@ -33,6 +33,7 @@
             <th class="col-md-1">Pris</th>
             <th class="col-md-1">Butik</th>
             <th class="col-md-1">Udløber</th>
+            <th class="col-md-1">Se Tilbud</th>
         </tr>
         @foreach(var item in Model.Items) {
             <tr>
@@ -58,10 +59,23 @@
                     <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First().Price)</td>
                     <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First().Store)</td>
                     <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First().End)</td>
+                    <td>
+                        <a href="@Url.Action("ShowOffersForItem",
+                          new { shoppingListID = Model.ID, itemID = item.ID })"
+                                 class="btn btn-info btn-xs btn-block">
+                                  <span class="glyphicon glyphicon-align-justify"></span>
+                        </a>
+                    </td>
                 } else {
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td><a href="@Url.Action("ShowOffersForItem",
+                                     new { shoppingListID = Model.ID, itemID = item.ID })"
+                           class="btn btn-info btn-xs btn-block">
+                            <span class="glyphicon glyphicon-align-justify"></span>
+                        </a>
+                    </td>
                 }
 
             </tr>
@@ -74,6 +88,8 @@
                     <input type="hidden" name="id" value="@Model.ID" />
                 }
             </td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>

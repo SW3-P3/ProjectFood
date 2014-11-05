@@ -199,12 +199,18 @@ namespace ProjectFood.Controllers
 
         private List<Offer> GetOffersForItem(Item item)
         {
-            return db.Offers.Where(x => x.Heading.Contains(item.Name)).ToList();
+            return db.Offers.Where(x => x.Heading.ToLower().Contains(item.Name.ToLower())).ToList();
         }
 
-        public ActionResult ShowOffersForItem(int shoppingListID, int itemID)
+        public void ShowOffersForItem(int shoppingListID, int itemID)
         {
+            //Find the Item which we are looking for offers for
             Item searchItem = db.ShoppingLists.Include(s => s.Items).ToList().Find(x=> x.ID == shoppingListID).Items.ToList().Find(x=> x.ID == itemID);
+
+                searchItem.Offers = GetOffersForItem(searchItem);
+                db.SaveChanges();
+            
+            //return View(someView);
         }
         
     }
