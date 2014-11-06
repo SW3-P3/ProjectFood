@@ -12,8 +12,9 @@ namespace ProjectFood.Models
         public DbSet<Item> Items { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<ShoppingList_Item> ShoppingList_Item { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        public ShoppingListContext() : base("Foodzzzzz")
+        public ShoppingListContext() : base("Foodzzzzzz")
         {
         }
 

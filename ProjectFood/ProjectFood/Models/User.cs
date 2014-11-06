@@ -5,6 +5,7 @@ namespace ProjectFood.Models
 {
     public class User
     {
+        public int ID { get; set; }
         public string Username { get; set; }
         //something something password hash ..
         public string Name { get; set; }

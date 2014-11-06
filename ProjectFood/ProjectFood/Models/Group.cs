@@ -5,15 +5,8 @@ namespace ProjectFood.Models
 {
     public class Group
     {
-        public readonly int ID;
+        public int ID { get; set; }
         public string Name { get; set; }
         public List<User> Users { get; set; }
-
-        public Group(string name, User initialUser)
-        {
-            ID = 1; //fix later
-            Name = (name != string.Empty) ? name : "some name";
-            Users.Add(initialUser);
-        }
     }
 }
