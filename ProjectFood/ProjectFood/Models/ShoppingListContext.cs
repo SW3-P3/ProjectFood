@@ -13,6 +13,28 @@ namespace ProjectFood.Models
         public DbSet<Offer> Offers { get; set; }
         public DbSet<ShoppingList_Item> ShoppingList_Item { get; set; }
 
+        public IEnumerable<Offer> OffersFiltered()
+        {
+            //TODO: Update model to include this in database.
+            var blacklist = new List<string> { ",", "eller", "ELLER" };
+            var res = new List<Offer>();
+
+            foreach (var o in Offers)
+            {
+                var flag = true;
+
+                foreach (var item in blacklist)
+                {
+                    if (o.Heading.Contains(item))
+                        flag = false;
+                }
+
+                if (flag && o.Unit.Trim() != "")
+                    res.Add(o);
+            }
+            return res;
+        }
+
         public ShoppingListContext() : base("Foodzzzzz")
         {
         }
