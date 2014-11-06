@@ -39,8 +39,11 @@ namespace ProjectFood.Migrations
                     {
                         ID = c.Int(nullable: false, identity: true),
                         Title = c.String(),
+                        User_ID = c.Int(),
                     })
-                .PrimaryKey(t => t.ID);
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.Users", t => t.User_ID)
+                .Index(t => t.User_ID);
             
             CreateTable(
                 "dbo.ShoppingList_Item",
@@ -56,6 +59,25 @@ namespace ProjectFood.Migrations
                 .ForeignKey("dbo.ShoppingLists", t => t.ShoppingListID, cascadeDelete: true)
                 .Index(t => t.ShoppingListID)
                 .Index(t => t.ItemID);
+            
+            CreateTable(
+                "dbo.Users",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Username = c.String(),
+                        Name = c.String(),
+                    })
+                .PrimaryKey(t => t.ID);
+            
+            CreateTable(
+                "dbo.Groups",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                    })
+                .PrimaryKey(t => t.ID);
             
             CreateTable(
                 "dbo.Items_Offers",
@@ -83,24 +105,46 @@ namespace ProjectFood.Migrations
                 .Index(t => t.ShoppingList_ID)
                 .Index(t => t.Item_ID);
             
+            CreateTable(
+                "dbo.GroupUsers",
+                c => new
+                    {
+                        Group_ID = c.Int(nullable: false),
+                        User_ID = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => new { t.Group_ID, t.User_ID })
+                .ForeignKey("dbo.Groups", t => t.Group_ID, cascadeDelete: true)
+                .ForeignKey("dbo.Users", t => t.User_ID, cascadeDelete: true)
+                .Index(t => t.Group_ID)
+                .Index(t => t.User_ID);
+            
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.ShoppingLists", "User_ID", "dbo.Users");
+            DropForeignKey("dbo.GroupUsers", "User_ID", "dbo.Users");
+            DropForeignKey("dbo.GroupUsers", "Group_ID", "dbo.Groups");
             DropForeignKey("dbo.ShoppingList_Item", "ShoppingListID", "dbo.ShoppingLists");
             DropForeignKey("dbo.ShoppingList_Item", "ItemID", "dbo.Items");
             DropForeignKey("dbo.ShoppingListItems", "Item_ID", "dbo.Items");
             DropForeignKey("dbo.ShoppingListItems", "ShoppingList_ID", "dbo.ShoppingLists");
             DropForeignKey("dbo.Items_Offers", "OfferID", "dbo.Offers");
             DropForeignKey("dbo.Items_Offers", "ItemID", "dbo.Items");
+            DropIndex("dbo.GroupUsers", new[] { "User_ID" });
+            DropIndex("dbo.GroupUsers", new[] { "Group_ID" });
             DropIndex("dbo.ShoppingListItems", new[] { "Item_ID" });
             DropIndex("dbo.ShoppingListItems", new[] { "ShoppingList_ID" });
             DropIndex("dbo.Items_Offers", new[] { "OfferID" });
             DropIndex("dbo.Items_Offers", new[] { "ItemID" });
             DropIndex("dbo.ShoppingList_Item", new[] { "ItemID" });
             DropIndex("dbo.ShoppingList_Item", new[] { "ShoppingListID" });
+            DropIndex("dbo.ShoppingLists", new[] { "User_ID" });
+            DropTable("dbo.GroupUsers");
             DropTable("dbo.ShoppingListItems");
             DropTable("dbo.Items_Offers");
+            DropTable("dbo.Groups");
+            DropTable("dbo.Users");
             DropTable("dbo.ShoppingList_Item");
             DropTable("dbo.ShoppingLists");
             DropTable("dbo.Offers");
