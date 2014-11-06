@@ -36,7 +36,7 @@ namespace ProjectFood.Models
             return res;
         }
 
-        public ShoppingListContext() : base("Foodzzzzzz")
+        public ShoppingListContext() : base("Foodx")
         {
         }
 

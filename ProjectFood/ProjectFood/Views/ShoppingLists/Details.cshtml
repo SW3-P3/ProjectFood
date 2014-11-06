@@ -8,8 +8,6 @@
     <h1>@Html.DisplayFor(model => model.Title) <span class="badge">@Model.Items.Count() varer</span></h1>
 </div>
 
-<h1>@ViewBag.DebugUser</h1>
-
 @using(Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post, new { @class = "bs-component" })) {
     <div class="col-md-4">
         <div class="form-group">
