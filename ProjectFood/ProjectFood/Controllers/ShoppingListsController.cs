@@ -27,14 +27,20 @@ namespace ProjectFood.Controllers
                 return RedirectToAction("Index");
                 //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var tmp = db.ShoppingLists.Include(s => s.Items.Select(x => x.Offers)).ToList();
-            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+            ShoppingList shoppingList = findShoppingListFromID(id);
 
             ViewBag.ShoppingList_Item = db.ShoppingList_Item.Where(x => x.ShoppingListID == id).ToList();
 
             if(shoppingList == null) {
                 return HttpNotFound();
             }
+            foreach (var item in shoppingList.Items)
+            {
+                item.Offers = GetOffersForItem(item);
+            }
+
+            db.SaveChanges();
+
             return View(shoppingList);
         }
 
@@ -130,7 +136,7 @@ namespace ProjectFood.Controllers
             if(amount == null) {
                 amount = 0;
             }
-            ShoppingList shoppingList = db.ShoppingLists.Include(s => s.Items).Where(x => x.ID == id).Single();
+            ShoppingList shoppingList = findShoppingListFromID(id);
             Item tmpItem;
 
             //Search in GenericLItems for item
@@ -161,9 +167,8 @@ namespace ProjectFood.Controllers
 
         public ActionResult RemoveItem(int id, int itemID)
         {
-            //Find relevant shoppingList and include the items
-            var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
-            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+
+            ShoppingList shoppingList = findShoppingListFromID(id);
 
             //Find the item to be deleted, and remove it from the shopping list
             var rmItem = shoppingList.Items.ToList().Find(x => x.ID == itemID);
@@ -202,15 +207,23 @@ namespace ProjectFood.Controllers
             return db.Offers.Where(x => x.Heading.ToLower().Contains(item.Name.ToLower())).ToList();
         }
 
-        public void ShowOffersForItem(int shoppingListID, int itemID)
+        //Find relevant shoppingList and include the items
+        private ShoppingList findShoppingListFromID(int? id)
         {
-            //Find the Item which we are looking for offers for
-            Item searchItem = db.ShoppingLists.Include(s => s.Items).ToList().Find(x=> x.ID == shoppingListID).Items.ToList().Find(x=> x.ID == itemID);
+            return db.ShoppingLists.Include(s => s.Items.Select(x => x.Offers)).ToList().Find(x => x.ID == id);
+        } 
 
-                searchItem.Offers = GetOffersForItem(searchItem);
-                db.SaveChanges();
-            
-            //return View(someView);
+        public ActionResult ChooseOffer(int shoppingListId, int ItemId, int offerId)
+        {
+
+            ShoppingList list = findShoppingListFromID(shoppingListId);
+            var item = list.Items.First(x => x.ID == ItemId);
+
+            db.ShoppingList_Item.First(x => x.ItemID == ItemId).selectedOffer = db.Offers.First(x => x.ID == offerId);
+            db.SaveChanges();
+
+            return RedirectToAction("Details/" + shoppingListId);
+
         }
         
     }

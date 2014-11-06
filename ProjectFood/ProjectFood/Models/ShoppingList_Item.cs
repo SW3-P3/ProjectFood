@@ -16,6 +16,7 @@ namespace ProjectFood.Models
 
         public virtual ShoppingList ShoppingList { get; set; }
         public virtual Item Item { get; set; }
+        public virtual Offer selectedOffer { get; set; }
 
         public double Amount { get; set; }
         public string Unit { get; set; }

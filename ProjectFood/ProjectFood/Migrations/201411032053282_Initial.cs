@@ -50,12 +50,15 @@ namespace ProjectFood.Migrations
                         ItemID = c.Int(nullable: false),
                         Amount = c.Double(nullable: false),
                         Unit = c.String(),
+                        selectedOffer_ID = c.Int(),
                     })
                 .PrimaryKey(t => new { t.ShoppingListID, t.ItemID })
                 .ForeignKey("dbo.Items", t => t.ItemID, cascadeDelete: true)
+                .ForeignKey("dbo.Offers", t => t.selectedOffer_ID)
                 .ForeignKey("dbo.ShoppingLists", t => t.ShoppingListID, cascadeDelete: true)
                 .Index(t => t.ShoppingListID)
-                .Index(t => t.ItemID);
+                .Index(t => t.ItemID)
+                .Index(t => t.selectedOffer_ID);
             
             CreateTable(
                 "dbo.Items_Offers",
@@ -88,6 +91,7 @@ namespace ProjectFood.Migrations
         public override void Down()
         {
             DropForeignKey("dbo.ShoppingList_Item", "ShoppingListID", "dbo.ShoppingLists");
+            DropForeignKey("dbo.ShoppingList_Item", "selectedOffer_ID", "dbo.Offers");
             DropForeignKey("dbo.ShoppingList_Item", "ItemID", "dbo.Items");
             DropForeignKey("dbo.ShoppingListItems", "Item_ID", "dbo.Items");
             DropForeignKey("dbo.ShoppingListItems", "ShoppingList_ID", "dbo.ShoppingLists");
@@ -97,6 +101,7 @@ namespace ProjectFood.Migrations
             DropIndex("dbo.ShoppingListItems", new[] { "ShoppingList_ID" });
             DropIndex("dbo.Items_Offers", new[] { "OfferID" });
             DropIndex("dbo.Items_Offers", new[] { "ItemID" });
+            DropIndex("dbo.ShoppingList_Item", new[] { "selectedOffer_ID" });
             DropIndex("dbo.ShoppingList_Item", new[] { "ItemID" });
             DropIndex("dbo.ShoppingList_Item", new[] { "ShoppingListID" });
             DropTable("dbo.ShoppingListItems");
