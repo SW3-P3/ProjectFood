@@ -21,7 +21,7 @@ namespace ProjectFood.Controllers
             ViewBag.Stores = _db.Offers.OrderBy(d => d.Store).Select(x => x.Store).Distinct();
             ViewBag.ShoppingLists = _db.ShoppingLists.ToList();
 
-            return View(_db.Offers.ToList());
+            return View(_db.OffersFiltered().ToList());
         }
 
         public ActionResult ImportOffers()
