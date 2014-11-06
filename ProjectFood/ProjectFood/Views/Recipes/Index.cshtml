@@ -18,6 +18,9 @@
             @Html.DisplayNameFor(model => model.Minutes)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Instructions)
         </th>
         <th></th>
@@ -30,6 +33,18 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Minutes)
+        </td>
+        <td>
+            <ul>
+                @{
+    var amounts = item.Amount;
+
+    foreach (var Amount in amounts)
+    {
+        <li>@Amount.ToString();</li>
+    }
+                }
+            </ul>                      
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Instructions)

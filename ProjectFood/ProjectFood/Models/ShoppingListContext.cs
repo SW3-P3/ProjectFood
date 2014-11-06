@@ -20,7 +20,7 @@ namespace ProjectFood.Models
         {
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+/*        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
         //    modelBuilder.Entity<ShoppingList>().
         //      HasMany(c => c.Items).
@@ -43,6 +43,6 @@ namespace ProjectFood.Models
                   m.MapRightKey("OfferID");
                   m.ToTable("Items_Offers");
               });
-        }
+        }*/
     }
 }
