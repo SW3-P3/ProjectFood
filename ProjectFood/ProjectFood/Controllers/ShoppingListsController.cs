@@ -23,6 +23,8 @@ namespace ProjectFood.Controllers
         // GET: ShoppingLists/Details/5
         public ActionResult Details(int? id)
         {
+            ViewBag.DebugUser = User.Identity.Name;
+
             if(id == null) {
                 return RedirectToAction("Index");
                 //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
