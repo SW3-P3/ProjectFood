@@ -135,6 +135,10 @@ namespace ProjectFood.Controllers
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
 
+            var shoppingListItem = new ShoppingList_Item { Item = tmpItem, ShoppingList = shoppingList, Amount = 0, Unit = "" };
+
+            _db.ShoppingList_Item.Add(shoppingListItem);
+
             shoppingList.Items.Add(tmpItem);
 
             _db.SaveChanges();
