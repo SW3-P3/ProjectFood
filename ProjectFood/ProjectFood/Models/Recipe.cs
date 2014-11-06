@@ -20,7 +20,9 @@ namespace ProjectFood.Models
             Amount = new List<double>();
             Unit = new List<String>();
             Ingredients = new List<Item>();
-            //Amount.Add(32);
+            Amount.Add(32);
+            Unit.Add("kilo");
+            //Ingredients.Add(Eroctia);
         }
     }
 }

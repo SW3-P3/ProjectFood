@@ -21,40 +21,69 @@
             @Html.DisplayNameFor(model => model.Amount)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Unit)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Instructions)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ingredients)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Titel)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Minutes)
-        </td>
-        <td>
-            <ul>
-                @{
-    var amounts = item.Amount;
-
-    foreach (var Amount in amounts)
+    @foreach (var item in Model)
     {
-        <li>@Amount.ToString()</li>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Titel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Minutes)
+            </td>
+            <td>
+                <ul>
+                    @{
+        var amounts = item.Amount;
+        foreach (var Amount in amounts)
+        {
+            <li>@Amount.ToString()</li>
+        }
+                    }
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    @{
+        var unit = item.Unit;
+        foreach (var Unit in unit)
+        {
+            <li>@Unit.ToString()</li>
+        }
+                    }
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    @{
+        var ingridient = item.Ingredients;
+        foreach (var Ingridient in ingridient)
+        {
+            <li>@Ingridient.ToString()</li>
+        }
+                    }
+                </ul>
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Instructions)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            </td>
+        </tr>
     }
-                }
-            </ul>                      
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Instructions)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
 
 </table>
