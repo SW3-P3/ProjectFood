@@ -1,4 +1,5 @@
-﻿@using ProjectFood.Models
+﻿@using NUnit.Framework
+@using ProjectFood.Models
 @model ProjectFood.Models.ShoppingList
 
 @{
@@ -14,9 +15,9 @@
         <div>
             <div class="form-group">
                 <div class="input-group">
-                        @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
-                        @Html.TextBox("amount", null, new { @type = "number", @class = "form-control", @placeholder = "Mængde" })
-                        @Html.TextBox("unit", null, new { @class = "form-control", @placeholder = "Enhed" })
+                        @Html.TextBox("name", null, new { @class = "form-control col-md-3", @placeholder = "Indtast Varenavn" })
+                        @Html.TextBox("amount", null, new { @type = "number", @class = "form-control col-md-1", @placeholder = "Mængde" })
+                        @Html.DropDownList("unit", new SelectList(new List<string>{"kg", "g", "liter", "ml", "stk"}), new { @class = "form-control col-md-1", @placeholder = "Enhed" })
                         <input type="hidden" name="id" value="@Model.ID" />
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-default">Tilføj vare</button>
@@ -49,9 +50,7 @@
                 </a>
             </td>
             @{
-                var itemRel = ((IEnumerable<ProjectFood.Models.ShoppingList_Item>) ViewBag.ShoppingList_Item)
-                    .Where(x => x.ItemID == item.ID)
-                    .First();
+                var itemRel = ((IEnumerable<ProjectFood.Models.ShoppingList_Item>) ViewBag.ShoppingList_Item).First(x => x.ItemID == item.ID);
                 if (itemRel.selectedOffer == null)
                 {
                     <td onclick=" StrikeTrough(this) ">@Html.DisplayFor(modelItem => item.Name)</td>
@@ -86,8 +85,12 @@
                         <td>
                             <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
                                 <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
-</div>
+                            </div>
                         </td>
+                    }
+                    else
+                    {
+                        <td></td>
                     }
          </tr>
                     foreach (var offer in item.Offers)

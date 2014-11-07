@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProjectFood.Models;
+using ProjectFood.Models.Api;
 
 namespace ProjectFood.Controllers
 {
