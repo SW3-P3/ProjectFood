@@ -9,26 +9,26 @@
 <div class="page-header">
     <h1>@Html.DisplayFor(model => model.Title) <span class="badge">@Model.Items.Count() varer</span></h1>
 </div>
-<table>
-    @using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post, new { @class = "bs-component" }))
+    @using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post, new { @class = "navbar-form navbar-left" }))
     {
-        <div>
-            <div class="form-group">
-                <div class="input-group">
-                    <tr>
-                        <td> @Html.TextBox("name", null, new { @class = "form-control col-md-3", @placeholder = "Indtast Varenavn" }) </td><td> </td>
-                        <td> @Html.TextBox("amount", null, new { @type = "number", @class = "form-control col-md-1", @placeholder = "Mængde" , }) </td>
-                        <td> @Html.DropDownList("unit", new SelectList(new List<string> { "kg", "g", "liter", "ml", "stk" }), new { @class = "form-control col-md-1", @placeholder = "Enhed" }) </td>
-                        <input type="hidden" name="id" value="@Model.ID" />
-                        <span class="input-group-btn">
-                            <td> <button type="submit" class="btn btn-default">Tilføj vare</button></td>
-                        </span>
-                    </tr>
+        <div class="form-group">
+
+            <div class="col-md-4">
+                @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+            </div>
+            <div class="col-md-3">
+                @Html.TextBox("amount", null, new { @type = "number", @class = "form-control", @placeholder = "Mængde", })
+            </div>
+                <div class="col-md-2">
+                    @Html.DropDownList("unit", new SelectList(new List<string> { "stk" , "kg", "g", "liter", "ml"}), new { @class = "form-control", @placeholder = "Enhed" })
                 </div>
             </div>
-        </div>
+    <input type="hidden" name="id" value="@Model.ID" />
+
+                            <button type="submit" class="btn btn-default">Tilføj vare</button>
+
+            
     }
-</table>
 <p> </p>
 
 <div class="form-group" />
