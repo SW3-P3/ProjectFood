@@ -22,7 +22,7 @@ namespace ProjectFood.Models
             Ingredients = new List<Item>();
             Amount.Add(32);
             Unit.Add("kilo");
-            //Ingredients.Add(Eroctia);
+            Ingredients.Add(new Item() { Name = "Erotica" });
         }
     }
 }

@@ -24,10 +24,10 @@
             @Html.DisplayNameFor(model => model.Unit)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Instructions)
+            @Html.DisplayNameFor(model => model.Ingredients)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Ingredients)
+            @Html.DisplayNameFor(model => model.Instructions)
         </th>
         <th></th>
     </tr>
@@ -69,7 +69,7 @@
         var ingridient = item.Ingredients;
         foreach (var Ingridient in ingridient)
         {
-            <li>@Ingridient.ToString()</li>
+            <li>@Ingridient.Name.ToString()</li>
         }
                     }
                 </ul>
