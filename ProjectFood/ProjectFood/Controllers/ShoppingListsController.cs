@@ -18,15 +18,21 @@ namespace ProjectFood.Controllers
         // GET: ShoppingLists
         public ActionResult Index()
         {
-            return View(db.ShoppingLists.Include(s => s.Items).ToList());
+            if (User.Identity.IsAuthenticated)
+            {
+                return View(db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists);
+            }
+
+            return RedirectToAction("Login", "Account", new { returnUrl = Url.Action()});
         }
 
         // GET: ShoppingLists/Details/5
         public ActionResult Details(int? id)
         {
+            
+
             if(id == null) {
                 return RedirectToAction("Index");
-                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ShoppingList shoppingList = findShoppingListFromID(id);
 
@@ -35,6 +41,8 @@ namespace ProjectFood.Controllers
             if(shoppingList == null) {
                 return HttpNotFound();
             }
+            /* FROM MERGE
+<<<<<<< HEAD
             foreach (var item in shoppingList.Items)
             {
                 item.Offers = GetOffersForItem(item);
@@ -43,6 +51,17 @@ namespace ProjectFood.Controllers
             db.SaveChanges();
 
             return View(shoppingList);
+=======*/
+
+            if (User.Identity.IsAuthenticated &&
+                db.Users
+                .Include(s => s.ShoppingLists)
+                .First(u => u.Username == User.Identity.Name)
+                .ShoppingLists.Exists(s => s.ID == id))
+            {
+                return View(shoppingList);
+            }
+                return RedirectToAction("Index");
         }
 
         // GET: ShoppingLists/Create
@@ -60,6 +79,12 @@ namespace ProjectFood.Controllers
         {
             if(ModelState.IsValid) {
                 db.ShoppingLists.Add(shoppingList);
+                if (User.Identity.IsAuthenticated)
+                {
+                    db.Users.Include(u => u.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.Add(shoppingList);
+                }
+               
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -77,7 +102,18 @@ namespace ProjectFood.Controllers
             if(shoppingList == null) {
                 return HttpNotFound();
             }
-            return View(shoppingList);
+
+
+            if (User.Identity.IsAuthenticated &&
+                db.Users
+                .Include(s => s.ShoppingLists)
+                .First(u => u.Username == User.Identity.Name)
+                .ShoppingLists.Exists(s => s.ID == id))
+            {
+                return View(shoppingList);
+            }
+
+            return RedirectToAction("Index");
         }
 
         // POST: ShoppingLists/Edit/5
