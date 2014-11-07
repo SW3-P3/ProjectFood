@@ -41,17 +41,13 @@ namespace ProjectFood.Controllers
             if(shoppingList == null) {
                 return HttpNotFound();
             }
-            /* FROM MERGE
-<<<<<<< HEAD
+
             foreach (var item in shoppingList.Items)
             {
                 item.Offers = GetOffersForItem(item);
             }
 
             db.SaveChanges();
-
-            return View(shoppingList);
-=======*/
 
             if (User.Identity.IsAuthenticated &&
                 db.Users
