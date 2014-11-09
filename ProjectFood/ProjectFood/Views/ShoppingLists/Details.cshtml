@@ -9,23 +9,27 @@
 <div class="page-header">
     <h1>@Html.DisplayFor(model => model.Title) <span class="badge">@Model.Items.Count() varer</span></h1>
 </div>
-
-@using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post, new { @class = "bs-component" }))
-{
+<table>
+    @using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post, new { @class = "bs-component" }))
+    {
         <div>
             <div class="form-group">
                 <div class="input-group">
-                        @Html.TextBox("name", null, new { @class = "form-control col-md-3", @placeholder = "Indtast Varenavn" })
-                        @Html.TextBox("amount", null, new { @type = "number", @class = "form-control col-md-1", @placeholder = "Mængde" })
-                        @Html.DropDownList("unit", new SelectList(new List<string>{"kg", "g", "liter", "ml", "stk"}), new { @class = "form-control col-md-1", @placeholder = "Enhed" })
+                    <tr>
+                        <td> @Html.TextBox("name", null, new { @class = "form-control col-md-3", @placeholder = "Indtast Varenavn" }) </td><td> </td>
+                        <td> @Html.TextBox("amount", null, new { @type = "number", @class = "form-control col-md-1", @placeholder = "Mængde" , }) </td>
+                        <td> @Html.DropDownList("unit", new SelectList(new List<string> { "kg", "g", "liter", "ml", "stk" }), new { @class = "form-control col-md-1", @placeholder = "Enhed" }) </td>
                         <input type="hidden" name="id" value="@Model.ID" />
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-default">Tilføj vare</button>
+                            <td> <button type="submit" class="btn btn-default">Tilføj vare</button></td>
                         </span>
+                    </tr>
                 </div>
             </div>
         </div>
-}
+    }
+</table>
+<p> </p>
 
 <div class="form-group" />
 <table class="table table-striped">
