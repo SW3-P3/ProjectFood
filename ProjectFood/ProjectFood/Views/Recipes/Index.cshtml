@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ProjectFood.Models.Recipe>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Opskrifter";
 }
 
 <h2>Index</h2>
@@ -9,81 +9,26 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Titel)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Minutes)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Amount)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Unit)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Ingredients)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Instructions)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Titel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Minutes)
-            </td>
-            <td>
-                <ul>
-                    @{
-        var amounts = item.Amount;
-        foreach (var Amount in amounts)
-        {
-            <li>@Amount.ToString()</li>
-        }
-                    }
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    @{
-        var unit = item.Unit;
-        foreach (var Unit in unit)
-        {
-            <li>@Unit.ToString()</li>
-        }
-                    }
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    @{
-        var ingridient = item.Ingredients;
-        foreach (var Ingridient in ingridient)
-        {
-            <li>@Ingridient.Name.ToString()</li>
-        }
-                    }
-                </ul>
-            </td>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.Instructions)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-            </td>
-        </tr>
+<style type="text/css">
+    #para1 {
+        padding: 50px;
+        font-size: 32px;
+        font-weight: bold;
+        text-align: center;
+        background: #375A7F;
     }
+</style>
+<div class="container-food">
 
-</table>
+    <div class="row-food">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-5">
+                <p id="para1">
+                    @Html.ActionLink(item.Titel, "Recipe", new { id = item.ID })
+                    <br />Tid: @Html.DisplayFor(modelItem => item.Minutes) Minutter
+                </p>
+            </div>
+        }
+    </div>
+</div>

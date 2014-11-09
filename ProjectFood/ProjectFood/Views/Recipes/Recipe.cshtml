@@ -1,0 +1,70 @@
+﻿@model ProjectFood.Models.Recipe
+@model IEnumerable<ProjectFood.Models.Recipe>
+
+@{
+    ViewBag.Titel = Html.DisplayFor(model => Model.Titel);
+}
+
+<div class="page-header">
+    <h1>Opskrift på <span>Html.DisplayFor(Model.Titel)</span></h1>
+</div>
+
+
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unit)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ingredients)
+        </th>
+
+        @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Titel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Minutes)
+            </td>
+            <td>
+                <ul>
+                    @{
+        var amounts = item.Amount;
+        foreach (var Amount in amounts)
+        {
+            <li>@Amount.ToString()</li>
+        }
+                    }
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    @{
+        var unit = item.Unit;
+        foreach (var Unit in unit)
+        {
+            <li>@Unit.ToString()</li>
+        }
+                    }
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    @{
+        var ingridient = item.Ingredients;
+        foreach (var Ingridient in ingridient)
+        {
+            <li>@Ingridient.Name.ToString()</li>
+        }
+                    }
+                </ul>
+            </td>
+
+    </table>

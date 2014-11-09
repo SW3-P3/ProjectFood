@@ -56,7 +56,7 @@ namespace ProjectFood.Controllers
 
             return View(recipe);
         }
-        
+
         // GET: Recipes/Edit/5
         public ActionResult Edit(int? id)
         {
