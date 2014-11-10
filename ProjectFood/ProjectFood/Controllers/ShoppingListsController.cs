@@ -28,8 +28,7 @@ namespace ProjectFood.Controllers
 
         // GET: ShoppingLists/Details/5
         public ActionResult Details(int? id)
-        {
-            
+        {           
 
             if(id == null) {
                 return RedirectToAction("Index");
@@ -44,7 +43,7 @@ namespace ProjectFood.Controllers
 
             foreach (var item in shoppingList.Items)
             {
-                item.Offers = GetOffersForItem(item);
+                item.Offers = GetOffersForItem(item).OrderBy(x=>x.Store).ToList();
             }
 
             db.SaveChanges();
