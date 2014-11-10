@@ -17,7 +17,7 @@ namespace ProjectFood.Controllers
         // GET: Recipes
         public ActionResult Index()
         {
-            return View(db.Recipes.ToList());
+            return View(db.Recipes.Include(r => r.Ingredients).ToList());
         }
 
         // GET: Recipes/Details/5
@@ -25,9 +25,12 @@ namespace ProjectFood.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
-            Recipe recipe = db.Recipes.Find(id);
+            Recipe recipe = db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+            if(recipe.Ingredients.Count > 0) {
+                ViewBag.Recipe_Ingredient = db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
+            }
             if (recipe == null)
             {
                 return HttpNotFound();
@@ -96,6 +99,8 @@ namespace ProjectFood.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Recipe recipe = db.Recipes.Find(id);
+       
+            
             if (recipe == null)
             {
                 return HttpNotFound();
@@ -121,6 +126,18 @@ namespace ProjectFood.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult AddIngredient(int id, string name, double? amount, string unit)
+        {
+            var recipe = db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+            var tmpIngredient = new Item() { Name = name };
+            var recipeIngredient = new Recipe_Ingredient() { RecipeID = id, Ingredient = tmpIngredient, Amount = (double)amount, Unit = unit };
+
+            recipe.Ingredients.Add(tmpIngredient);
+            db.Recipe_Ingredient.Add(recipeIngredient);
+            db.SaveChanges();
+            return RedirectToAction("Details/" + id);
         }
     }
 }

@@ -18,6 +18,17 @@ namespace ProjectFood.Migrations
                 .PrimaryKey(t => t.ID);
             
             CreateTable(
+                "dbo.Recipes",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Titel = c.String(),
+                        Minutes = c.Int(nullable: false),
+                        Instructions = c.String(),
+                    })
+                .PrimaryKey(t => t.ID);
+            
+            CreateTable(
                 "dbo.Offers",
                 c => new
                     {
@@ -43,6 +54,21 @@ namespace ProjectFood.Migrations
                 .PrimaryKey(t => t.ID);
             
             CreateTable(
+                "dbo.Recipe_Ingredient",
+                c => new
+                    {
+                        RecipeID = c.Int(nullable: false),
+                        IngredientID = c.Int(nullable: false),
+                        Amount = c.Double(nullable: false),
+                        Unit = c.String(),
+                    })
+                .PrimaryKey(t => new { t.RecipeID, t.IngredientID })
+                .ForeignKey("dbo.Items", t => t.IngredientID, cascadeDelete: true)
+                .ForeignKey("dbo.Recipes", t => t.RecipeID, cascadeDelete: true)
+                .Index(t => t.RecipeID)
+                .Index(t => t.IngredientID);
+            
+            CreateTable(
                 "dbo.ShoppingList_Item",
                 c => new
                     {
@@ -58,17 +84,30 @@ namespace ProjectFood.Migrations
                 .Index(t => t.ItemID);
             
             CreateTable(
-                "dbo.Items_Offers",
+                "dbo.RecipeItems",
                 c => new
                     {
-                        ItemID = c.Int(nullable: false),
-                        OfferID = c.Int(nullable: false),
+                        Recipe_ID = c.Int(nullable: false),
+                        Item_ID = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => new { t.ItemID, t.OfferID })
-                .ForeignKey("dbo.Items", t => t.ItemID, cascadeDelete: true)
-                .ForeignKey("dbo.Offers", t => t.OfferID, cascadeDelete: true)
-                .Index(t => t.ItemID)
-                .Index(t => t.OfferID);
+                .PrimaryKey(t => new { t.Recipe_ID, t.Item_ID })
+                .ForeignKey("dbo.Recipes", t => t.Recipe_ID, cascadeDelete: true)
+                .ForeignKey("dbo.Items", t => t.Item_ID, cascadeDelete: true)
+                .Index(t => t.Recipe_ID)
+                .Index(t => t.Item_ID);
+            
+            CreateTable(
+                "dbo.OfferItems",
+                c => new
+                    {
+                        Offer_ID = c.Int(nullable: false),
+                        Item_ID = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => new { t.Offer_ID, t.Item_ID })
+                .ForeignKey("dbo.Offers", t => t.Offer_ID, cascadeDelete: true)
+                .ForeignKey("dbo.Items", t => t.Item_ID, cascadeDelete: true)
+                .Index(t => t.Offer_ID)
+                .Index(t => t.Item_ID);
             
             CreateTable(
                 "dbo.ShoppingListItems",
@@ -82,47 +121,39 @@ namespace ProjectFood.Migrations
                 .ForeignKey("dbo.Items", t => t.Item_ID, cascadeDelete: true)
                 .Index(t => t.ShoppingList_ID)
                 .Index(t => t.Item_ID);
-            CreateTable(
-                "dbo.Recipes",
-                c => new
-                    {
-                        ID = c.Int(nullable: false, identity: true),
-                        Titel = c.String(),
-                        Minutes = c.Int(nullable: false),
-                        Instructions = c.String(),
-                    });
-            CreateTable(
-                "dbo.Recipe_Ingredient",
-                c => new
-                    {
-                        RecipeID = c.Int(nullable: false),
-                        ItemID = c.Int(nullable: false),
-                        Amount = c.Double(nullable: false),
-                        Unit = c.String(),
-                    });
             
         }
-        
         
         public override void Down()
         {
             DropForeignKey("dbo.ShoppingList_Item", "ShoppingListID", "dbo.ShoppingLists");
             DropForeignKey("dbo.ShoppingList_Item", "ItemID", "dbo.Items");
+            DropForeignKey("dbo.Recipe_Ingredient", "RecipeID", "dbo.Recipes");
+            DropForeignKey("dbo.Recipe_Ingredient", "IngredientID", "dbo.Items");
             DropForeignKey("dbo.ShoppingListItems", "Item_ID", "dbo.Items");
             DropForeignKey("dbo.ShoppingListItems", "ShoppingList_ID", "dbo.ShoppingLists");
-            DropForeignKey("dbo.Items_Offers", "OfferID", "dbo.Offers");
-            DropForeignKey("dbo.Items_Offers", "ItemID", "dbo.Items");
+            DropForeignKey("dbo.OfferItems", "Item_ID", "dbo.Items");
+            DropForeignKey("dbo.OfferItems", "Offer_ID", "dbo.Offers");
+            DropForeignKey("dbo.RecipeItems", "Item_ID", "dbo.Items");
+            DropForeignKey("dbo.RecipeItems", "Recipe_ID", "dbo.Recipes");
             DropIndex("dbo.ShoppingListItems", new[] { "Item_ID" });
             DropIndex("dbo.ShoppingListItems", new[] { "ShoppingList_ID" });
-            DropIndex("dbo.Items_Offers", new[] { "OfferID" });
-            DropIndex("dbo.Items_Offers", new[] { "ItemID" });
+            DropIndex("dbo.OfferItems", new[] { "Item_ID" });
+            DropIndex("dbo.OfferItems", new[] { "Offer_ID" });
+            DropIndex("dbo.RecipeItems", new[] { "Item_ID" });
+            DropIndex("dbo.RecipeItems", new[] { "Recipe_ID" });
             DropIndex("dbo.ShoppingList_Item", new[] { "ItemID" });
             DropIndex("dbo.ShoppingList_Item", new[] { "ShoppingListID" });
+            DropIndex("dbo.Recipe_Ingredient", new[] { "IngredientID" });
+            DropIndex("dbo.Recipe_Ingredient", new[] { "RecipeID" });
             DropTable("dbo.ShoppingListItems");
-            DropTable("dbo.Items_Offers");
+            DropTable("dbo.OfferItems");
+            DropTable("dbo.RecipeItems");
             DropTable("dbo.ShoppingList_Item");
+            DropTable("dbo.Recipe_Ingredient");
             DropTable("dbo.ShoppingLists");
             DropTable("dbo.Offers");
+            DropTable("dbo.Recipes");
             DropTable("dbo.Items");
         }
     }

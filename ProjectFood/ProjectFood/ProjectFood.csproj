@@ -174,17 +174,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411032053282_Initial.cs" />
-    <Compile Include="Migrations\201411032053282_Initial.Designer.cs">
-      <DependentUpon>201411032053282_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201411050853067_recipe.cs" />
-    <Compile Include="Migrations\201411050853067_recipe.Designer.cs">
-      <DependentUpon>201411050853067_recipe.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201411061214518_Initial1.cs" />
-    <Compile Include="Migrations\201411061214518_Initial1.Designer.cs">
-      <DependentUpon>201411061214518_Initial1.cs</DependentUpon>
+    <Compile Include="Migrations\201411101218046_Initial.cs" />
+    <Compile Include="Migrations\201411101218046_Initial.Designer.cs">
+      <DependentUpon>201411101218046_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -609,7 +601,9 @@
     <Content Include="Scripts\sweet-alert.js" />
     <Content Include="Scripts\sweet-alert.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -673,14 +667,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411032053282_Initial.resx">
-      <DependentUpon>201411032053282_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201411050853067_recipe.resx">
-      <DependentUpon>201411050853067_recipe.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201411061214518_Initial1.resx">
-      <DependentUpon>201411061214518_Initial1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201411101218046_Initial.resx">
+      <DependentUpon>201411101218046_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

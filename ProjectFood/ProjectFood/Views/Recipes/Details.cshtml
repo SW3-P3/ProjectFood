@@ -4,38 +4,54 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Recipe</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Titel)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Titel)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Minutes)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Minutes)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Instructions)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Instructions)
-        </dd>
-
-    </dl>
+<div class="page-header">
+    <h1>@Model.Titel</h1>
+    <p class="lead"><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter</p>
 </div>
+<hr />
+<p></p>
+
+<table class="table table-striped">
+    <tr>
+        <th class="col-md-2"></th>
+        <th>Ingrediens</th>
+    </tr>
+    @foreach(var item in Model.Ingredients) {
+        <tr>
+            <td class ="text-right">
+                @{
+        var ingredientRel = ((IEnumerable<ProjectFood.Models.Recipe_Ingredient>)ViewBag.Recipe_Ingredient)
+                .Where(x => x.IngredientID == item.ID)
+                .First();
+        if(ingredientRel.Amount > 0) {
+            <span>@ingredientRel.Amount.ToString() @ingredientRel.Unit</span>
+        }
+                }
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+
+        </tr>
+    }
+</table>
+
+<div class="row">
+    @using(Html.BeginForm("AddIngredient", "Recipes", FormMethod.Post, new { @class = "bs-component" })) {
+        <div class="col-md-4">
+            <div class="form-group">
+                <div class="input-group">
+                    @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+                    @Html.TextBox("amount", null, new { @type = "number", @class = "form-control", @placeholder = "Mængde" })
+                    @Html.TextBox("unit", null, new { @class = "form-control", @placeholder = "Enhed" })
+                    <input type="hidden" name="id" value="@Model.ID" />
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default">Tilføj vare</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Back to List", "Index")
