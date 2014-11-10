@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProjectFood.Models;
+using System.Diagnostics;
 
 namespace ProjectFood.Controllers
 {
@@ -54,7 +55,7 @@ namespace ProjectFood.Controllers
             {
                 db.Recipes.Add(recipe);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("CreateSecond/"+recipe.ID);
             }
 
             return View(recipe);
@@ -132,12 +133,35 @@ namespace ProjectFood.Controllers
         {
             var recipe = db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
             var tmpIngredient = new Item() { Name = name };
+            //allows for ingredienst with no amount and unit
+            if (amount == null)
+            {
+                amount = 0;
+                Debug.Write("IS NULL!");
+            }
             var recipeIngredient = new Recipe_Ingredient() { RecipeID = id, Ingredient = tmpIngredient, Amount = (double)amount, Unit = unit };
 
             recipe.Ingredients.Add(tmpIngredient);
             db.Recipe_Ingredient.Add(recipeIngredient);
             db.SaveChanges();
-            return RedirectToAction("Details/" + id);
+            return RedirectToAction("CreateSecond/" + id);
+        }
+        public ActionResult CreateSecond(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
+            Recipe recipe = db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+            if (recipe.Ingredients.Count > 0)
+            {
+                ViewBag.Recipe_Ingredient = db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
+            }
+            if (recipe == null)
+            {
+                return HttpNotFound();
+            }
+            return View(recipe);
         }
     }
 }

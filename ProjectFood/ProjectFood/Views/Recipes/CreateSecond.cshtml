@@ -1,0 +1,65 @@
+﻿@model ProjectFood.Models.Recipe
+
+@{
+    ViewBag.Title = "Tilføj Ingredienser";
+}
+
+<div class="page-header">
+    <h1>@Model.Titel</h1>
+    <p class="lead"><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter</p>
+</div>
+<hr />
+<p></p>
+
+<table class="table table-striped">
+    <tr>
+        <th class="col-md-2"></th>
+        <th>Ingrediens</th>
+    </tr>
+    @foreach (var item in Model.Ingredients)
+    {
+        <tr>
+            <td class="text-right">
+                @{
+        var ingredientRel = ((IEnumerable<ProjectFood.Models.Recipe_Ingredient>)ViewBag.Recipe_Ingredient)
+                .Where(x => x.IngredientID == item.ID)
+                .First();
+        if (ingredientRel.Amount > 0)
+        {
+            <span>
+                
+                    @if (ingredientRel.Amount != 0){
+                        @ingredientRel.Amount.ToString();
+                    }
+                
+                @ingredientRel.Unit
+            </span>
+        }
+                }
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+
+        </tr>
+    }
+</table>
+    <div class="row">
+        @using (Html.BeginForm("AddIngredient", "Recipes", FormMethod.Post, new { @class = "bs-component" }))
+        {
+            <div class="col-md-4">
+                <div class="form-group">
+                    <div class="input-group">
+                        @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+                        @Html.TextBox("amount", null, new { @type = "number", @class = "form-control", @placeholder = "Mængde" })
+                        @Html.TextBox("unit", null, new { @class = "form-control", @placeholder = "Enhed" })
+                        <input type="hidden" name="id" value="@Model.ID" />
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default">Tilføj vare</button>
+                        </span>
+                    </div>
+                </div>
+                @Html.ActionLink("Færdig", "Details", Model.ID, new { @class="btn btn-success btn-block" })
+            </div>
+        }
+    </div>
+
+
