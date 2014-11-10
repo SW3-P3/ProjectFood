@@ -128,14 +128,15 @@ namespace ProjectFood.Controllers
             var tmpItem = new Item();
             tmpItem.Name = tmpOffer.Heading;
             tmpItem.Offers.Add(tmpOffer);
-            
-            // This is a temp fix
-            if (shoppingListId == null)
-                shoppingListId = _db.ShoppingLists.First().ID;
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
 
-            var shoppingListItem = new ShoppingList_Item { Item = tmpItem, ShoppingList = shoppingList, Amount = 0, Unit = "" };
+            var shoppingListItem = new ShoppingList_Item { 
+                Item = tmpItem, 
+                ShoppingList = shoppingList, 
+                Amount = 0, 
+                Unit = tmpOffer.Unit,
+                selectedOffer = tmpOffer};
 
             _db.ShoppingList_Item.Add(shoppingListItem);
 

@@ -161,8 +161,6 @@ namespace ProjectFood.Controllers
         public ActionResult AddItem(int id, string name, double? amount, string unit)
         {
             if(name.Trim() == string.Empty) {
-                // TODO: make a proper error message (Use: http://lipis.github.io/bootstrap-sweetalert/ ??)
-                // Tilføj snackbar i else ?!
                 return RedirectToAction("Details/" + id);
             }
             if(amount == null) {
@@ -173,9 +171,9 @@ namespace ProjectFood.Controllers
 
             //Search in GenericLItems for item
             Item knownItem = null;
-            if(db.Items.Count() > 0)
+            if(db.Items.Count() > 0) { 
                 knownItem = db.Items.Where(i => i.Name.CompareTo(name) == 0).SingleOrDefault();
-
+            }
 
             if(knownItem != null) {
                 tmpItem = knownItem;
@@ -184,16 +182,17 @@ namespace ProjectFood.Controllers
             }
 
             if(shoppingList.Items.Contains(tmpItem)) {
-                db.ShoppingList_Item.Where(x => x.ItemID == tmpItem.ID && x.ShoppingListID == id).Single().Amount += (double)amount;
+                if(isOfferSelectedOnItem(id, tmpItem)) {
+                    Item sameNameItem = new Item() { Name = name }; 
+                    addToShoppingList_Item(sameNameItem, shoppingList, amount, unit);
+                } else { 
+                    db.ShoppingList_Item.Where(x => x.ItemID == tmpItem.ID && x.ShoppingListID == id).Single().Amount += (double)amount;
+                    db.SaveChanges();
+                }
             } else {
-                var shoppingListItem = new ShoppingList_Item { Item = tmpItem, ShoppingList = shoppingList, Amount = (double)amount, Unit = unit };
-
-                db.ShoppingList_Item.Add(shoppingListItem);
-
-                shoppingList.Items.Add(tmpItem);
+                addToShoppingList_Item(tmpItem, shoppingList, amount, unit);
             }
 
-            db.SaveChanges();
             return RedirectToAction("Details/" + id);
         }
 
@@ -256,6 +255,19 @@ namespace ProjectFood.Controllers
 
             return RedirectToAction("Details/" + shoppingListId);
 
+        }
+
+        private void addToShoppingList_Item(Item item, ShoppingList shoppingList, double? amount, string unit)
+        {
+            shoppingList.Items.Add(item);
+            var shoppingListItem = new ShoppingList_Item { Item = item, ShoppingList = shoppingList, Amount = (double)amount, Unit = unit };
+            db.ShoppingList_Item.Add(shoppingListItem);
+
+            db.SaveChanges();
+        }
+
+        private bool isOfferSelectedOnItem(int id, Item item){
+            return db.ShoppingList_Item.Where(x => x.ItemID == item.ID && x.ShoppingListID == id).Single().selectedOffer != null;
         }
         
     }
