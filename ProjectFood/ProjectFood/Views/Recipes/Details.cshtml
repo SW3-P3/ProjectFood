@@ -19,7 +19,7 @@
         </div>
         <div class="col-md-6">
 
-            @{if (ViewBag.ShoppingLists.Count > 0)
+            @{if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
             {
                 List<SelectListItem> listItems = new List<SelectListItem>();
 
@@ -42,9 +42,12 @@
 
 <table class="table table-striped">
     <tr>
-        <th class="col-md-1"></th>
-        <th class="col-md-2"></th>
-        <th>Ingrediens</th>
+        @if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
+        {
+            <th class="col-md-1">Tilføj vare</th>
+        }   
+            <th class="col-md-1"></th>
+            <th>Ingrediens</th>
     </tr>
 @{
     foreach (var item in Model.Ingredients)
@@ -53,21 +56,23 @@
                 .Where(x => x.IngredientID == item.ID)
                 .First();
         <tr>
-            <td class="col-md-1">
-                @if (ViewBag.ShoppingLists.Count > 0)
+
+                @if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
                 {
-                    using (Ajax.BeginForm(
+                    <td class="col-md-1">
+                        @using (Ajax.BeginForm(
                         "AddItemToShoppingList",
                         new {itemID = item.ID, amount = ingredientRel.Amount, unit = ingredientRel.Unit},
                         new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckRecipe" }))
-                    {
+                        {
                         <input type="hidden" name="shoppingListId" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
                         <button id="AddItem_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
                             <span class="glyphicon glyphicon-plus"></span>
                         </button>
-                    }
+                        }
+                    </td>
                 }
-            </td>
+
 
             <td class ="text-right">
                
