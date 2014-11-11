@@ -24,6 +24,8 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Details/5
         public ActionResult Details(int? id)
         {
+            ViewBag.ShoppingLists = db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
+
             if (id == null)
             {
                 return RedirectToAction("index");
