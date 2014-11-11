@@ -97,6 +97,7 @@ namespace ProjectFood.Migrations
                         ID = c.Int(nullable: false, identity: true),
                         Username = c.String(),
                         Name = c.String(),
+                        Preferences = c.String(),
                     })
                 .PrimaryKey(t => t.ID);
             

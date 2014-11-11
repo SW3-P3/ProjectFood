@@ -7,10 +7,9 @@ namespace ProjectFood.Models
     {
         public int ID { get; set; }
         public string Username { get; set; }
-        //something something password hash ..
         public string Name { get; set; }
         public List<Group> Groups { get; set; }
         public List<ShoppingList> ShoppingLists { get; set; }
-        //something something præferencer
+        public string Preferences { get; set; }
     }
 }

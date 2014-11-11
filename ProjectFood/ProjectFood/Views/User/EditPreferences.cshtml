@@ -1,0 +1,37 @@
+﻿@model ProjectFood.Models.User
+
+@{
+    ViewBag.Title = "EditPreferences";
+}
+
+<div class="page-header">
+    <h1>Rediger præferencer</h1>
+</div>
+<hr />
+<div>
+    @using(Html.BeginForm("AddPreference", "User", FormMethod.Post, new { @class = "bs-component" })) {
+        @Html.AntiForgeryToken()
+
+        <div class="input-group input-group-lg">
+            <input type="hidden" name="username" value="@User.Identity.Name"/>
+            @Html.TextBox("pref", "", new { @placeholder = "indtast præference", @class = "form-control" })
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-default">Gem</button>
+            </span>
+        </div>
+    }
+</div>
+
+<div class="list-group">
+    @if(Model.Preferences != null) {
+        foreach(string pref in Model.Preferences.Split(',')) {
+            <div class="list-group-item"><a href="@Url.Action("RemovePreference",
+                             new {username = User.Identity.Name, pref = @pref.TrimStart(' ')})"
+   class="btn btn-danger btn-xs">
+    <span class="glyphicon glyphicon-remove"></span>
+</a>&nbsp;&nbsp;&nbsp;@pref.TrimStart(' ')</div>
+        }
+    } else {
+        <div class="alert-warning"><h1>Du har ingen præferencer!</h1></div>
+    }
+</div>

@@ -171,12 +171,17 @@
     <Compile Include="Controllers\OfferController.cs" />
     <Compile Include="Controllers\RecipesController.cs" />
     <Compile Include="Controllers\ShoppingListsController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411111323495_Initial.cs" />
-    <Compile Include="Migrations\201411111323495_Initial.Designer.cs">
-      <DependentUpon>201411111323495_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201411112048434_Initial.cs" />
+    <Compile Include="Migrations\201411112048434_Initial.Designer.cs">
+      <DependentUpon>201411112048434_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411112050308_Initial1.cs" />
+    <Compile Include="Migrations\201411112050308_Initial1.Designer.cs">
+      <DependentUpon>201411112050308_Initial1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -658,6 +663,7 @@
     <Content Include="Views\Recipes\Edit.cshtml" />
     <Content Include="Views\Recipes\Index.cshtml" />
     <Content Include="Views\Recipes\CreateSecond.cshtml" />
+    <Content Include="Views\User\EditPreferences.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -670,8 +676,11 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411111323495_Initial.resx">
-      <DependentUpon>201411111323495_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201411112048434_Initial.resx">
+      <DependentUpon>201411112048434_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411112050308_Initial1.resx">
+      <DependentUpon>201411112050308_Initial1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

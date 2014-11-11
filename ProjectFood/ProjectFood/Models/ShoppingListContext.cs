@@ -54,7 +54,7 @@ namespace ProjectFood.Models
         }
 
         public ShoppingListContext()
-            : base("Foody")
+            : base("Food")
         {
         }
 
