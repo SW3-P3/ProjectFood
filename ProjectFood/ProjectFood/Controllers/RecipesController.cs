@@ -24,6 +24,9 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Details/5
         public ActionResult Details(int? id)
         {
+            ViewBag.ShoppingLists = db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
+
+
             if (id == null)
             {
                 return RedirectToAction("index");
@@ -162,6 +165,37 @@ namespace ProjectFood.Controllers
                 return HttpNotFound();
             }
             return View(recipe);
+        }
+
+        [HttpPost]
+        public ActionResult AddItemToShoppingList(int itemId, int? shoppingListId, double? amount, string unit)
+        {
+            var tmpItem = db.Items.Find(itemId);
+
+            var shoppingList = db.ShoppingLists.First(l => l.ID == shoppingListId);
+            if (amount == null)
+            {
+                amount = 0;
+            }
+            var shoppingListItem = new ShoppingList_Item
+            {
+                Item = tmpItem,
+                ShoppingList = shoppingList,
+                Amount = (double) amount,
+                Unit = unit,
+            };
+
+            db.ShoppingList_Item.Add(shoppingListItem);
+
+            shoppingList.Items.Add(tmpItem);
+
+            db.SaveChanges();
+
+            return Json(new
+            {
+                Message = "Hej troels",
+                ItemId = itemId,
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

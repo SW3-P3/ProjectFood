@@ -174,9 +174,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411111233580_Initial.cs" />
-    <Compile Include="Migrations\201411111233580_Initial.Designer.cs">
-      <DependentUpon>201411111233580_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201411111323495_Initial.cs" />
+    <Compile Include="Migrations\201411111323495_Initial.Designer.cs">
+      <DependentUpon>201411111323495_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -585,6 +585,7 @@
     <Content Include="Scripts\globalize\cultures\globalize.culture.zu.js" />
     <Content Include="Scripts\globalize\cultures\globalize.cultures.js" />
     <Content Include="Scripts\globalize\globalize.js" />
+    <Content Include="Scripts\recipe.buttons.js" />
     <Content Include="Scripts\offer.buttons.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -669,8 +670,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411111233580_Initial.resx">
-      <DependentUpon>201411111233580_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201411111323495_Initial.resx">
+      <DependentUpon>201411111323495_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -4,10 +4,36 @@
     ViewBag.Title = "Details";
 }
 
+<script type="text/javascript">
+    function GetSelectedList() {
+        $('input#shoppingListId').val($('#Selection').val());
+    };
+</script>
+
 <div class="page-header">
-    <h1>@Model.Title</h1>
-    <p class="lead"><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter</p>
-    <p class="text-muted">@Model.Tags</p>
+    <div class ="row">
+        <div class="col-md-6">
+            <h1>@Model.Title</h1>
+            <p class="lead"><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter</p>
+            <p class="text-muted">@Model.Tags</p>
+        </div>
+        <div class="col-md-6">
+
+            @{if (ViewBag.ShoppingLists.Count > 0)
+            {
+                List<SelectListItem> listItems = new List<SelectListItem>();
+
+                foreach (var list in ViewBag.ShoppingLists)
+                {
+                    listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
+                }
+                <label for="Selection">Vælg indkøbsliste</label>
+                @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
+
+            }
+            }
+        </div>
+    </div>
 </div>
 <div class="well">
     @Model.Instructions
@@ -16,27 +42,54 @@
 
 <table class="table table-striped">
     <tr>
+        <th class="col-md-1"></th>
         <th class="col-md-2"></th>
         <th>Ingrediens</th>
     </tr>
-    @foreach(var item in Model.Ingredients) {
-        <tr>
-            <td class ="text-right">
-                @{
+@{
+    foreach (var item in Model.Ingredients)
+    {
         var ingredientRel = ((IEnumerable<ProjectFood.Models.Recipe_Ingredient>)ViewBag.Recipe_Ingredient)
                 .Where(x => x.IngredientID == item.ID)
                 .First();
-        if(ingredientRel.Amount > 0) {
-            <span>@ingredientRel.Amount.ToString() @ingredientRel.Unit</span>
-        }
+        <tr>
+            <td class="col-md-1">
+                @if (ViewBag.ShoppingLists.Count > 0)
+                {
+                    using (Ajax.BeginForm(
+                        "AddItemToShoppingList",
+                        new {itemID = item.ID, amount = ingredientRel.Amount, unit = ingredientRel.Unit},
+                        new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckRecipe" }))
+                    {
+                        <input type="hidden" name="shoppingListId" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
+                        <button id="AddItem_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    }
                 }
+            </td>
+
+            <td class ="text-right">
+               
+              
+                @if(ingredientRel.Amount > 0) {
+                <span>@ingredientRel.Amount.ToString() @ingredientRel.Unit</span>
+                }
+                
             </td>
             <td>@Html.DisplayFor(modelItem => item.Name)</td>
 
         </tr>
     }
+}
 </table>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+
+@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
+@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+}

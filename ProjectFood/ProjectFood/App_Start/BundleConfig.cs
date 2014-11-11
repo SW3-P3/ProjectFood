@@ -29,7 +29,7 @@ namespace ProjectFood
                       "~/Content/site.css"));
             
             bundles.Add(new ScriptBundle("~/bundles/homemade").Include(
-                      "~/Scripts/shoppingList.buttons.js",
+                      "~/Scripts/recipe.buttons.js",
                       "~/Scripts/offer.buttons.js"));
 
             // Set EnableOptimizations to false for debugging. For more information,
