@@ -24,12 +24,15 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Details/5
         public ActionResult Details(int? id)
         {
+            ViewBag.ShoppingLists = db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
+
             if (id == null)
             {
                 return RedirectToAction("index");
             }
             Recipe recipe = db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
-            if(recipe.Ingredients.Count > 0) {
+            if (recipe.Ingredients.Count > 0)
+            {
                 ViewBag.Recipe_Ingredient = db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
             }
             if (recipe == null)
@@ -55,7 +58,7 @@ namespace ProjectFood.Controllers
             {
                 db.Recipes.Add(recipe);
                 db.SaveChanges();
-                return RedirectToAction("CreateSecond/"+recipe.ID);
+                return RedirectToAction("CreateSecond/" + recipe.ID);
             }
 
             return View(recipe);
@@ -73,7 +76,7 @@ namespace ProjectFood.Controllers
             {
                 return HttpNotFound();
             }
-            return View(recipe);
+            return RedirectToAction("CreateSecond/" + id);
         }
 
         // POST: Recipes/Edit/5
@@ -100,8 +103,8 @@ namespace ProjectFood.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Recipe recipe = db.Recipes.Find(id);
-       
-            
+
+
             if (recipe == null)
             {
                 return HttpNotFound();
@@ -133,12 +136,32 @@ namespace ProjectFood.Controllers
         {
             var recipe = db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
             var tmpIngredient = new Item() { Name = name };
+
+            if (name.Trim() == string.Empty)
+            {
+                return RedirectToAction("CreateSecond/" + id);
+            }
             //allows for ingredienst with no amount and unit
             if (amount == null)
             {
                 amount = 0;
-                Debug.Write("IS NULL!");
             }
+            //Search in GenericLItems for item
+            Item knownItem = null;
+            if (db.Items.Count() > 0)
+            {
+                knownItem = db.Items.Where(i => i.Name.CompareTo(name) == 0).SingleOrDefault();
+            }
+
+            if (knownItem != null)
+            {
+                tmpIngredient = knownItem;
+            }
+            else
+            {
+                tmpIngredient = new Item() { Name = name };
+            }
+
             var recipeIngredient = new Recipe_Ingredient() { RecipeID = id, Ingredient = tmpIngredient, Amount = (double)amount, Unit = unit };
 
             recipe.Ingredients.Add(tmpIngredient);
