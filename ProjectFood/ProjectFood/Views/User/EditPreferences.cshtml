@@ -24,12 +24,12 @@
 
 <div class="list-group">
     @if(Model.Preferences != null) {
-        foreach(string pref in Model.Preferences.Split(',')) {
+        foreach(string pref in Model.Preferences) {
             <div class="list-group-item"><a href="@Url.Action("RemovePreference",
-                             new {username = User.Identity.Name, pref = @pref.TrimStart(' ')})"
+                             new {username = User.Identity.Name, pref = @pref})"
    class="btn btn-danger btn-xs">
     <span class="glyphicon glyphicon-remove"></span>
-</a>&nbsp;&nbsp;&nbsp;@pref.TrimStart(' ')</div>
+</a>&nbsp;&nbsp;&nbsp;@pref</div>
         }
     } else {
         <div class="alert-warning"><h1>Du har ingen præferencer!</h1></div>
