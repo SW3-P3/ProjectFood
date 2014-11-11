@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProjectFood.Models;
+using ProjectFood.Models.Api;
 
 namespace ProjectFood.Controllers
 {
@@ -17,25 +18,46 @@ namespace ProjectFood.Controllers
         // GET: ShoppingLists
         public ActionResult Index()
         {
-            return View(db.ShoppingLists.Include(s => s.Items).ToList());
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.NumItems = db.ShoppingLists.Include(s => s.Items);
+                return View(db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists);
+            }
+
+            return RedirectToAction("Login", "Account", new { returnUrl = Url.Action()});
         }
 
         // GET: ShoppingLists/Details/5
         public ActionResult Details(int? id)
-        {
+        {           
+
             if(id == null) {
                 return RedirectToAction("Index");
-                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var tmp = db.ShoppingLists.Include(s => s.Items.Select(x => x.Offers)).ToList();
-            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+            ShoppingList shoppingList = findShoppingListFromID(id);
 
             ViewBag.ShoppingList_Item = db.ShoppingList_Item.Where(x => x.ShoppingListID == id).ToList();
 
             if(shoppingList == null) {
                 return HttpNotFound();
             }
-            return View(shoppingList);
+
+            foreach (var item in shoppingList.Items)
+            {
+                item.Offers = GetOffersForItem(item).OrderBy(x=>x.Store).ToList();
+            }
+
+            db.SaveChanges();
+
+            if (User.Identity.IsAuthenticated &&
+                db.Users
+                .Include(s => s.ShoppingLists)
+                .First(u => u.Username == User.Identity.Name)
+                .ShoppingLists.Exists(s => s.ID == id))
+            {
+                return View(shoppingList);
+            }
+                return RedirectToAction("Index");
         }
 
         // GET: ShoppingLists/Create
@@ -53,6 +75,12 @@ namespace ProjectFood.Controllers
         {
             if(ModelState.IsValid) {
                 db.ShoppingLists.Add(shoppingList);
+                if (User.Identity.IsAuthenticated)
+                {
+                    db.Users.Include(u => u.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.Add(shoppingList);
+                }
+               
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -70,7 +98,18 @@ namespace ProjectFood.Controllers
             if(shoppingList == null) {
                 return HttpNotFound();
             }
-            return View(shoppingList);
+
+
+            if (User.Identity.IsAuthenticated &&
+                db.Users
+                .Include(s => s.ShoppingLists)
+                .First(u => u.Username == User.Identity.Name)
+                .ShoppingLists.Exists(s => s.ID == id))
+            {
+                return View(shoppingList);
+            }
+
+            return RedirectToAction("Index");
         }
 
         // POST: ShoppingLists/Edit/5
@@ -123,21 +162,19 @@ namespace ProjectFood.Controllers
         public ActionResult AddItem(int id, string name, double? amount, string unit)
         {
             if(name.Trim() == string.Empty) {
-                // TODO: make a proper error message (Use: http://lipis.github.io/bootstrap-sweetalert/ ??)
-                // Tilføj snackbar i else ?!
                 return RedirectToAction("Details/" + id);
             }
             if(amount == null) {
                 amount = 0;
             }
-            ShoppingList shoppingList = db.ShoppingLists.Include(s => s.Items).Where(x => x.ID == id).Single();
+            ShoppingList shoppingList = findShoppingListFromID(id);
             Item tmpItem;
 
             //Search in GenericLItems for item
             Item knownItem = null;
-            if(db.Items.Count() > 0)
+            if(db.Items.Count() > 0) { 
                 knownItem = db.Items.Where(i => i.Name.CompareTo(name) == 0).SingleOrDefault();
-
+            }
 
             if(knownItem != null) {
                 tmpItem = knownItem;
@@ -146,24 +183,24 @@ namespace ProjectFood.Controllers
             }
 
             if(shoppingList.Items.Contains(tmpItem)) {
-                db.ShoppingList_Item.Where(x => x.ItemID == tmpItem.ID && x.ShoppingListID == id).Single().Amount += (double)amount;
+                if(isOfferSelectedOnItem(id, tmpItem)) {
+                    Item sameNameItem = new Item() { Name = name }; 
+                    addToShoppingList_Item(sameNameItem, shoppingList, amount, unit);
+                } else { 
+                    db.ShoppingList_Item.Where(x => x.ItemID == tmpItem.ID && x.ShoppingListID == id).Single().Amount += (double)amount;
+                    db.SaveChanges();
+                }
             } else {
-                var shoppingListItem = new ShoppingList_Item { Item = tmpItem, ShoppingList = shoppingList, Amount = (double)amount, Unit = unit };
-
-                db.ShoppingList_Item.Add(shoppingListItem);
-
-                shoppingList.Items.Add(tmpItem);
+                addToShoppingList_Item(tmpItem, shoppingList, amount, unit);
             }
 
-            db.SaveChanges();
             return RedirectToAction("Details/" + id);
         }
 
         public ActionResult RemoveItem(int id, int itemID)
         {
-            //Find relevant shoppingList and include the items
-            var tmp = db.ShoppingLists.Include(s => s.Items).ToList();
-            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+
+            ShoppingList shoppingList = findShoppingListFromID(id);
 
             //Find the item to be deleted, and remove it from the shopping list
             var rmItem = shoppingList.Items.ToList().Find(x => x.ID == itemID);
@@ -196,5 +233,43 @@ namespace ProjectFood.Controllers
 
             return RedirectToAction("Details/" + id);
         }
+
+        private List<Offer> GetOffersForItem(Item item)
+        {
+            return db.Offers.Where(x => x.Heading.ToLower().Contains(item.Name.ToLower())).ToList();
+        }
+
+        //Find relevant shoppingList and include the items
+        private ShoppingList findShoppingListFromID(int? id)
+        {
+            return db.ShoppingLists.Include(s => s.Items.Select(x => x.Offers)).ToList().Find(x => x.ID == id);
+        } 
+
+        public ActionResult ChooseOffer(int shoppingListId, int ItemId, int offerId)
+        {
+
+            ShoppingList list = findShoppingListFromID(shoppingListId);
+            var item = list.Items.First(x => x.ID == ItemId);
+
+            db.ShoppingList_Item.First(x => x.ItemID == ItemId).selectedOffer = db.Offers.First(x => x.ID == offerId);
+            db.SaveChanges();
+
+            return RedirectToAction("Details/" + shoppingListId);
+
+        }
+
+        private void addToShoppingList_Item(Item item, ShoppingList shoppingList, double? amount, string unit)
+        {
+            shoppingList.Items.Add(item);
+            var shoppingListItem = new ShoppingList_Item { Item = item, ShoppingList = shoppingList, Amount = (double)amount, Unit = unit };
+            db.ShoppingList_Item.Add(shoppingListItem);
+
+            db.SaveChanges();
+        }
+
+        private bool isOfferSelectedOnItem(int id, Item item){
+            return db.ShoppingList_Item.Where(x => x.ItemID == item.ID && x.ShoppingListID == id).Single().selectedOffer != null;
+        }
+        
     }
 }

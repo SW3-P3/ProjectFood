@@ -6,7 +6,8 @@ using System.Web.Mvc;
 using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
-using System.Threading.Tasks;
+using System.Data.Entity;
+
 
 namespace ProjectFood.Controllers
 {
@@ -18,10 +19,15 @@ namespace ProjectFood.Controllers
         // GET: Offer
         public ActionResult Index()
         {
-            ViewBag.Stores = _db.Offers.OrderBy(d => d.Store).Select(x => x.Store).Distinct();
-            ViewBag.ShoppingLists = _db.ShoppingLists.ToList();
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.Stores = _db.Offers.OrderBy(d => d.Store).Select(x => x.Store).Distinct();
+                ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
-            return View(_db.Offers.ToList());
+                return View(_db.OffersFiltered().ToList());
+                
+            }
+            return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
         }
 
         public ActionResult ImportOffers()
@@ -122,12 +128,17 @@ namespace ProjectFood.Controllers
             var tmpItem = new Item();
             tmpItem.Name = tmpOffer.Heading;
             tmpItem.Offers.Add(tmpOffer);
-            
-            // This is a temp fix
-            if (shoppingListId == null)
-                shoppingListId = _db.ShoppingLists.First().ID;
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
+
+            var shoppingListItem = new ShoppingList_Item { 
+                Item = tmpItem, 
+                ShoppingList = shoppingList, 
+                Amount = 0, 
+                Unit = tmpOffer.Unit,
+                selectedOffer = tmpOffer};
+
+            _db.ShoppingList_Item.Add(shoppingListItem);
 
             shoppingList.Items.Add(tmpItem);
 

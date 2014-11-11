@@ -35,7 +35,7 @@ else
                 <td class="lead" style="vertical-align:middle">
                     &nbsp;&nbsp;
                     @Html.DisplayFor(modelItem => list.Title)
-                    <span class="badge">@list.Items.Count</span>
+                    <span class="badge">@(((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.NumItems).Where(x => x.ID == list.ID).First().Items.Count)</span>
                 </td>
                 <td class="col-md-2">
                     @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
