@@ -178,6 +178,10 @@
     <Compile Include="Migrations\201411101218046_Initial.Designer.cs">
       <DependentUpon>201411101218046_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201411110911335_add-migration Initial.cs" />
+    <Compile Include="Migrations\201411110911335_add-migration Initial.Designer.cs">
+      <DependentUpon>201411110911335_add-migration Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Api\Catalog.cs" />
@@ -654,7 +658,6 @@
     <Content Include="Views\Recipes\Details.cshtml" />
     <Content Include="Views\Recipes\Edit.cshtml" />
     <Content Include="Views\Recipes\Index.cshtml" />
-    <Content Include="Views\Recipes\Recipe.cshtml" />
     <Content Include="Views\Recipes\CreateSecond.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -670,6 +673,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201411101218046_Initial.resx">
       <DependentUpon>201411101218046_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411110911335_add-migration Initial.resx">
+      <DependentUpon>201411110911335_add-migration Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

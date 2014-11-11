@@ -7,9 +7,12 @@
 <div class="page-header">
     <h1>@Model.Titel</h1>
     <p class="lead"><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter</p>
+    <p class="text-muted">@Model.Tags</p>
+</div>
+<div class="well">
+    @Model.Instructions
 </div>
 <hr />
-<p></p>
 
 <table class="table table-striped">
     <tr>
@@ -33,7 +36,6 @@
         </tr>
     }
 </table>
-
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Back to List", "Index")
