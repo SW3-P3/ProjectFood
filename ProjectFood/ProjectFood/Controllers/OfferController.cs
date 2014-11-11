@@ -21,7 +21,7 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                ViewBag.Stores = _db.Offers.OrderBy(d => d.Store).Select(x => x.Store).Distinct();
+                ViewBag.Stores = _db.OffersFiltered().OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
                 return View(_db.OffersFiltered().ToList());

@@ -15,11 +15,26 @@ namespace ProjectFood.Models
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Recipe_Ingredient> Recipe_Ingredient { get; set; }
         public DbSet<User> Users { get; set; }
-   
+
+
         public IEnumerable<Offer> OffersFiltered()
         {
-            //TODO: Update model to include this in database.
-            var blacklist = new List<string> { ",", "eller", "ELLER" };
+            return OffersFilteredWithString();
+        }
+
+        public IEnumerable<Offer> OffersFilteredWithString(params string[] args)
+        {
+            var blacklist = new List<string> { ",", "eller" };
+
+            var fromArgs = new List<string>();
+            foreach (var str in args)
+            {
+                fromArgs.AddRange(str.Split(','));
+            }
+            blacklist.AddRange(fromArgs);
+            // If an empty strings if any was given
+            blacklist.RemoveAll(x => x.Trim().Equals(string.Empty));
+            
             var res = new List<Offer>();
 
             foreach (var o in Offers)
@@ -28,7 +43,7 @@ namespace ProjectFood.Models
 
                 foreach (var item in blacklist)
                 {
-                    if (o.Heading.Contains(item))
+                    if (o.Heading.ToLower().Contains(item.ToLower()) || o.Store.ToLower().Contains(item.ToLower()))
                         flag = false;
                 }
 
