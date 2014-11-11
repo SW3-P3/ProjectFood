@@ -12,8 +12,10 @@ namespace ProjectFood.Models
         public DbSet<Item> Items { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<ShoppingList_Item> ShoppingList_Item { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<Recipe_Ingredient> Recipe_Ingredient { get; set; }
         public DbSet<User> Users { get; set; }
-
+   
         public IEnumerable<Offer> OffersFiltered()
         {
             //TODO: Update model to include this in database.
@@ -37,11 +39,11 @@ namespace ProjectFood.Models
         }
 
         public ShoppingListContext()
-            : base("Foodxxx")
+            : base("Foody")
         {
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+/*        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
         //    modelBuilder.Entity<ShoppingList>().
         //      HasMany(c => c.Items).
@@ -64,6 +66,6 @@ namespace ProjectFood.Models
                   m.MapRightKey("OfferID");
                   m.ToTable("Items_Offers");
               });
-        }
+        }*/
     }
 }

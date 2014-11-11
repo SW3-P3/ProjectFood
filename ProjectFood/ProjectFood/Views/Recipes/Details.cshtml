@@ -1,0 +1,42 @@
+﻿@model ProjectFood.Models.Recipe
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="page-header">
+    <h1>@Model.Title</h1>
+    <p class="lead"><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter</p>
+    <p class="text-muted">@Model.Tags</p>
+</div>
+<div class="well">
+    @Model.Instructions
+</div>
+<hr />
+
+<table class="table table-striped">
+    <tr>
+        <th class="col-md-2"></th>
+        <th>Ingrediens</th>
+    </tr>
+    @foreach(var item in Model.Ingredients) {
+        <tr>
+            <td class ="text-right">
+                @{
+        var ingredientRel = ((IEnumerable<ProjectFood.Models.Recipe_Ingredient>)ViewBag.Recipe_Ingredient)
+                .Where(x => x.IngredientID == item.ID)
+                .First();
+        if(ingredientRel.Amount > 0) {
+            <span>@ingredientRel.Amount.ToString() @ingredientRel.Unit</span>
+        }
+                }
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+
+        </tr>
+    }
+</table>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

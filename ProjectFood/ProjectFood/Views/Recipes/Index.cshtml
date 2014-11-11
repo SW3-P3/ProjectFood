@@ -1,0 +1,43 @@
+﻿@model IEnumerable<ProjectFood.Models.Recipe>
+
+@{
+    ViewBag.Title = "Opskrifter";
+}
+
+<div class="page-header">
+    <h1><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter</h1>
+</div>
+
+<p>
+    @Html.ActionLink("Opret ny opskrift", "Create", null, new { @class = "btn btn-success btn-block" })
+    <hr />
+</p>
+<div class="row">
+    @{int i = 1; 
+        foreach (var recipe in Model)
+        {
+            <div class="col-md-4">
+                <div class="panel panel-info" onclick="window.location = '@Url.Action("details", new { id = recipe.ID })'">
+                    <div class="panel-heading"><h3>@recipe.Title</h3></div>
+                    <div class="panel-body">
+                        <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                        <table class="table-condensed">
+                            @foreach (var ingredient in recipe.Ingredients)
+                            {
+                                <tr>
+                                    <td>@ingredient.Name</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <div class="panel-footer"><p>@Html.DisplayFor(modelItem => recipe.Tags)</p></div>
+                </div>
+            </div>
+            if (i % 3 == 0)
+            {
+                <div class="row"></div>
+            }
+            i++;
+        }
+    }
+</div>

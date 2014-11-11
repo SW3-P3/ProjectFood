@@ -169,13 +169,14 @@
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OfferController.cs" />
+    <Compile Include="Controllers\RecipesController.cs" />
     <Compile Include="Controllers\ShoppingListsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411071211492_Initial.cs" />
-    <Compile Include="Migrations\201411071211492_Initial.Designer.cs">
-      <DependentUpon>201411071211492_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201411111233580_Initial.cs" />
+    <Compile Include="Migrations\201411111233580_Initial.Designer.cs">
+      <DependentUpon>201411111233580_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Models\Offer.cs" />
     <Compile Include="Models\Rating.cs" />
     <Compile Include="Models\Recipe.cs" />
+    <Compile Include="Models\Recipe_Ingredient.cs" />
     <Compile Include="Models\ShoppingList.cs" />
     <Compile Include="Models\ShoppingListContext.cs" />
     <Compile Include="Models\ShoppingList_Item.cs" />
@@ -599,7 +601,9 @@
     <Content Include="Scripts\sweet-alert.js" />
     <Content Include="Scripts\sweet-alert.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -647,6 +651,12 @@
     <Content Include="Views\Offer\Index.cshtml" />
     <Content Include="Scripts\shoppingList.buttons.js" />
     <Content Include="Views\ShoppingLists\_CreateShoppingList.cshtml" />
+    <Content Include="Views\Recipes\Create.cshtml" />
+    <Content Include="Views\Recipes\Delete.cshtml" />
+    <Content Include="Views\Recipes\Details.cshtml" />
+    <Content Include="Views\Recipes\Edit.cshtml" />
+    <Content Include="Views\Recipes\Index.cshtml" />
+    <Content Include="Views\Recipes\CreateSecond.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -659,8 +669,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411071211492_Initial.resx">
-      <DependentUpon>201411071211492_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201411111233580_Initial.resx">
+      <DependentUpon>201411111233580_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
