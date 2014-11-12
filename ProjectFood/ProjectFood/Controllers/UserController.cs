@@ -1,10 +1,18 @@
 ﻿using ProjectFood.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Text;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using ProjectFood.Models;
+using ProjectFood.Models.Api;
 
 namespace ProjectFood.Controllers
 {
@@ -40,7 +48,8 @@ namespace ProjectFood.Controllers
             string usernameDecode = HttpUtility.HtmlDecode(username);
             if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
             {
-                return View(db.Users.SingleOrDefault(u => u.Username == usernameDecode));
+                return View(db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
+                
             }
             return RedirectToAction("Index");
         }
@@ -49,7 +58,13 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username)
             {
-                db.Users.First(u => u.Name == username).Preferences.Add(pref);
+                var toAdd = pref.Trim().Split(',');
+                if (db.Users.First(x => x.Username == User.Identity.Name).Preferences == null)
+                    db.Users.First(x => x.Username == User.Identity.Name).Preferences = new List<string>();
+                foreach (var s in toAdd)
+                {
+                    db.Users.First(x => x.Username == User.Identity.Name).Preferences.Add(s);
+                }
 
                 db.SaveChanges();
                 return RedirectToAction("EditPreferences", new { username });

@@ -10,6 +10,6 @@ namespace ProjectFood.Models
         public string Name { get; set; }
         public List<Group> Groups { get; set; }
         public List<ShoppingList> ShoppingLists { get; set; }
-        public List<string> Preferences { get; set; }
+        public List<String> Preferences { get; set; }
     }
 }
