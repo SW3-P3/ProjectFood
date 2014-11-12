@@ -92,6 +92,8 @@ namespace ProjectFood.Controllers
                 var user =
                     db.Users.Where(u => u.ID == (db.Recipes.FirstOrDefault(r => r.ID == id)
                     .AuthorID)).SingleOrDefault();
+                if (user.Username == null)
+                    return RedirectToAction("Index");
                 if (user.Username != User.Identity.Name)
                     return RedirectToAction("Index");
                 ViewBag.AuthorUser = db.Users.First(u => u.Username == User.Identity.Name);
