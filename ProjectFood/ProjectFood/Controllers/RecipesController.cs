@@ -24,11 +24,6 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Details/5
         public ActionResult Details(int? id)
         {
-            //find username of author
-            ViewBag.Username = 
-                db.Users.Where(u => u.ID == (db.Recipes.FirstOrDefault(r => r.ID == id)
-                .AuthorID)).SingleOrDefault();
-
             if (User.Identity.IsAuthenticated)
             {
                 ViewBag.ShoppingLists =
@@ -60,11 +55,6 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Create
         public ActionResult Create()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                ViewBag.AuthorUser = db.Users.First(u => u.Username == User.Identity.Name);
-            }
-            
             return View();
         }
         // POST: Recipes/Create
@@ -72,16 +62,13 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Title,Amount,Unit,Ingredients,Minutes,Instructions,Tags,AuthorID")] Recipe recipe)
+        public ActionResult Create([Bind(Include = "ID,Title,AuthorName,Amount,Unit,Ingredients,Minutes,Instructions,Tags")] Recipe recipe)
         {
-            if (ModelState.IsValid)
-            {
                 db.Recipes.Add(recipe);
                 db.SaveChanges();
                 return RedirectToAction("CreateSecond/" + recipe.ID);
-            }
-
-            return View(recipe);
+            
+            //return View(recipe);
         }
 
         // GET: Recipes/Edit/5
@@ -89,15 +76,11 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {//test if user is the author of the recipe
-                var user =
-                    db.Users.Where(u => u.ID == (db.Recipes.FirstOrDefault(r => r.ID == id)
-                    .AuthorID)).SingleOrDefault();
-                if (user.Username == null)
+                if (User.Identity.Name == null || User.Identity.Name != (db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName) 
                     return RedirectToAction("Index");
-                if (user.Username != User.Identity.Name)
-                    return RedirectToAction("Index");
-                ViewBag.AuthorUser = db.Users.First(u => u.Username == User.Identity.Name);
             }
+            else { return RedirectToAction("Index"); }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -115,7 +98,7 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Title,Minutes,Instructions,Tags")] Recipe recipe)
+        public ActionResult Edit([Bind(Include = "ID,AuthorName,Title,Minutes,Instructions,Tags")] Recipe recipe)
         {
             if (ModelState.IsValid)
             {
@@ -202,6 +185,15 @@ namespace ProjectFood.Controllers
         }
         public ActionResult CreateSecond(int? id)
         {
+            if (User.Identity.IsAuthenticated)
+            {//test if user is the author of the recipe
+                string uin = User.Identity.Name;
+                string dbn = db.Recipes.FirstOrDefault(r => r.ID == id).AuthorName;
+                if (User.Identity.Name != (db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName)
+                    return RedirectToAction("Index");
+            }
+            else { return RedirectToAction("Index"); }
+
             if (id == null)
             {
                 return RedirectToAction("Index");
