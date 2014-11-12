@@ -87,6 +87,15 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (User.Identity.IsAuthenticated)
+            {//test if user is the author of the recipe
+                var user =
+                    db.Users.Where(u => u.ID == (db.Recipes.FirstOrDefault(r => r.ID == id)
+                    .AuthorID)).SingleOrDefault();
+                if (user.Username != User.Identity.Name)
+                    return RedirectToAction("Index");
+                ViewBag.AuthorUser = db.Users.First(u => u.Username == User.Identity.Name);
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -96,7 +105,7 @@ namespace ProjectFood.Controllers
             {
                 return HttpNotFound();
             }
-            return RedirectToAction("CreateSecond/" + id);
+            return View();
         }
 
         // POST: Recipes/Edit/5
@@ -110,7 +119,7 @@ namespace ProjectFood.Controllers
             {
                 db.Entry(recipe).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("CreateSecond/"+recipe.ID);
             }
             return View(recipe);
         }
