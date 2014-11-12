@@ -24,6 +24,11 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Details/5
         public ActionResult Details(int? id)
         {
+            //find username of author
+            ViewBag.Username = 
+                db.Users.Where(u => u.ID == (db.Recipes.FirstOrDefault(r => r.ID == id)
+                .AuthorID)).SingleOrDefault();
+
             if (User.Identity.IsAuthenticated)
             {
                 ViewBag.ShoppingLists =
@@ -55,6 +60,11 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Create
         public ActionResult Create()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.AuthorUser = db.Users.First(u => u.Username == User.Identity.Name);
+            }
+            
             return View();
         }
         // POST: Recipes/Create
@@ -62,7 +72,7 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Title,Amount,Unit,Ingredients,Minutes,Instructions,Tags")] Recipe recipe)
+        public ActionResult Create([Bind(Include = "ID,Title,Amount,Unit,Ingredients,Minutes,Instructions,Tags,AuthorID")] Recipe recipe)
         {
             if (ModelState.IsValid)
             {
