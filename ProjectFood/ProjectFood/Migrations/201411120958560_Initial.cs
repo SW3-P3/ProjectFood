@@ -58,6 +58,18 @@ namespace ProjectFood.Migrations
                 .Index(t => t.User_ID);
             
             CreateTable(
+                "dbo.Prefs",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        value = c.String(),
+                        User_ID = c.Int(),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.Users", t => t.User_ID)
+                .Index(t => t.User_ID);
+            
+            CreateTable(
                 "dbo.Recipe_Ingredient",
                 c => new
                     {
@@ -166,6 +178,7 @@ namespace ProjectFood.Migrations
         public override void Down()
         {
             DropForeignKey("dbo.ShoppingLists", "User_ID", "dbo.Users");
+            DropForeignKey("dbo.Prefs", "User_ID", "dbo.Users");
             DropForeignKey("dbo.GroupUsers", "User_ID", "dbo.Users");
             DropForeignKey("dbo.GroupUsers", "Group_ID", "dbo.Groups");
             DropForeignKey("dbo.ShoppingList_Item", "ShoppingListID", "dbo.ShoppingLists");
@@ -192,6 +205,7 @@ namespace ProjectFood.Migrations
             DropIndex("dbo.ShoppingList_Item", new[] { "ShoppingListID" });
             DropIndex("dbo.Recipe_Ingredient", new[] { "IngredientID" });
             DropIndex("dbo.Recipe_Ingredient", new[] { "RecipeID" });
+            DropIndex("dbo.Prefs", new[] { "User_ID" });
             DropIndex("dbo.ShoppingLists", new[] { "User_ID" });
             DropTable("dbo.GroupUsers");
             DropTable("dbo.ShoppingListItems");
@@ -201,6 +215,7 @@ namespace ProjectFood.Migrations
             DropTable("dbo.Users");
             DropTable("dbo.ShoppingList_Item");
             DropTable("dbo.Recipe_Ingredient");
+            DropTable("dbo.Prefs");
             DropTable("dbo.ShoppingLists");
             DropTable("dbo.Offers");
             DropTable("dbo.Recipes");

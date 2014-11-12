@@ -9,11 +9,12 @@
 </div>
 <hr />
 <div>
-    @using(Html.BeginForm("AddPreference", "User", FormMethod.Post, new { @class = "bs-component" })) {
+    @using (Html.BeginForm("AddPreference", "User", FormMethod.Post, new { @class = "bs-component" }))
+    {
         @Html.AntiForgeryToken()
 
         <div class="input-group input-group-lg">
-            <input type="hidden" name="username" value="@User.Identity.Name"/>
+            <input type="hidden" name="username" value="@User.Identity.Name" />
             @Html.TextBox("pref", "", new { @placeholder = "indtast præference", @class = "form-control" })
             <span class="input-group-btn">
                 <button type="submit" class="btn btn-default">Gem</button>
@@ -23,15 +24,16 @@
 </div>
 
 <div class="list-group">
-    @if(Model.Preferences != null) {
-        foreach(string pref in Model.Preferences) {
-            <div class="list-group-item"><a href="@Url.Action("RemovePreference",
-                             new {username = User.Identity.Name, pref = @pref})"
-   class="btn btn-danger btn-xs">
-    <span class="glyphicon glyphicon-remove"></span>
-</a>&nbsp;&nbsp;&nbsp;@pref</div>
-        }
-    } else {
-        <div class="alert-warning"><h1>Du har ingen præferencer!</h1></div>
+
+    @foreach (var pref in Model.Preferences)
+    {
+        <div class="list-group-item">
+            <a href="@Url.Action("RemovePreference",
+                             new {username = User.Identity.Name, prefId = @pref.ID})"
+               class="btn btn-danger btn-xs">
+                <span class="glyphicon glyphicon-remove"></span>
+            </a>&nbsp;&nbsp;&nbsp;@pref.value
+        </div>
     }
+
 </div>

@@ -3,16 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
-using ProjectFood.Models;
-using ProjectFood.Models.Api;
+
+
 
 namespace ProjectFood.Controllers
 {
@@ -58,12 +51,11 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username)
             {
+                var user = db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
                 var toAdd = pref.Trim().Split(',');
-                if (db.Users.First(x => x.Username == User.Identity.Name).Preferences == null)
-                    db.Users.First(x => x.Username == User.Identity.Name).Preferences = new List<string>();
-                foreach (var s in toAdd)
+                foreach (var lePref in toAdd)
                 {
-                    db.Users.First(x => x.Username == User.Identity.Name).Preferences.Add(s);
+                    user.Preferences.Add(new Pref { value = lePref });
                 }
 
                 db.SaveChanges();
@@ -71,13 +63,13 @@ namespace ProjectFood.Controllers
             }
             return RedirectToAction("Index");
         }
-        public ActionResult RemovePreference(string username, string pref)
+        public ActionResult RemovePreference(string username, int prefId)
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username)
             {
-                var user = db.Users.SingleOrDefault(u => u.Username == username);
-                
-                user.Preferences.Remove(pref);
+                var user = db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
+
+                user.Preferences.Remove(user.Preferences.First(p => p.ID == prefId));
 
                 db.SaveChanges();
                 return RedirectToAction("EditPreferences", new { username });
