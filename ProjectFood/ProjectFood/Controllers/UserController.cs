@@ -41,13 +41,14 @@ namespace ProjectFood.Controllers
             string usernameDecode = HttpUtility.HtmlDecode(username);
             if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
             {
+                ViewBag.Prefs = db.Preferences.ToList();
                 return View(db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
                 
             }
             return RedirectToAction("Index");
         }
 
-        public ActionResult AddPreference(string username, string pref)
+        public ActionResult AddPreference(string username, string pref, bool store)
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username)
             {
@@ -55,10 +56,13 @@ namespace ProjectFood.Controllers
                 var toAdd = pref.Trim().Split(',');
                 foreach (var lePref in toAdd)
                 {
-                    user.Preferences.Add(new Pref { value = lePref });
+                    user.Preferences.Add(new Pref { value = lePref, Store = store });
                 }
 
                 db.SaveChanges();
+                if(store) {
+                    return RedirectToAction("EditStores", new { username });
+                }
                 return RedirectToAction("EditPreferences", new { username });
             }
             return RedirectToAction("Index");
@@ -68,11 +72,26 @@ namespace ProjectFood.Controllers
             if (User.Identity.IsAuthenticated && User.Identity.Name == username)
             {
                 var user = db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
+                var tmpPref = user.Preferences.First(p => p.ID == prefId);
 
-                user.Preferences.Remove(user.Preferences.First(p => p.ID == prefId));
+                user.Preferences.Remove(tmpPref);
 
                 db.SaveChanges();
+                if(tmpPref.Store) {
+                    return RedirectToAction("EditStores", new { username });
+                }
                 return RedirectToAction("EditPreferences", new { username });
+            }
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult EditStores(string username)
+        {
+            string usernameDecode = HttpUtility.HtmlDecode(username);
+            if(User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode) {
+                ViewBag.Prefs = db.Preferences.ToList();
+                return View(db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
+
             }
             return RedirectToAction("Index");
         }

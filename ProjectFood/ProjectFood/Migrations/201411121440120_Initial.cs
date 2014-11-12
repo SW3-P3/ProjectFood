@@ -63,6 +63,7 @@ namespace ProjectFood.Migrations
                     {
                         ID = c.Int(nullable: false, identity: true),
                         value = c.String(),
+                        Store = c.Boolean(nullable: false),
                         User_ID = c.Int(),
                     })
                 .PrimaryKey(t => t.ID)

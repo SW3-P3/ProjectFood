@@ -9,5 +9,6 @@ namespace ProjectFood.Models
     {
         public int ID { get; set; }
         public string value { get; set; }
+        public bool Store { get; set; }
     }
 }
