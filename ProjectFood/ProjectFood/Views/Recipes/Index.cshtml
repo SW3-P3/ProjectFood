@@ -12,7 +12,15 @@
 </div>
 
 <p>
-    @Html.ActionLink("Opret ny opskrift", "Create", null, new { @class = "btn btn-success btn-block" })
+    @if (User.Identity.IsAuthenticated) { 
+        @Html.ActionLink("Opret ny opskrift", "Create", null, new { @class = "btn btn-success btn-block" })
+    }
+    else
+    {
+        <h3>Ved at logge ind, kan du selv tilføje opskrifter. Som bruger kan du også få anbefalet opskifter ud fra dine præferencer og bedømmelser. </h3>
+        @Html.ActionLink("Opret en bruger nu!", "Create", null, new { @class = "btn btn-success btn-block" })
+
+    }
     <hr />
 </p>
 <div class="row">
