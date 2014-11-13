@@ -69,7 +69,7 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Title,AuthorName,Amount,Unit,Ingredients,Minutes,Instructions,Tags")] Recipe recipe)
+        public ActionResult Create([Bind(Include = "ID,Title,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
         {
                 db.Recipes.Add(recipe);
                 db.SaveChanges();
@@ -81,23 +81,25 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             if (User.Identity.IsAuthenticated)
             {//test if user is the author of the recipe
+                Debug.Write((db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName.ToString());
+
                 if (User.Identity.Name == null || User.Identity.Name != (db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName) 
                     return RedirectToAction("Index");
             }
             else { return RedirectToAction("Index"); }
 
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Recipe recipe = db.Recipes.Find(id);
             if (recipe == null)
             {
                 return HttpNotFound();
             }
-            return View();
+            return View(recipe);
         }
 
         // POST: Recipes/Edit/5
@@ -105,7 +107,7 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AuthorName,Title,Minutes,Instructions,Tags")] Recipe recipe)
+        public ActionResult Edit([Bind(Include = "ID,Title,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
         {
             if (ModelState.IsValid)
             {
