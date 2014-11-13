@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -21,7 +22,7 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                ViewBag.Stores = _db.OffersFiltered().OrderBy(d => d.Store).Select(x => x.Store).Distinct();
+                ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name)).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
                 return View(_db.OffersFiltered().ToList());

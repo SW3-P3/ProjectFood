@@ -23,6 +23,13 @@ namespace ProjectFood.Models
             return OffersFilteredWithString();
         }
 
+        public IEnumerable<Offer> OffersFilteredByUserPrefs(User u)
+        {
+            var prefs = Users.Include(a => a.Preferences).First(x => x.Username == u.Username).Preferences;
+            var storesBlackListed = prefs.Where(x => x.Store).Select(x => x.value).ToArray();
+            return OffersFilteredWithString(storesBlackListed);
+        }
+
         public IEnumerable<Offer> OffersFilteredWithString(params string[] args)
         {
             var blacklist = new List<string> { ",", "eller" };
