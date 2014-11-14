@@ -87,8 +87,6 @@ namespace ProjectFood.Controllers
             }
             if (User.Identity.IsAuthenticated)
             {//test if user is the author of the recipe
-                Debug.Write((db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName.ToString());
-
                 if (User.Identity.Name == null || User.Identity.Name != (db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName) 
                     return RedirectToAction("Index");
             }
