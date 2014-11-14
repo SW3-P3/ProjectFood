@@ -8,7 +8,7 @@ namespace ProjectFood.Models
     public class Pref
     {
         public int ID { get; set; }
-        public string value { get; set; }
+        public string Value { get; set; }
         public bool Store { get; set; }
     }
 }

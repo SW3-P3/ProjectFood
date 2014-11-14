@@ -196,7 +196,6 @@
     <Compile Include="Models\Api\Session.cs" />
     <Compile Include="Models\Api\Store.cs" />
     <Compile Include="Models\Api\Stores.cs" />
-    <Compile Include="Models\Catalogue.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -209,7 +208,6 @@
     <Compile Include="Models\ShoppingList.cs" />
     <Compile Include="Models\DataBaseContext.cs" />
     <Compile Include="Models\ShoppingList_Item.cs" />
-    <Compile Include="Models\Store.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
