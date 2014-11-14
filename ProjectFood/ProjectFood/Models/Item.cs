@@ -18,7 +18,6 @@ namespace ProjectFood.Models
             OnLists = new List<ShoppingList>();
             Offers = new List<Offer>();
             InRecipes = new List<Recipe>();
-            //Offers.Add(new Offer(){Store = "Erotica", Price = 999999.3M});
         }
     }
 }

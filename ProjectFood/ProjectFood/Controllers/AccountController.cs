@@ -17,7 +17,7 @@ namespace ProjectFood.Controllers
     {
         private ApplicationUserManager _userManager;
 
-        private ShoppingListContext db = new ShoppingListContext();
+        private readonly DataBaseContext _db = new DataBaseContext();
 
         public AccountController()
         {
@@ -84,7 +84,6 @@ namespace ProjectFood.Controllers
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
@@ -168,8 +167,8 @@ namespace ProjectFood.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    db.Users.Add(new User() { Username = model.Email });
-                    db.SaveChanges();
+                    _db.Users.Add(new User() { Username = model.Email });
+                    _db.SaveChanges();
 
                     return RedirectToAction("Index", "Home");
                 }

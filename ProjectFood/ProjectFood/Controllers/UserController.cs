@@ -11,7 +11,7 @@ namespace ProjectFood.Controllers
 {
     public class UserController : Controller
     {
-        private ShoppingListContext db = new ShoppingListContext();
+        private readonly DataBaseContext _db = new DataBaseContext();
 
         // GET: User
         public ActionResult Index()
@@ -20,6 +20,7 @@ namespace ProjectFood.Controllers
             {
                 return RedirectToAction("Index", "Manage");
             }
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -28,8 +29,8 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username)
             {
-                db.Users.SingleOrDefault(u => u.Username == username).Name = name;
-                db.SaveChanges();
+                _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
+                _db.SaveChanges();
             }
 
             return RedirectToAction("Index");
@@ -38,11 +39,11 @@ namespace ProjectFood.Controllers
         [HttpGet]
         public ActionResult EditPreferences(string username)
         {
-            string usernameDecode = HttpUtility.HtmlDecode(username);
+            var usernameDecode = HttpUtility.HtmlDecode(username);
             if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
             {
-                ViewBag.Prefs = db.Preferences.ToList();
-                return View(db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
+                ViewBag.Prefs = _db.Preferences.ToList();
+                return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
                 
             }
             return RedirectToAction("Index");
@@ -52,18 +53,15 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username)
             {
-                var user = db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
+                var user = _db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
                 var toAdd = pref.Trim().Split(',');
                 foreach (var lePref in toAdd)
                 {
                     user.Preferences.Add(new Pref { value = lePref, Store = store });
                 }
 
-                db.SaveChanges();
-                if(store) {
-                    return RedirectToAction("EditStores", new { username });
-                }
-                return RedirectToAction("EditPreferences", new { username });
+                _db.SaveChanges();
+                return RedirectToAction(store ? "EditStores" : "EditPreferences", new { username });
             }
             return RedirectToAction("Index");
         }
@@ -71,26 +69,23 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username)
             {
-                var user = db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
+                var user = _db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
                 var tmpPref = user.Preferences.First(p => p.ID == prefId);
 
                 user.Preferences.Remove(tmpPref);
 
-                db.SaveChanges();
-                if(tmpPref.Store) {
-                    return RedirectToAction("EditStores", new { username });
-                }
-                return RedirectToAction("EditPreferences", new { username });
+                _db.SaveChanges();
+                return RedirectToAction(tmpPref.Store ? "EditStores" : "EditPreferences", new { username });
             }
             return RedirectToAction("Index");
         }
 
         public ActionResult EditStores(string username)
         {
-            string usernameDecode = HttpUtility.HtmlDecode(username);
+            var usernameDecode = HttpUtility.HtmlDecode(username);
             if(User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode) {
-                ViewBag.Prefs = db.Preferences.ToList();
-                return View(db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
+                ViewBag.Prefs = _db.Preferences.ToList();
+                return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
 
             }
             return RedirectToAction("Index");

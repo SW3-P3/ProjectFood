@@ -15,7 +15,7 @@ namespace ProjectFood.Controllers
     public class OfferController : Controller
     {
 
-        private readonly ShoppingListContext _db = new ShoppingListContext();
+        private readonly DataBaseContext _db = new DataBaseContext();
 
         // GET: Offer
         public ActionResult Index()
@@ -126,8 +126,7 @@ namespace ProjectFood.Controllers
         {
             var tmpOffer = _db.Offers.Find(offerId);
 
-            var tmpItem = new Item();
-            tmpItem.Name = tmpOffer.Heading;
+            var tmpItem = new Item {Name = tmpOffer.Heading};
             tmpItem.Offers.Add(tmpOffer);
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
@@ -147,7 +146,7 @@ namespace ProjectFood.Controllers
 
             return Json(new
             {
-                Message = "Hej troels",
+                Message = "Hajtroels",
                 OfferId = offerId,
             }, JsonRequestBehavior.AllowGet);
         }

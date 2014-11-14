@@ -13,7 +13,7 @@ namespace ProjectFood.Controllers
     [Authorize]
     public class ManageController : Controller
     {
-        ShoppingListContext db = new ShoppingListContext();
+        private readonly DataBaseContext _db = new DataBaseContext();
         public ManageController()
         {
         }
@@ -57,7 +57,7 @@ namespace ProjectFood.Controllers
                 Logins = await UserManager.GetLoginsAsync(User.Identity.GetUserId()),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(User.Identity.GetUserId())
             };
-            ViewBag.User = db.Users.SingleOrDefault(u => u.Username == User.Identity.Name);
+            ViewBag.User = _db.Users.SingleOrDefault(u => u.Username == User.Identity.Name);
             return View(model);
         }
 

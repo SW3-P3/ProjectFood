@@ -166,7 +166,6 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OfferController.cs" />
     <Compile Include="Controllers\RecipesController.cs" />
@@ -208,7 +207,7 @@
     <Compile Include="Models\Recipe.cs" />
     <Compile Include="Models\Recipe_Ingredient.cs" />
     <Compile Include="Models\ShoppingList.cs" />
-    <Compile Include="Models\ShoppingListContext.cs" />
+    <Compile Include="Models\DataBaseContext.cs" />
     <Compile Include="Models\ShoppingList_Item.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\User.cs" />
