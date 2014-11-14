@@ -40,7 +40,9 @@ namespace ProjectFood.Controllers
             {
                 return RedirectToAction("index");
             }
+
             Recipe recipe = db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+            ViewBag.Author = db.Users.First(u => u.Username == recipe.AuthorName).Name;
             if (recipe.Ingredients.Count > 0)
             {
                 ViewBag.Recipe_Ingredient = db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
@@ -71,10 +73,10 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Title,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
         {
-                db.Recipes.Add(recipe);
-                db.SaveChanges();
-                return RedirectToAction("CreateSecond/" + recipe.ID);
-            
+            db.Recipes.Add(recipe);
+            db.SaveChanges();
+            return RedirectToAction("CreateSecond/" + recipe.ID);
+
             //return View(recipe);
         }
 
@@ -87,7 +89,7 @@ namespace ProjectFood.Controllers
             }
             if (User.Identity.IsAuthenticated)
             {//test if user is the author of the recipe
-                if (User.Identity.Name == null || User.Identity.Name != (db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName) 
+                if (User.Identity.Name == null || User.Identity.Name != (db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName)
                     return RedirectToAction("Index");
             }
             else { return RedirectToAction("Index"); }
@@ -111,7 +113,7 @@ namespace ProjectFood.Controllers
             {
                 db.Entry(recipe).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("CreateSecond/"+recipe.ID);
+                return RedirectToAction("CreateSecond/" + recipe.ID);
             }
             return View(recipe);
         }
