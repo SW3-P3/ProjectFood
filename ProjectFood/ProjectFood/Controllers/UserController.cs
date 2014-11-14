@@ -57,7 +57,7 @@ namespace ProjectFood.Controllers
                 var toAdd = pref.Trim().Split(',');
                 foreach (var lePref in toAdd)
                 {
-                    user.Preferences.Add(new Pref { value = lePref, Store = store });
+                    user.Preferences.Add(new Pref { Value = lePref, Store = store });
                 }
 
                 _db.SaveChanges();
