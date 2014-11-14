@@ -36,90 +36,104 @@
 </div>
 
 <div class="row">
-    <table class="table table-striped">
-        <tr>
-            <th class="col-md-1 text-center">Fjern</th>
-            <th>Varenavn</th>
-            <th class="col-md-1">Mængde</th>
-            <th class="col-md-1">Pris</th>
-            <th class="col-md-1">Begynder</th>
-            <th class="col-md-1">Udløber</th>
-            <th class="col-md-1">Butik</th>
-            <th class="col-md-1">Se Tilbud</th>
-        </tr>
-        @foreach(var item in Model.Items) {
+    <div class="form-control">
+        <table class="table table-striped">
             <tr>
-                <td>
-                    <a href="@Url.Action("RemoveItem",
+                <th class="col-md-1 text-center">Fjern</th>
+                <th>Varenavn</th>
+                <th class="col-md-1">Mængde</th>
+                <th class="col-md-1">Pris</th>
+                <th class="col-md-1">Begynder</th>
+                <th class="col-md-1">Udløber</th>
+                <th class="col-md-1">Butik</th>
+                <th class="col-md-1">Se Tilbud</th>
+            </tr>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        <a href="@Url.Action("RemoveItem",
                              new {id = Model.ID, itemID = item.ID})"
-                       class="btn btn-danger btn-xs btn-block">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
-                </td>
-                @{
-            var itemRel = ((IEnumerable<ProjectFood.Models.ShoppingList_Item>)ViewBag.ShoppingList_Item).First(x => x.ItemID == item.ID);
-            string itemTitle;
-            if(itemRel.selectedOffer == null) {
-                itemTitle = item.Name;
-            } else {
-                itemTitle = itemRel.selectedOffer.Heading;
-            }
+                           class="btn btn-danger btn-xs btn-block">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                    </td>
+                    @{
+                var itemRel = ((IEnumerable<ProjectFood.Models.ShoppingList_Item>)ViewBag.ShoppingList_Item).First(x => x.ItemID == item.ID);
+                string itemTitle;
+                if (itemRel.selectedOffer == null)
+                {
+                    itemTitle = item.Name;
+                }
+                else
+                {
+                    itemTitle = itemRel.selectedOffer.Heading;
+                }
 
-            <td @if(itemRel.Bought) { <text> class="text-strikethrough" </text>   }>
-                @Ajax.ActionLink(
+                <td @if (itemRel.Bought) { <text> class="text-strikethrough" </text>    }>
+                    @Ajax.ActionLink(
                 itemTitle,
                 "ToggleItemBought",
                 new { id = Model.ID, itemID = item.ID },
                  new AjaxOptions { HttpMethod = "POST", OnSuccess = "$(this).parent().toggleClass('text-strikethrough')" },
-                new { @style="text-decoration: none", @class="h4" })
-            </td>
-                    <td>
-                        @if(itemRel.Amount > 0) {
-                            <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
-                        }
-                    </td>
-            if(itemRel.selectedOffer != null) {
-                <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Price)</td>
-                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
-                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).End)</td>
-                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Store)</td>
-            } else {
-                <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-            }
+                new { @style = "text-decoration: none", @class = "h4" })
+                </td>
+                        <td>
+                            @if (itemRel.Amount > 0)
+                            {
+                                <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
+                            }
+                        </td>
+                if (itemRel.selectedOffer != null)
+                {
+                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Price)</td>
+                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
+                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).End)</td>
+                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Store)</td>
                 }
-                @if(item.Offers.Count > 0) {
-                    <td>
-                        <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
-                            <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
-                        </div>
-                    </td>
-                } else {
+                else
+                {
                     <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                 }
-            </tr>
-            foreach(var offer in item.Offers) {
-                <tr style="display: none" id="ShowOfferAll_@item.ID">
-                    <td>@*Should be Empty*@</td>
-                    <td>@offer.Heading</td>
-                    <td>@offer.Unit</td>
-                    <td>@offer.Price</td>
-                    <td>@offer.Begin.ToString("ddd d- M")</td>
-                    <td>@offer.End.ToString("ddd d- M")</td>
-                    <td>@offer.Store</td>
-                    <td>
-                        <a href="@Url.Action("ChooseOffer",
-                                         new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID })"
-                           class="btn btn-success btn-xs btn-block">
-                            Vælg
-                        </a>
-                    </td>
+                    }
+                    @if (item.Offers.Count > 0)
+                    {
+                        <td>
+                            <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
+                                <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
                 </tr>
+                foreach (var offer in item.Offers)
+                {
+                    <tr style="display: none" id="ShowOfferAll_@item.ID">
+                        <td>@*Should be Empty*@</td>
+                        <td>@offer.Heading</td>
+                        <td>@offer.Unit</td>
+                        <td>@offer.Price</td>
+                        <td>@offer.Begin.ToString("ddd d- M")</td>
+                        <td>@offer.End.ToString("ddd d- M")</td>
+                        <td>@offer.Store</td>
+                        <td>
+                            <a href="@Url.Action("ChooseOffer",
+                                         new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID })"
+                               class="btn btn-success btn-xs btn-block">
+                                Vælg
+                            </a>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </table>
+        </table>
+    </div>
 </div>
 <p>
     @Html.ActionLink("Ændre navn på listen", "Edit", new { id = Model.ID }) |
