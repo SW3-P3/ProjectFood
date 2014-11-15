@@ -24,31 +24,26 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Details/5
         public ActionResult Details(int? id)
         {
-            if (User.Identity.IsAuthenticated)
-            {
+            if(User.Identity.IsAuthenticated) {
                 ViewBag.ShoppingLists =
                     _db.Users.Include(s => s.ShoppingLists)
                         .First(u => u.Username == User.Identity.Name)
                         .ShoppingLists.ToList();
-            }
-            else
-            {
+            } else {
                 ViewBag.ShoppingLists = null;
             }
 
-            if (id == null)
-            {
+            if(id == null) {
                 return RedirectToAction("index");
             }
 
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
-            ViewBag.Author = _db.Users.First(u => u.Username == recipe.AuthorName).Name;
-            if (recipe.Ingredients.Count > 0)
-            {
+            ViewBag.Author = _db.Users.First(u => u.Username == recipe.AuthorName);
+            ViewBag.OriginalAuthor = _db.Users.SingleOrDefault(u => u.Username == recipe.OriginalAuthorName);
+            if(recipe.Ingredients.Count > 0) {
                 ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
             }
-            if (recipe == null)
-            {
+            if(recipe == null) {
                 return HttpNotFound();
             }
             return View(recipe);
@@ -57,12 +52,9 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Create
         public ActionResult Create()
         {
-            if (User.Identity.IsAuthenticated)
-            {
+            if(User.Identity.IsAuthenticated) {
                 return View();
-            }
-            else
-            {
+            } else {
                 return RedirectToAction("Register", "Account");
             }
         }
@@ -71,7 +63,7 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Title,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
+        public ActionResult Create([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
         {
             _db.Recipes.Add(recipe);
             _db.SaveChanges();
@@ -81,22 +73,49 @@ namespace ProjectFood.Controllers
         }
 
         // GET: Recipes/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, bool fork)
         {
-            if (id == null)
-            {
+            if(id == null) {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            if (User.Identity.IsAuthenticated)
-            {//test if user is the author of the recipe
-                if (User.Identity.Name == null || User.Identity.Name != (_db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName)
-                    return RedirectToAction("Index");
-            }
-            else { return RedirectToAction("Index"); }
 
-            Recipe recipe = _db.Recipes.Find(id);
-            if (recipe == null)
-            {
+            Recipe recipe = _db.Recipes.Include(r => r.Ingredients).First(r => r.ID == id);
+            Recipe forkedRecipe;
+            Recipe originalRecipe;
+
+            if(User.Identity.IsAuthenticated) {
+                if(fork) {
+                    originalRecipe = recipe;
+                    forkedRecipe = new Recipe {
+                        OriginalAuthorName = originalRecipe.OriginalAuthorName,
+                        AuthorName = User.Identity.Name,
+                        Title = originalRecipe.Title,
+                        Ingredients = new List<Item>(originalRecipe.Ingredients),
+                        Tags = originalRecipe.Tags,
+                        Minutes = originalRecipe.Minutes,
+                        Instructions = originalRecipe.Instructions
+                    };
+                    _db.Recipes.Add(forkedRecipe);
+
+                    foreach(var ingredient in _db.Recipe_Ingredient.Where(i => i.RecipeID == originalRecipe.ID)) {
+                        var tmpRecipeIngredient = new Recipe_Ingredient {
+                            RecipeID = forkedRecipe.ID,
+                            IngredientID = ingredient.IngredientID,
+                            Recipe = forkedRecipe,
+                            Ingredient = ingredient.Ingredient,
+                            Amount = ingredient.Amount,
+                            Unit = ingredient.Unit
+                        };
+                        _db.Recipe_Ingredient.Add(tmpRecipeIngredient);
+                    }
+                    _db.SaveChanges();
+                    recipe = forkedRecipe;
+                }
+            } else {
+                return RedirectToAction("Details/" + id);
+            }
+
+            if(recipe == null) {
                 return HttpNotFound();
             }
             return View(recipe);
@@ -107,10 +126,9 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Title,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
+        public ActionResult Edit([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
         {
-            if (ModelState.IsValid)
-            {
+            if(ModelState.IsValid) {
                 _db.Entry(recipe).State = EntityState.Modified;
                 _db.SaveChanges();
                 return RedirectToAction("CreateSecond/" + recipe.ID);
@@ -121,15 +139,13 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
+            if(id == null) {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var recipe = _db.Recipes.Find(id);
 
 
-            if (recipe == null)
-            {
+            if(recipe == null) {
                 return HttpNotFound();
             }
             return View(recipe);
@@ -148,8 +164,7 @@ namespace ProjectFood.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
+            if(disposing) {
                 _db.Dispose();
             }
             base.Dispose(disposing);
@@ -160,28 +175,22 @@ namespace ProjectFood.Controllers
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
             Item tmpIngredient;
 
-            if (name.Trim() == string.Empty)
-            {
+            if(name.Trim() == string.Empty) {
                 return RedirectToAction("CreateSecond/" + id);
             }
             //allows for ingredienst with no amount and unit
-            if (amount == null)
-            {
+            if(amount == null) {
                 amount = 0;
             }
             //Search in GenericLItems for item
             Item knownItem = null;
-            if (_db.Items.Any())
-            {
+            if(_db.Items.Any()) {
                 knownItem = _db.Items.SingleOrDefault(i => i.Name.CompareTo(name) == 0);
             }
 
-            if (knownItem != null)
-            {
+            if(knownItem != null) {
                 tmpIngredient = knownItem;
-            }
-            else
-            {
+            } else {
                 tmpIngredient = new Item() { Name = name };
             }
 
@@ -192,31 +201,49 @@ namespace ProjectFood.Controllers
             _db.SaveChanges();
             return RedirectToAction("CreateSecond/" + id);
         }
+
+        public ActionResult RemoveIngredient(int id, int ingredientId)
+        {
+
+            var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+
+            //Find the item to be deleted, and remove it from the shopping list
+            var rmIngredient = recipe.Ingredients.ToList().Find(x => x.ID == ingredientId);
+            recipe.Ingredients.Remove(rmIngredient);
+
+            //Find the item in the ShoppingList_Item table
+            var rmRecipeIngredient = _db.Recipe_Ingredient.SingleOrDefault(x => x.IngredientID == ingredientId && x.RecipeID == id);
+            //... and remove it
+            if(rmRecipeIngredient != null)
+                _db.Recipe_Ingredient.Remove(rmRecipeIngredient);
+
+            //Save the changes in the database
+            _db.SaveChanges();
+
+            //Update the users view of the shoppinglist
+            return RedirectToAction("CreateSecond/" + id);
+        }
+
         public ActionResult CreateSecond(int? id)
         {
-            if (id == null)
-            {
+            if(id == null) {
                 return RedirectToAction("Index");
             }
 
-            if (User.Identity.IsAuthenticated)
-            {
-                if (User.Identity.Name != (_db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName)
+            if(User.Identity.IsAuthenticated) {
+                if(User.Identity.Name != (_db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName)
                     return RedirectToAction("Index");
-            }
-            else
-            {
-                return RedirectToAction("Index"); 
-                
+            } else {
+                return RedirectToAction("Index");
+
             }
 
-            
+
             Recipe recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
-            if (recipe.Ingredients.Count > 0)
-            {
+            if(recipe.Ingredients.Count > 0) {
                 ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
             }
-            
+
             return View(recipe);
         }
 
@@ -226,12 +253,10 @@ namespace ProjectFood.Controllers
             var tmpItem = _db.Items.Find(itemId);
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
-            if (amount == null)
-            {
+            if(amount == null) {
                 amount = 0;
             }
-            var shoppingListItem = new ShoppingList_Item
-            {
+            var shoppingListItem = new ShoppingList_Item {
                 Item = tmpItem,
                 ShoppingList = shoppingList,
                 Amount = (double)amount,
@@ -244,8 +269,7 @@ namespace ProjectFood.Controllers
 
             _db.SaveChanges();
 
-            return Json(new
-            {
+            return Json(new {
                 Message = "Hajtroels",
                 ItemId = itemId,
             }, JsonRequestBehavior.AllowGet);

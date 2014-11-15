@@ -22,7 +22,7 @@ namespace ProjectFood.Migrations
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        AuthorID = c.Int(nullable: false),
+                        OriginalAuthorName = c.String(),
                         AuthorName = c.String(),
                         Title = c.String(),
                         Tags = c.String(),
@@ -64,7 +64,7 @@ namespace ProjectFood.Migrations
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        value = c.String(),
+                        Value = c.String(),
                         Store = c.Boolean(nullable: false),
                         User_ID = c.Int(),
                     })
