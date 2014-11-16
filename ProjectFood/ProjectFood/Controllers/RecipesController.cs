@@ -194,10 +194,15 @@ namespace ProjectFood.Controllers
                 tmpIngredient = new Item() { Name = name };
             }
 
-            var recipeIngredient = new Recipe_Ingredient() { RecipeID = id, Ingredient = tmpIngredient, Amount = (double)amount, Unit = unit };
+            if(recipe.Ingredients.Contains(tmpIngredient)) {
+                _db.Recipe_Ingredient.First(i => i.Recipe == recipe && i.Ingredient == tmpIngredient).Amount = (double)amount;
+            } else {
+                var recipeIngredient = new Recipe_Ingredient() { RecipeID = id, Ingredient = tmpIngredient, Amount = (double)amount, Unit = unit };
+                recipe.Ingredients.Add(tmpIngredient);
+                _db.Recipe_Ingredient.Add(recipeIngredient);
+            }
+          
 
-            recipe.Ingredients.Add(tmpIngredient);
-            _db.Recipe_Ingredient.Add(recipeIngredient);
             _db.SaveChanges();
             return RedirectToAction("CreateSecond/" + id);
         }

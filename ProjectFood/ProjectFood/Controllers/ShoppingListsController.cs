@@ -221,14 +221,58 @@ namespace ProjectFood.Controllers
 
         public ActionResult ClearShoppingList(int id)
         {
-            var tmp = _db.ShoppingLists.Include(s => s.Items).ToList();
-            ShoppingList shoppingList = tmp.Find(x => x.ID == id);
+            ShoppingList shoppingList = findShoppingListFromID(id);
 
             shoppingList.Items.Clear();
 
             _db.SaveChanges();
 
             return RedirectToAction("Details/" + id);
+        }
+
+        [HttpPost]
+        public ActionResult MoveItemToBought(int id, int itemID)
+        {
+            var tmpBought = _db.ShoppingList_Item.First(i => i.ItemID == itemID && i.ShoppingListID == id);
+
+            if(tmpBought != null) {
+                tmpBought.Bought = true;
+                _db.SaveChanges();
+                return Json(new {
+                    Message = "Hajtroels",
+                    itemID = itemID,
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new {
+                Message = "DID NOT TWERK",
+                itemID = itemID,
+            }, JsonRequestBehavior.AllowGet);
+            
+        }
+
+        [HttpPost]
+        public ActionResult ToggleItemBought(int id, int itemID)
+        {
+            var tmpItem = _db.ShoppingList_Item.First(i => i.ItemID == itemID && i.ShoppingListID == id);
+
+            if(tmpItem != null) {
+                if(tmpItem.Bought == false || tmpItem.Bought == null) {
+                    tmpItem.Bought = true;
+                } else {
+                    tmpItem.Bought = false;
+                }
+                
+                _db.SaveChanges();
+                return Json(new {
+                    Message = "Hajtroels",
+                    itemID = itemID,
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new {
+                Message = "DID NOT TWERK",
+                itemID = itemID,
+            }, JsonRequestBehavior.AllowGet);
+
         }
 
         private List<Offer> GetOffersForItem(Item item)

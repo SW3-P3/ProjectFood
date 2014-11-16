@@ -6,11 +6,11 @@
     ViewBag.Title = Html.DisplayFor(model => model.Title);
 }
 
+
 <div class="page-header">
     <h1>@Html.DisplayFor(model => model.Title) <span class="badge">@Model.Items.Count() varer</span></h1>
 </div>
-@using (Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post, new { @class = "navbar-form navbar-left" }))
-{
+@using(Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post, new { @class = "navbar-form navbar-left" })) {
     <div class="form-group">
 
         <div class="col-md-4">
@@ -20,7 +20,7 @@
             @Html.TextBox("amount", null, new { @type = "number", @class = "form-control", @placeholder = "Mængde", })
         </div>
         <div class="col-md-2">
-            @Html.DropDownList("unit", new SelectList(new List<string> {"stk", "kg", "g", "liter", "ml" }), new { @class = "form-control", @placeholder = "Enhed" })
+            @Html.DropDownList("unit", new SelectList(new List<string> { "stk", "kg", "g", "liter", "ml" }), new { @class = "form-control", @placeholder = "Enhed" })
         </div>
     </div>
 
@@ -44,8 +44,7 @@
             <th class="col-md-1">Butik</th>
             <th class="col-md-1">Se Tilbud</th>
         </tr>
-        @foreach (var item in Model.Items)
-        {
+        @foreach(var item in Model.Items) {
             <tr>
                 <td>
                     <a href="@Url.Action("RemoveItem",
@@ -56,50 +55,49 @@
                 </td>
                 @{
             var itemRel = ((IEnumerable<ProjectFood.Models.ShoppingList_Item>)ViewBag.ShoppingList_Item).First(x => x.ItemID == item.ID);
-            if (itemRel.selectedOffer == null)
-            {
-                <td onclick=" StrikeTrough(this) ">@Html.DisplayFor(modelItem => item.Name)</td>
+            string itemTitle;
+            if(itemRel.selectedOffer == null) {
+                itemTitle = item.Name;
+            } else {
+                itemTitle = itemRel.selectedOffer.Heading;
             }
-            else
-            {
-                <td>@itemRel.selectedOffer.Heading</td>
-            }
-            <td>
-                @if (itemRel.Amount > 0)
-                {
-                    <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
-                }
+
+            <td @if(itemRel.Bought) { <text> class="text-strikethrough" </text>   }>
+                @Ajax.ActionLink(
+                itemTitle,
+                "ToggleItemBought",
+                new { id = Model.ID, itemID = item.ID },
+                 new AjaxOptions { HttpMethod = "POST", OnSuccess = "$(this).parent().toggleClass('text-strikethrough')" },
+                new { @style="text-decoration: none", @class="h4" })
             </td>
-            if (itemRel.selectedOffer != null)
-            {
+                    <td>
+                        @if(itemRel.Amount > 0) {
+                            <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
+                        }
+                    </td>
+            if(itemRel.selectedOffer != null) {
                 <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Price)</td>
                     <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
                     <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).End)</td>
                     <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Store)</td>
-            }
-            else
-            {
+            } else {
                 <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
             }
                 }
-                @if (item.Offers.Count > 0)
-                {
+                @if(item.Offers.Count > 0) {
                     <td>
                         <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
                             <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
                         </div>
                     </td>
-                }
-                else
-                {
+                } else {
                     <td></td>
                 }
             </tr>
-            foreach (var offer in item.Offers)
-            {
+            foreach(var offer in item.Offers) {
                 <tr style="display: none" id="ShowOfferAll_@item.ID">
                     <td>@*Should be Empty*@</td>
                     <td>@offer.Heading</td>

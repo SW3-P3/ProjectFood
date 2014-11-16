@@ -20,5 +20,6 @@ namespace ProjectFood.Models
 
         public double Amount { get; set; }
         public string Unit { get; set; }
+        public bool Bought { get; set; }
     }
 }

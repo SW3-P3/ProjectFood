@@ -178,6 +178,10 @@
     <Compile Include="Migrations\201411151138129_Initial.Designer.cs">
       <DependentUpon>201411151138129_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201411161546331_Initial1.cs" />
+    <Compile Include="Migrations\201411161546331_Initial1.Designer.cs">
+      <DependentUpon>201411161546331_Initial1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Api\Catalog.cs" />
@@ -219,9 +223,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\darkly.bootstrap.css" />
+    <Content Include="Content\darkly.bootstrap.min.css" />
     <Content Include="Content\paper.bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\paper.bootstrap.min.css" />
+    <Content Include="Content\simplex.bootstrap.css" />
+    <Content Include="Content\simplex.bootstrap.min.css" />
     <Content Include="Content\sweet-alert.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -671,6 +679,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201411151138129_Initial.resx">
       <DependentUpon>201411151138129_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411161546331_Initial1.resx">
+      <DependentUpon>201411161546331_Initial1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -5,3 +5,7 @@
 		$(element).id = "edited";
 	}
 };
+
+function ToggleLineThrough(element) {
+    $(this).toggleClass('text-strikethrough');
+};
