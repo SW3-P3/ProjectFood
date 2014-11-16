@@ -1,48 +1,23 @@
 ﻿@model ProjectFood.Models.Recipe
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Slet opskrift";
 }
 
-<h2>Delete</h2>
+<div class="page-header">
+    <h1>@ViewBag.Title</h1>
+</div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Recipe</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Minutes)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Minutes)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Instructions)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Instructions)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
+<div class="alert alert-danger">
+    <h2>Er du sikker på, at du vil slette opskriften: @Model.Title?</h2>
+    <p class="lead">Opskriften kan ikke gendannes, og vil være tabt for evigt.<br /><br /></p>
+    <div class="row">
+        @using(Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+            <a href="@Url.Action("Details", "Recipe", new { id = @Model.ID })" class="btn btn-primary btn-lg btn-block">Nej, tag mig tilbage.</a>
+            <button type="submit" class="btn btn-danger btn-lg btn-block">
+                Ja, slet den!
+            </button>
+        }
+    </div>
 </div>

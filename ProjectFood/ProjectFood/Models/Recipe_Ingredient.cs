@@ -17,7 +17,7 @@ namespace ProjectFood.Models
         public virtual Recipe Recipe { get; set; }
         public virtual Item Ingredient { get; set; }
 
-        public double Amount { get; set; }
+        public double AmountPerPerson { get; set; }
         public string Unit { get; set; }
     }
 }

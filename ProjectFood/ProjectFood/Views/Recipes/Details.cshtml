@@ -36,21 +36,25 @@
             <p class="lead"><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter</p>
             <p class="text-muted">Tags - @Model.Tags</p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4 col-md-offset-2">
+            <div class="row">
+                @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
+                    List<SelectListItem> listItems = new List<SelectListItem>();
 
-            @{if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
-            {
-                List<SelectListItem> listItems = new List<SelectListItem>();
+                    foreach(var list in ViewBag.ShoppingLists) {
+                        listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
+                    }
+                    <label for="Selection">Vælg indkøbsliste</label>
+                    @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
 
-                foreach (var list in ViewBag.ShoppingLists)
-                {
-                    listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
                 }
-                <label for="Selection">Vælg indkøbsliste</label>
-                @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
-
-            }
-            }
+            </div>
+            <div class="row">
+                @using(Html.BeginForm("Details", "Recipes", FormMethod.Post)) {
+                    <label class="control-label">Antal personer</label>
+                    @Html.TextBox("numPersons", null, new { @type = "number", @class = "form-control", @value = "4", @onchange = "$(this).parent().submit();" })
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -81,7 +85,7 @@
                             <td class="col-md-1">
                                 @using (Ajax.BeginForm(
                         "AddItemToShoppingList",
-                        new { itemID = item.ID, amount = ingredientRel.Amount, unit = ingredientRel.Unit },
+                        new { itemID = item.ID, amount = ingredientRel.AmountPerPerson, unit = ingredientRel.Unit },
                         new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckRecipe" }))
                                 {
                                     <input type="hidden" name="shoppingListId" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
@@ -92,9 +96,9 @@
                             </td>
                         }
                         <td class="col-md-2 text-right">
-                            @if (ingredientRel.Amount > 0)
+                            @if (ingredientRel.AmountPerPerson > 0)
                             {
-                                <span>@ingredientRel.Amount.ToString() @ingredientRel.Unit</span>
+                                <span>@(ingredientRel.AmountPerPerson * ViewBag.numPersons) @ingredientRel.Unit</span>
                             }
 
                         </td>
@@ -114,8 +118,9 @@
     @if (User.Identity.Name == Model.AuthorName)
     {
         @Html.ActionLink("Ændre opskrift", "Edit", new { id = Model.ID, fork = false }) <text>|</text>
+        @Html.ActionLink("Slet opskrift", "Delete", new { id = Model.ID}) <text>|</text>
     } else {
-        @Html.ActionLink("Ændre opskrift", "Edit", new { id = Model.ID, fork = true }) <text>|</text>
+        @Html.ActionLink("Lav din egen version af opskriften", "Edit", new { id = Model.ID, fork = true }) <text>|</text>
     }
    
     @Html.ActionLink("Tilbage til opskrifter", "Index")
@@ -123,6 +128,6 @@
 
 
 @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
-@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }

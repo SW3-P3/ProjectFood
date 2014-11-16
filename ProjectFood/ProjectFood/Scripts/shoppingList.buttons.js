@@ -7,5 +7,5 @@
 };
 
 function ToggleLineThrough(element) {
-    $(this).toggleClass('text-strikethrough');
+    $(this).parent().toggleClass('text-strikethrough');
 };

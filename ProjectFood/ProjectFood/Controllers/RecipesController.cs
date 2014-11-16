@@ -22,7 +22,7 @@ namespace ProjectFood.Controllers
         }
 
         // GET: Recipes/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id, int? numPersons)
         {
             if(User.Identity.IsAuthenticated) {
                 ViewBag.ShoppingLists =
@@ -46,6 +46,13 @@ namespace ProjectFood.Controllers
             if(recipe == null) {
                 return HttpNotFound();
             }
+
+            if(numPersons == null) {
+                ViewBag.numPersons = 4;
+            } else {
+                ViewBag.numPersons = numPersons;
+            }
+
             return View(recipe);
         }
 
@@ -103,7 +110,7 @@ namespace ProjectFood.Controllers
                             IngredientID = ingredient.IngredientID,
                             Recipe = forkedRecipe,
                             Ingredient = ingredient.Ingredient,
-                            Amount = ingredient.Amount,
+                            AmountPerPerson = ingredient.AmountPerPerson,
                             Unit = ingredient.Unit
                         };
                         _db.Recipe_Ingredient.Add(tmpRecipeIngredient);
@@ -170,7 +177,7 @@ namespace ProjectFood.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult AddIngredient(int id, string name, double? amount, string unit)
+        public ActionResult AddIngredient(int id, string name, double? amountPerPerson, string unit, int numPersons)
         {
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
             Item tmpIngredient;
@@ -179,9 +186,12 @@ namespace ProjectFood.Controllers
                 return RedirectToAction("CreateSecond/" + id);
             }
             //allows for ingredienst with no amount and unit
-            if(amount == null) {
-                amount = 0;
+            if(amountPerPerson == null) {
+                amountPerPerson = 0;
             }
+
+            amountPerPerson = (double)amountPerPerson / numPersons;
+
             //Search in GenericLItems for item
             Item knownItem = null;
             if(_db.Items.Any()) {
@@ -195,9 +205,9 @@ namespace ProjectFood.Controllers
             }
 
             if(recipe.Ingredients.Contains(tmpIngredient)) {
-                _db.Recipe_Ingredient.First(i => i.Recipe == recipe && i.Ingredient == tmpIngredient).Amount = (double)amount;
+                _db.Recipe_Ingredient.First(i => i.Recipe == recipe && i.Ingredient == tmpIngredient).AmountPerPerson = (double)amountPerPerson;
             } else {
-                var recipeIngredient = new Recipe_Ingredient() { RecipeID = id, Ingredient = tmpIngredient, Amount = (double)amount, Unit = unit };
+                var recipeIngredient = new Recipe_Ingredient() { RecipeID = id, Ingredient = tmpIngredient, AmountPerPerson = (double)amountPerPerson, Unit = unit };
                 recipe.Ingredients.Add(tmpIngredient);
                 _db.Recipe_Ingredient.Add(recipeIngredient);
             }
@@ -229,7 +239,7 @@ namespace ProjectFood.Controllers
             return RedirectToAction("CreateSecond/" + id);
         }
 
-        public ActionResult CreateSecond(int? id)
+        public ActionResult CreateSecond(int? id, int? numPersons)
         {
             if(id == null) {
                 return RedirectToAction("Index");
@@ -247,6 +257,12 @@ namespace ProjectFood.Controllers
             Recipe recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
             if(recipe.Ingredients.Count > 0) {
                 ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
+            }
+
+            if(numPersons == null) {
+                ViewBag.numPersons = 4;
+            } else {
+                ViewBag.numPersons = numPersons;
             }
 
             return View(recipe);
