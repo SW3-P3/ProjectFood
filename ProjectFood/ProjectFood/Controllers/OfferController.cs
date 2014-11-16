@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
@@ -149,6 +150,31 @@ namespace ProjectFood.Controllers
                 Message = "Hajtroels",
                 OfferId = offerId,
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Search(string id)
+        {
+            if(id != null) 
+            {
+                ViewBag.Offers = GetOffersForItem(id);
+                ViewBag.SearchTerm = id;
+            }
+            else
+            {
+                ViewBag.Offers = new List<Offer>();
+            }
+            ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
+            return View();
+        }
+
+        public ActionResult SearchDone(string id)
+        {
+            return RedirectToAction("Search/" + id);
+        }
+
+        private List<Offer> GetOffersForItem(string str)
+        {
+            return _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username.Equals(User.Identity.Name))).Where(x => x.Heading.ToLower().Contains(str.ToLower())).ToList();
         }
     }
 }

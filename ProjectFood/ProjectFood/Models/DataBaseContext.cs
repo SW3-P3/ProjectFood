@@ -47,7 +47,7 @@ namespace ProjectFood.Models
 
             foreach (var o in Offers)
             {
-                var flag = true;
+                bool flag = !(o.End < DateTime.Now);
 
                 foreach (var item in blacklist)
                 {
