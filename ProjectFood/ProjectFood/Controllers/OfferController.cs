@@ -19,12 +19,28 @@ namespace ProjectFood.Controllers
         private readonly DataBaseContext _db = new DataBaseContext();
 
         // GET: Offer
-        public ActionResult Index()
+        public ActionResult Index(int? shoppingListID)
         {
             if (User.Identity.IsAuthenticated)
             {
-                ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name)).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
-                ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
+                var tmpUser = _db.Users
+                    .Include(s => s.ShoppingLists)
+                    .First(u => u.Username == User.Identity.Name);
+                if(tmpUser.ShoppingLists.Count > 0) {
+                
+                int tmpShoppingListID = shoppingListID == null ? tmpUser.ShoppingLists.First().ID : (int)shoppingListID;
+                ViewBag.SelectedShoppingListID = tmpShoppingListID;
+                
+                ViewBag.ShoppingLists = tmpUser.ShoppingLists.ToList();
+                ViewBag.OffersOnListByID = _db.ShoppingList_Item
+                    .Where(s => s.ShoppingListID == tmpShoppingListID && s.selectedOffer != null)
+                    .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID);           
+                }
+                ViewBag.Stores = _db
+                    .OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name))
+                    .OrderBy(d => d.Store)
+                    .Select(x => x.Store)
+                    .Distinct();
 
                 return View(_db.OffersFiltered().ToList());
                 
@@ -120,8 +136,6 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Index");
         }
 
-        //Her skal vi lave et json result eller lignende, så vi kan fortælle brugeren, at varen er tilføjet.
-        //måske skal vi ændre knappen til et check-mark istedet for et plus
         [HttpPost]
         public ActionResult AddOfferToShoppingList(int offerId, int? shoppingListId)
         {
@@ -163,7 +177,13 @@ namespace ProjectFood.Controllers
             {
                 ViewBag.Offers = new List<Offer>();
             }
-            ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
+            
+            ViewBag.ShoppingLists = _db.Users
+                .Include(s => s.ShoppingLists)
+                .First(u => u.Username == User.Identity.Name)
+                .ShoppingLists
+                .ToList();
+
             return View();
         }
 
@@ -174,7 +194,9 @@ namespace ProjectFood.Controllers
 
         private List<Offer> GetOffersForItem(string str)
         {
-            return _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username.Equals(User.Identity.Name))).Where(x => x.Heading.ToLower().Contains(str.ToLower())).ToList();
+            return _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username.Equals(User.Identity.Name)))
+                .Where(x => x.Heading.ToLower().Contains(str.ToLower()))
+                .ToList();
         }
     }
 }
