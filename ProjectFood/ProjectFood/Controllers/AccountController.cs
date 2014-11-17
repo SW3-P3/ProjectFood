@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ProjectFood.Models;
+using System.Net;
 
 namespace ProjectFood.Controllers
 {
@@ -186,7 +187,7 @@ namespace ProjectFood.Controllers
         {
             if (userId == null || code == null)
             {
-                return View("Error");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
@@ -297,7 +298,7 @@ namespace ProjectFood.Controllers
             var userId = await SignInManager.GetVerifiedUserIdAsync();
             if (userId == null)
             {
-                return View("Error");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
             var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();

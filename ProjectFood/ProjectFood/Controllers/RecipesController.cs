@@ -83,7 +83,7 @@ namespace ProjectFood.Controllers
         public ActionResult Edit(int? id, bool fork)
         {
             if(id == null) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
 
             Recipe recipe = _db.Recipes.Include(r => r.Ingredients).First(r => r.ID == id);
@@ -147,7 +147,7 @@ namespace ProjectFood.Controllers
         public ActionResult Delete(int? id)
         {
             if(id == null) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
             var recipe = _db.Recipes.Find(id);
 
@@ -242,7 +242,7 @@ namespace ProjectFood.Controllers
         public ActionResult CreateSecond(int? id, int? numPersons)
         {
             if(id == null) {
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             if(User.Identity.IsAuthenticated) {
