@@ -255,24 +255,20 @@ namespace ProjectFood.Controllers
         {
             var tmpItem = _db.ShoppingList_Item.First(i => i.ItemID == itemID && i.ShoppingListID == id);
 
-            if(tmpItem != null) {
-                if(tmpItem.Bought == false || tmpItem.Bought == null) {
-                    tmpItem.Bought = true;
-                } else {
-                    tmpItem.Bought = false;
-                }
-                
-                _db.SaveChanges();
-                return Json(new {
-                    Message = "Hajtroels",
+            if (tmpItem == null)
+                return Json(new
+                {
+                    Message = "DID NOT TWERK",
                     itemID = itemID,
                 }, JsonRequestBehavior.AllowGet);
-            }
+
+            tmpItem.Bought = tmpItem.Bought == false;
+
+            _db.SaveChanges();
             return Json(new {
-                Message = "DID NOT TWERK",
+                Message = "Hajtroels",
                 itemID = itemID,
             }, JsonRequestBehavior.AllowGet);
-
         }
 
         private List<Offer> GetOffersForItem(Item item)
