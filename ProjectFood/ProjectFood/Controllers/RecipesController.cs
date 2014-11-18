@@ -43,15 +43,9 @@ namespace ProjectFood.Controllers
             if(recipe.Ingredients.Count > 0) {
                 ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
             }
-            if(recipe == null) {
-                return HttpNotFound();
-            }
 
-            if(numPersons == null) {
-                ViewBag.numPersons = 4;
-            } else {
-                ViewBag.numPersons = numPersons;
-            }
+            // ?? means if null assign the right side, else the left side.
+            ViewBag.numPersons = numPersons ?? 4;
 
             return View(recipe);
         }
@@ -61,10 +55,10 @@ namespace ProjectFood.Controllers
         {
             if(User.Identity.IsAuthenticated) {
                 return View();
-            } else {
-                return RedirectToAction("Register", "Account");
             }
+            return RedirectToAction("Register", "Account");
         }
+
         // POST: Recipes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -75,25 +69,26 @@ namespace ProjectFood.Controllers
             _db.Recipes.Add(recipe);
             _db.SaveChanges();
             return RedirectToAction("CreateSecond/" + recipe.ID);
-
-            //return View(recipe);
         }
 
         // GET: Recipes/Edit/5
         public ActionResult Edit(int? id, bool fork)
         {
             if(id == null) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
 
-            Recipe recipe = _db.Recipes.Include(r => r.Ingredients).First(r => r.ID == id);
-            Recipe forkedRecipe;
-            Recipe originalRecipe;
+            var recipe = _db.Recipes.Include(r => r.Ingredients).First(r => r.ID == id);
+
+            if (recipe == null)
+            {
+                return HttpNotFound();
+            }
 
             if(User.Identity.IsAuthenticated) {
                 if(fork) {
-                    originalRecipe = recipe;
-                    forkedRecipe = new Recipe {
+                    var originalRecipe = recipe;
+                    var forkedRecipe = new Recipe {
                         OriginalAuthorName = originalRecipe.OriginalAuthorName,
                         AuthorName = User.Identity.Name,
                         Title = originalRecipe.Title,
@@ -121,10 +116,7 @@ namespace ProjectFood.Controllers
             } else {
                 return RedirectToAction("Details/" + id);
             }
-
-            if(recipe == null) {
-                return HttpNotFound();
-            }
+           
             return View(recipe);
         }
 
@@ -147,14 +139,15 @@ namespace ProjectFood.Controllers
         public ActionResult Delete(int? id)
         {
             if(id == null) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
+            
             var recipe = _db.Recipes.Find(id);
-
-
+            
             if(recipe == null) {
                 return HttpNotFound();
             }
+
             return View(recipe);
         }
 
@@ -180,7 +173,6 @@ namespace ProjectFood.Controllers
         public ActionResult AddIngredient(int id, string name, double? amountPerPerson, string unit, int numPersons)
         {
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
-            Item tmpIngredient;
 
             if(name.Trim() == string.Empty) {
                 return RedirectToAction("CreateSecond/" + id);
@@ -190,7 +182,8 @@ namespace ProjectFood.Controllers
                 amountPerPerson = 0;
             }
 
-            amountPerPerson = (double)amountPerPerson / numPersons;
+            // If numpersons is set to zero, this value shouldn't be infinity (will give db exception)
+            amountPerPerson = numPersons > 0 ? (double) amountPerPerson/numPersons : 0;
 
             //Search in GenericLItems for item
             Item knownItem = null;
@@ -198,28 +191,22 @@ namespace ProjectFood.Controllers
                 knownItem = _db.Items.SingleOrDefault(i => i.Name.CompareTo(name) == 0);
             }
 
-            if(knownItem != null) {
-                tmpIngredient = knownItem;
-            } else {
-                tmpIngredient = new Item() { Name = name };
-            }
+            var tmpIngredient = knownItem ?? new Item { Name = name };
 
             if(recipe.Ingredients.Contains(tmpIngredient)) {
                 _db.Recipe_Ingredient.First(i => i.Recipe == recipe && i.Ingredient == tmpIngredient).AmountPerPerson = (double)amountPerPerson;
             } else {
-                var recipeIngredient = new Recipe_Ingredient() { RecipeID = id, Ingredient = tmpIngredient, AmountPerPerson = (double)amountPerPerson, Unit = unit };
+                var recipeIngredient = new Recipe_Ingredient { RecipeID = id, Ingredient = tmpIngredient, AmountPerPerson = (double)amountPerPerson, Unit = unit };
                 recipe.Ingredients.Add(tmpIngredient);
                 _db.Recipe_Ingredient.Add(recipeIngredient);
             }
           
-
             _db.SaveChanges();
             return RedirectToAction("CreateSecond/" + id);
         }
 
         public ActionResult RemoveIngredient(int id, int ingredientId)
         {
-
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
 
             //Find the item to be deleted, and remove it from the shopping list
@@ -242,7 +229,7 @@ namespace ProjectFood.Controllers
         public ActionResult CreateSecond(int? id, int? numPersons)
         {
             if(id == null) {
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             if(User.Identity.IsAuthenticated) {
@@ -250,20 +237,14 @@ namespace ProjectFood.Controllers
                     return RedirectToAction("Index");
             } else {
                 return RedirectToAction("Index");
-
             }
 
-
-            Recipe recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+            var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
             if(recipe.Ingredients.Count > 0) {
                 ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
             }
 
-            if(numPersons == null) {
-                ViewBag.numPersons = 4;
-            } else {
-                ViewBag.numPersons = numPersons;
-            }
+            ViewBag.numPersons = numPersons ?? 4;
 
             return View(recipe);
         }

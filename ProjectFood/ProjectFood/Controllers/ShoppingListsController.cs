@@ -92,7 +92,7 @@ namespace ProjectFood.Controllers
         public ActionResult Edit(int? id)
         {
             if(id == null) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index");
             }
             ShoppingList shoppingList = _db.ShoppingLists.Find(id);
             if(shoppingList == null) {
@@ -131,7 +131,7 @@ namespace ProjectFood.Controllers
         public ActionResult Delete(int? id)
         {
             if(id == null) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index");
             }
             ShoppingList shoppingList = _db.ShoppingLists.Find(id);
             if(shoppingList == null) {
