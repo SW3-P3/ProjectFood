@@ -399,6 +399,7 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            Session.RemoveAll();
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }

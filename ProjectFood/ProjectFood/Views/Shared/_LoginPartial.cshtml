@@ -1,13 +1,24 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
+    
+    
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
     @Html.AntiForgeryToken()
+    string Name;
+        if (Session["ScreenName"] != null && Session["ScreenName"] != string.Empty)
+        {
+            Name = Session["ScreenName"].ToString();
+        }
+        else
+        {
+            Name = User.Identity.Name;
+        }
 
     <ul class="nav navbar-nav navbar-right">
         <li>
-            @Html.ActionLink("Hej " + User.Identity.GetUserName() + "!", "Index", "User", routeValues: null, htmlAttributes: new { title = "Bruger" })
+            @Html.ActionLink("Hej " + Name + "!", "Index", "User", routeValues: null, htmlAttributes: new { title = "Bruger" })
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log af</a></li>
     </ul>
