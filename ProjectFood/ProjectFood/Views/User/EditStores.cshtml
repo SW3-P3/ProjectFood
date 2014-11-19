@@ -31,10 +31,20 @@
             <div class="col-md-2">
                 <label>@store</label>                
             </div>
-            <div class="lead" onclick="ToggleBool()">
-                <input type="hidden" name="StoreCheck" id="StoreCheck@store" value="false" />
-                <span id="check" class="glyphicon glyphicon-unchecked"></span>
-            </div>
+           @if (Model.Preferences.Any(x=> x.Store == true && x.Value == store))
+           {
+               <div class="lead" onclick=" ToggleBool() ">
+                   <input type="hidden" name="StoreCheck" id="StoreCheck@store" value="false" />
+                   <span id="check" class="glyphicon glyphicon-unchecked"></span>
+               </div>
+           }
+           else
+           {
+                              <div class="lead" onclick=" ToggleBool() ">
+                   <input type="hidden" name="StoreCheck" id="StoreCheck@store" value="false" />
+                   <span id="check" class="glyphicon glyphicon-check"></span>
+               </div>
+           }
         </div>
 
     }

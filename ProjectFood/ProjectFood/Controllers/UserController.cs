@@ -96,13 +96,10 @@ namespace ProjectFood.Controllers
                     {
                         tmpList.Add(offer.Store);
                     }
-
                 }
                 ViewBag.Store = tmpList;
 
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
-
-
 
             }
 
