@@ -596,8 +596,7 @@
     <Content Include="Scripts\globalize\cultures\globalize.culture.zu.js" />
     <Content Include="Scripts\globalize\cultures\globalize.cultures.js" />
     <Content Include="Scripts\globalize\globalize.js" />
-    <Content Include="Scripts\recipe.buttons.js" />
-    <Content Include="Scripts\offer.buttons.js" />
+    <Content Include="Scripts\sass.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -659,7 +658,6 @@
     <Content Include="Views\ShoppingLists\Edit.cshtml" />
     <Content Include="Views\ShoppingLists\Index.cshtml" />
     <Content Include="Views\Offer\Index.cshtml" />
-    <Content Include="Scripts\shoppingList.buttons.js" />
     <Content Include="Views\ShoppingLists\_CreateShoppingList.cshtml" />
     <Content Include="Views\Recipes\Create.cshtml" />
     <Content Include="Views\Recipes\Delete.cshtml" />

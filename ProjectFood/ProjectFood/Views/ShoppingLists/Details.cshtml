@@ -127,8 +127,8 @@
     @Html.ActionLink("Ryd Liste", "ClearShoppingList", new { id = Model.ID })
 </p>
 
-@section Scripts {                              @*  Don't question the JavaScript-Gods!!!                             *@
-@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
+    @Scripts.Render("~/bundles/homemade")   @*  Magic part ...                                                    *@
+    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }
 

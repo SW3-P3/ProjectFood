@@ -4,20 +4,6 @@
     ViewBag.Title = "Log ind";
 }
 
-<script type="text/javascript">
-    function ToggleBool() {
-        if ($('input#RememberMe').val() == 'true') {
-            $('input#RememberMe').val('false');
-            $('span#check').removeClass('glyphicon-check');
-            $('span#check').addClass('glyphicon-unchecked');
-        } else {
-            $('input#RememberMe').val('true');
-            $('span#check').removeClass('glyphicon-unchecked');
-            $('span#check').addClass('glyphicon-check');
-        }
-    };
-</script>
-
 <div class="page-header">
     <h1>@ViewBag.Title</h1>
 </div>
@@ -72,6 +58,7 @@
     </div>*@
 </div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
+    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }
