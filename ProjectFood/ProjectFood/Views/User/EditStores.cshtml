@@ -25,15 +25,12 @@
 </div>
 
 <div class="list-group">
-    @foreach(var pref in Model.Preferences.Where(p => p.Store == true)) {
+    @foreach(var store in ViewBag.Store) {
+        
         <div class="list-group-item">
-            <h3>
-                <a href="@Url.Action("RemovePreference",
-                             new {username = User.Identity.Name, prefId = @pref.ID})"
-                   class="btn btn-danger">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </a>&nbsp;&nbsp;&nbsp;@pref.Value
-            </h3>
+            <label>@store</label>
+            
         </div>
+
     }
 </div>
