@@ -24,13 +24,23 @@
     }
 </div>
 
-<div class="list-group">
+<div class="form-group">
     @foreach(var store in ViewBag.Store) {
         
-        <div class="list-group-item">
-            <label>@store</label>
-            
+        <div class="form-group">
+            <div class="col-md-2">
+                <label>@store</label>                
+            </div>
+            <div class="lead" onclick="ToggleBool()">
+                <input type="hidden" name="StoreCheck" id="StoreCheck@store" value="false" />
+                <span id="check" class="glyphicon glyphicon-unchecked"></span>
+            </div>
         </div>
 
     }
 </div>
+
+@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
+@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+}

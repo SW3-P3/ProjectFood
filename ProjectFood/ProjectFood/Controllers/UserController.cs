@@ -85,20 +85,26 @@ namespace ProjectFood.Controllers
         {
             var usernameDecode = HttpUtility.HtmlDecode(username);
             if(User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode) {
+
                 ViewBag.Prefs = _db.Preferences.ToList();
+                var tmpList = new List<string>();
+                var tmp = _db.Offers;
+                foreach (var offer in tmp)
+                {
+                    if (tmpList.Any(x => x == offer.Store)) ;
+                    else
+                    {
+                        tmpList.Add(offer.Store);
+                    }
+
+                }
+                ViewBag.Store = tmpList;
+
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
 
+
+
             }
-            var tmpList = new List<string>();
-            var tmp = _db.Offers;
-            foreach (var offer in tmp)
-            {
-                if(tmpList.Any(x => x != offer.Store))
-                {
-                    tmpList.Add(offer.Store);
-                }
-            }
-            ViewBag.Store = tmpList;
 
             return RedirectToAction("Index");
         }
