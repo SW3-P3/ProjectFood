@@ -41,9 +41,11 @@ namespace ProjectFood.Controllers
                     .OrderBy(d => d.Store)
                     .Select(x => x.Store)
                     .Distinct();
+                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
+                ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name)).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
+                ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
-                return View(_db.OffersFiltered().ToList());
-                
+                return View(_db.OffersFiltered().ToList());            
             }
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
         }

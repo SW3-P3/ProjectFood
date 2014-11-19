@@ -57,7 +57,8 @@ namespace ProjectFood.Controllers
                 Logins = await UserManager.GetLoginsAsync(User.Identity.GetUserId()),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(User.Identity.GetUserId())
             };
-            ViewBag.User = _db.Users.SingleOrDefault(u => u.Username == User.Identity.Name);
+            Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
+            ViewBag.User = _db.Users.First(u => u.Username == User.Identity.Name);
             return View(model);
         }
 

@@ -18,6 +18,11 @@ namespace ProjectFood.Controllers
         // GET: Recipes
         public ActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
+            }
+           
             return View(_db.Recipes.Include(r => r.Ingredients).ToList());
         }
 

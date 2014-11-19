@@ -20,6 +20,7 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
                 ViewBag.NumItems = _db.ShoppingLists.Include(s => s.Items);
                 return View(_db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists);
             }
