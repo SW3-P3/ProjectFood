@@ -106,17 +106,18 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
         public void EditStore(string storename)
         {
-            var tmp = _db.Users.Include(u => u.Preferences).First(u => u.Name == User.Identity.Name);
+            var tmpUser = _db.Users.Include(u => u.Preferences).First(u => u.Username == User.Identity.Name);
 
-            if (tmp.Preferences.Any(x => x.Store == true && x.Value == storename))
+            if (tmpUser.Preferences.Any(x => x.Store == true && x.Value == storename))
             {
-                tmp.Preferences.Remove(tmp.Preferences.First(x=> x.Store == true && x.Value == storename));
+                tmpUser.Preferences.Remove(tmpUser.Preferences.First(x=> x.Store == true && x.Value == storename));
             }
             else
             {
-                tmp.Preferences.Add(new Pref(){Store = true, Value = storename});
+                tmpUser.Preferences.Add(new Pref(){Store = true, Value = storename});
             }
 
             _db.SaveChanges();

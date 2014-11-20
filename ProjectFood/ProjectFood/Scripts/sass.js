@@ -48,13 +48,13 @@ function ToggleBool() {
 };
 
 function ToggleBoolByID(store) {
-    if ($('input#StoreCheck'+store).val() == 'true') {
-        $('input#StoreCheck'+store).val('false');
-        $('span#check').removeClass('glyphicon-check');
-        $('span#check').addClass('glyphicon-unchecked');
+    if ($('input#storeCheck_' + store).val() == 'true') {
+        $('input#storeCheck_' + store).val('false');
+        $('span#check_' + store).removeClass('glyphicon-check');
+        $('span#check_' + store).addClass('glyphicon-unchecked');
     } else {
-        $('input#store'+store).val('true');
-        $('span#check'+store).removeClass('glyphicon-unchecked');
-        $('span#check'+store).addClass('glyphicon-check');
+        $('input#storeCheck_' + store).val('true');
+        $('span#check_' + store).removeClass('glyphicon-unchecked');
+        $('span#check_' + store).addClass('glyphicon-check');
     }
 };
