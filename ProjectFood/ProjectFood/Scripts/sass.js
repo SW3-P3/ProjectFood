@@ -46,3 +46,15 @@ function ToggleBool() {
         $('span#check').addClass('glyphicon-check');
     }
 };
+
+function ToggleBoolByID(store) {
+    if ($('input#StoreCheck'+store).val() == 'true') {
+        $('input#StoreCheck'+store).val('false');
+        $('span#check').removeClass('glyphicon-check');
+        $('span#check').addClass('glyphicon-unchecked');
+    } else {
+        $('input#store'+store).val('true');
+        $('span#check'+store).removeClass('glyphicon-unchecked');
+        $('span#check'+store).addClass('glyphicon-check');
+    }
+};
