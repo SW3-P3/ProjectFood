@@ -110,7 +110,7 @@
     </div>
     <div class="col-md-7">
         <div class="well">
-            @Model.Instructions
+                @Model.Instructions
         </div>
     </div>
 </div>
@@ -118,12 +118,11 @@
     @if (User.Identity.Name == Model.AuthorName)
     {
         @Html.ActionLink("Ændre opskrift", "Edit", new { id = Model.ID, fork = false }) <text>|</text>
-        @Html.ActionLink("Slet opskrift", "Delete", new { id = Model.ID}) <text>|</text>
+        @Html.ActionLink("Slet opskrift", "Delete", new { id = Model.ID})
     } else {
-        @Html.ActionLink("Lav din egen version af opskriften", "Edit", new { id = Model.ID, fork = true }) <text>|</text>
+        @Html.ActionLink("Lav din egen version af opskriften", "Edit", new { id = Model.ID, fork = true })
     }
    
-    @Html.ActionLink("Tilbage til opskrifter", "Index")
 </p>
 
 
