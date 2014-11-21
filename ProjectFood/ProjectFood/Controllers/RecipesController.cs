@@ -52,7 +52,29 @@ namespace ProjectFood.Controllers
             // ?? means if null assign the right side, else the left side.
             ViewBag.numPersons = numPersons ?? 4;
 
+            //calculate average score
+            ViewBag.AverageScore = getScore(id);
+            ViewBag.RatingCount = getRatingCount(id);
+
             return View(recipe);
+        }
+
+        private dynamic getRatingCount(int? id)
+        {   
+            int? count = _db.Ratings.Include(s => s.Score).Where(r => r.Recipe.ID == id).Select(s => s.Score).Count();
+            if (count == null)
+                return 0;
+            else
+                return count;
+        }
+
+        private decimal? getScore(int id)
+        {
+            decimal? score = _db.Ratings.Include(s => s.Score).Where(r => r.Recipe.ID == id).Select(s => s.Score).Average();
+            if (score == null)
+                return 0;
+            else
+                return score;
         }
 
         // GET: Recipes/Create

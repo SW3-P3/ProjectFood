@@ -33,6 +33,9 @@
                     }
                 }
             </p>
+            <p class="lead">
+                @ViewBag.AverageScore - bedømt af @ViewBag.RatingCount brugere        
+            </p>
             <p class="lead"><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter</p>
             <p class="text-muted">Tags - @Model.Tags</p>
         </div>
@@ -49,10 +52,51 @@
 
                 }
             </div>
-            <div class="row">
+                <div class="row">
                 @using(Html.BeginForm("Details", "Recipes", FormMethod.Post)) {
                     <label class="control-label">Antal personer</label>
                     @Html.TextBox("numPersons", null, new { @type = "number", @class = "form-control", @value = "4", @onchange = "$(this).parent().submit();" })
+                }
+            </div>
+            <div>
+                @{
+                    List<SelectListItem> listItemss = new List<SelectListItem>();
+                    listItemss.Add(new SelectListItem
+                    {
+                        Text = "Bedøm opskrift",
+                        Value = "0"
+                    });
+                    listItemss.Add(new SelectListItem
+                    {
+                        Text = "*",
+                        Value = "1"
+                    });
+                    listItemss.Add(new SelectListItem
+                    {
+                        Text = "* *",
+                        Value = "2"
+                    });
+                    listItemss.Add(new SelectListItem
+                        {
+                            Text = "* * *",
+                            Value = "3"
+                        });
+                    listItemss.Add(new SelectListItem
+                        {
+                            Text = "* * * *",
+                            Value = "4"
+                        });
+                    listItemss.Add(new SelectListItem
+                        {
+                            Text = "* * * * *",
+                            Value = "5"
+                        });
+
+                    using (Html.BeginForm("Details", "Recipes", FormMethod.Get))
+                    {
+                        <label for="Selection">Vælg</label>
+                        @Html.DropDownList("RateRecipe", listItemss, new { @id = "Selection", @class = "form-control", @onchange = "$(this).parent().submit()" })
+                    }
                 }
             </div>
         </div>
