@@ -337,7 +337,9 @@ namespace ProjectFood.Controllers
         {
             Recipe recipe = _db.Recipes.Include(r => r.Ratings).Single(x => x.ID == id);
             User user = _db.Users.SingleOrDefault(u => u.Username == User.Identity.Name);
-            Rating prevRating = _db.Ratings.FirstOrDefault(r => r.Recipe == recipe && r.User == user);
+            Rating prevRating = null;
+
+            //tilføj ratings til user også!!!!!!!!
 
             if (prevRating != null)
             {
