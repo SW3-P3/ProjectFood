@@ -68,7 +68,7 @@ namespace ProjectFood.Controllers
                 return count;
         }
 
-        private decimal? getScore(int id)
+        private decimal? getScore(int? id)
         {
             decimal? score = _db.Ratings.Include(s => s.Score).Where(r => r.Recipe.ID == id).Select(s => s.Score).Average();
             if (score == null)
