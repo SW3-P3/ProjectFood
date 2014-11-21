@@ -281,5 +281,16 @@ namespace ProjectFood.Controllers
                 ItemId = itemId,
             }, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult RateRecipe(User u, decimal s,  Recipe r) 
+        {
+            var rating = new Rating
+            {
+                Recipe = r,
+                Score = s,
+                User = u
+            };
+            _db.Ratings.Add(rating);
+            return PartialView();            
+        }
     }
 }
