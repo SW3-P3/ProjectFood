@@ -46,3 +46,23 @@ function ToggleBool() {
         $('span#check').addClass('glyphicon-check');
     }
 };
+
+function ClickedStar(rating) {
+
+    $('input#rateVal').val(rating);
+
+    $('#starForm').submit();
+};
+
+function DrawStars(json) {
+
+    for (var i = 1; i <= 5; i++) {
+        if(json.rating >= i){
+            $('div#' + i).children().removeClass('glyphicon-star-empty');
+            $('div#' + i).children().addClass('glyphicon-star');
+        } else {
+            $('div#' + i).children().removeClass('glyphicon-star');
+            $('div#' + i).children().addClass('glyphicon-star-empty');
+        }
+    }
+};

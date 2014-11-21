@@ -13,10 +13,8 @@ namespace ProjectFood.Models
         public int RecipeID { get; set; }
         [Key, Column(Order = 1)]
         public int IngredientID { get; set; }
-
         public virtual Recipe Recipe { get; set; }
         public virtual Item Ingredient { get; set; }
-
         public double AmountPerPerson { get; set; }
         public string Unit { get; set; }
     }
