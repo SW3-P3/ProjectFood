@@ -54,15 +54,17 @@ function ClickedStar(rating) {
     $('#starForm').submit();
 };
 
-function DrawStars(json) {
+function UpdateStarsAndAvg(json) {
+    $('span#avgRating').html(json.avgRating);
+    $('span#numRatings').html(json.numRatings);
 
     for (var i = 1; i <= 5; i++) {
         if(json.rating >= i){
-            $('div#' + i).children().removeClass('glyphicon-star-empty');
-            $('div#' + i).children().addClass('glyphicon-star');
+            $('span#' + i).removeClass('glyphicon-star-empty');
+            $('span#' + i).addClass('glyphicon-star');
         } else {
-            $('div#' + i).children().removeClass('glyphicon-star');
-            $('div#' + i).children().addClass('glyphicon-star-empty');
+            $('span#' + i).removeClass('glyphicon-star');
+            $('span#' + i).addClass('glyphicon-star-empty');
         }
     }
 };

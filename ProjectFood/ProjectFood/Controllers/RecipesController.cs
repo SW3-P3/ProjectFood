@@ -336,10 +336,9 @@ namespace ProjectFood.Controllers
         public ActionResult AddRating(int id, int rating)
         {
             Recipe recipe = _db.Recipes.Include(r => r.Ratings).Single(x => x.ID == id);
-            User user = _db.Users.SingleOrDefault(u => u.Username == User.Identity.Name);
-            Rating prevRating = null;
-
-            //tilføj ratings til user også!!!!!!!!
+            User user = _db.Users.Include(u => u.Ratings).SingleOrDefault(u => u.Username == User.Identity.Name);
+            //Den når aldrig forbi ?? pga. *OrDefault(), vel?
+            Rating prevRating = user.Ratings.FirstOrDefault(r => r.Recipe.ID == id) ?? null; 
 
             if (prevRating != null)
             {
@@ -354,13 +353,18 @@ namespace ProjectFood.Controllers
                     User = user
                 };
 
+                user.Ratings.Add(rate);
                 recipe.Ratings.Add(rate);
                 _db.Ratings.Add(rate);
             }
 
             _db.SaveChanges();
 
-            return Json(new { rating = rating });
+            return Json(new { 
+                rating = rating, 
+                avgRating = recipe.Ratings.Count > 0 ? recipe.Ratings.Select(r => r.Score).Average().ToString("0.0") : "0.0",
+                numRatings = recipe.Ratings.Count()
+            });
         }
     }
 }

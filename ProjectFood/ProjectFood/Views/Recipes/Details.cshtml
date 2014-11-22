@@ -13,7 +13,13 @@
 <div class="page-header">
     <div class="row">
         <div class="col-md-6">
-            <h1>@Model.Title &nbsp;&nbsp; <span class="label label-default">@ViewBag.AverageScore <span class="glyphicon glyphicon-star"></span><small> - @ViewBag.RatingCount brugere</small></span></h1>
+            <h1>@Model.Title &nbsp;&nbsp; 
+                <span class="label label-default">
+                    <span id="avgRating">@(((decimal)ViewBag.AverageScore).ToString("0.0"))</span>
+                    <span class="glyphicon glyphicon-star"></span>
+                    <small> - <span id="numRatings">@ViewBag.RatingCount</span> brugere</small>
+                </span>
+            </h1>
             <small class="text-muted">
                 Lavet af
                 @if (ViewBag.Author == null || ViewBag.Author.Name == string.Empty)
@@ -63,14 +69,14 @@
                     using(Ajax.BeginForm(
                         "AddRating",
                         new { id = Model.ID },
-                        new AjaxOptions { HttpMethod = "POST", OnSuccess = "DrawStars" },
+                        new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateStarsAndAvg" },
                         new { @class = "form-group h1", @id = "starForm" }
                         )) {
                         <input id="rateVal" type="hidden" name="rating" value="0" />
-                        var rating = ViewBag.UserRating ?? 0;
+                    var rating = ViewBag.UserRating != null ? ViewBag.UserRating.Score : 0;
 
                                 for(int i = 1; i <= 5; i++) {
-                                    string star = rating > i ? "glyphicon-star" : "glyphicon-star-empty"; ;
+                                    string star = rating >= i ? "glyphicon-star" : "glyphicon-star-empty"; ;
                                     <span id="@i" class="glyphicon @star" onclick="ClickedStar(@i)"></span>
                                 }
                     }
