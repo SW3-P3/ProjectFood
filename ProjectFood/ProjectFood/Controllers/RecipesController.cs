@@ -185,8 +185,15 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var recipe = _db.Recipes.Find(id);
+            var recipe = _db.Recipes.Include(r => r.Ratings).First(x => x.ID == id);
+
+            if(recipe.Ratings.Count > 0) {
+                _db.Ratings.RemoveRange(_db.Ratings.Where(r => r.Recipe.ID == id));
+                recipe.Ratings.Clear();   
+            }
+            
             _db.Recipes.Remove(recipe);
+            
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -320,17 +327,7 @@ namespace ProjectFood.Controllers
                 ItemId = itemId,
             }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult RateRecipe(User u, decimal s, Recipe r)
-        {
-            var rating = new Rating
-            {
-                Recipe = r,
-                Score = s,
-                User = u
-            };
-            _db.Ratings.Add(rating);
-            return PartialView();
-        }
+        
 
         [HttpPost]
         public ActionResult AddRating(int id, int rating)
@@ -338,7 +335,7 @@ namespace ProjectFood.Controllers
             Recipe recipe = _db.Recipes.Include(r => r.Ratings).Single(x => x.ID == id);
             User user = _db.Users.Include(u => u.Ratings).SingleOrDefault(u => u.Username == User.Identity.Name);
             //Den når aldrig forbi ?? pga. *OrDefault(), vel?
-            Rating prevRating = user.Ratings.FirstOrDefault(r => r.Recipe.ID == id) ?? null; 
+            Rating prevRating = user.Ratings.SingleOrDefault(r => r.Recipe.ID == id) ?? null; 
 
             if (prevRating != null)
             {

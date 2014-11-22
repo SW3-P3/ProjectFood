@@ -169,7 +169,7 @@ namespace ProjectFood.Controllers
                     user.WatchList = new ShoppingList{ Title = "watchList"};
                     _db.SaveChanges();
                 }
-               
+
                 return View(user.WatchList);
             }
 
@@ -290,16 +290,22 @@ namespace ProjectFood.Controllers
 
         private List<Offer> GetOffersForItem(Item item)
         {
-            return _db.Offers.Where(x => x.Heading.ToLower().Contains(item.Name.ToLower())).ToList();
+            return _db.Offers
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
+                .ToList();
         }
+        [HttpPost]
         public ActionResult GetOffersForItem(int id)
         {
             var item = _db.Items.Find(id);
-            var offers = _db.Offers.Where(x => x.Heading.ToLower().Contains(item.Name.ToLower())).ToList();
+            var offers = _db.Offers
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
+                .ToList();
 
             var jsonSerialiser = new JavaScriptSerializer();
-            var json = jsonSerialiser.Serialize(offers);
-            return Json(new { json }, JsonRequestBehavior.AllowGet);
+            var jsonOffers = jsonSerialiser.Serialize(offers);
+
+            return Json(new { itemName = item.Name ,jsonOffers }, JsonRequestBehavior.DenyGet);
         }
 
         //Find relevant shoppingList and include the items
