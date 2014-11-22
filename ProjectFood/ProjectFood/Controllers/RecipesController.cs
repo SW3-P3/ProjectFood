@@ -188,6 +188,7 @@ namespace ProjectFood.Controllers
             var recipe = _db.Recipes.Include(r => r.Ratings).First(x => x.ID == id);
 
             if(recipe.Ratings.Count > 0) {
+                //Dirty database clean up! 
                 _db.Ratings.RemoveRange(_db.Ratings.Where(r => r.Recipe.ID == id));
                 recipe.Ratings.Clear();   
             }
