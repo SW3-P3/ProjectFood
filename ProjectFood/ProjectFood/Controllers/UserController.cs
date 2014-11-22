@@ -16,8 +16,7 @@ namespace ProjectFood.Controllers
         // GET: User
         public ActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
+            if(User.Identity.IsAuthenticated) {
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
                 return RedirectToAction("Index", "Manage");
             }
@@ -28,8 +27,7 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditName(string username, string name)
         {
-            if (User.Identity.IsAuthenticated && User.Identity.Name == username)
-            {
+            if(User.Identity.IsAuthenticated && User.Identity.Name == username) {
                 _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
@@ -41,23 +39,20 @@ namespace ProjectFood.Controllers
         public ActionResult EditPreferences(string username)
         {
             var usernameDecode = HttpUtility.HtmlDecode(username);
-            if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
-            {
+            if(User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode) {
                 ViewBag.Prefs = _db.Preferences.ToList();
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
-                
+
             }
             return RedirectToAction("Index");
         }
 
         public ActionResult AddPreference(string username, string pref, bool store)
         {
-            if (User.Identity.IsAuthenticated && User.Identity.Name == username)
-            {
+            if(User.Identity.IsAuthenticated && User.Identity.Name == username) {
                 var user = _db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
                 var toAdd = pref.Trim().Split(',');
-                foreach (var lePref in toAdd)
-                {
+                foreach(var lePref in toAdd) {
                     user.Preferences.Add(new Pref { Value = lePref, Store = store });
                 }
 
@@ -68,8 +63,7 @@ namespace ProjectFood.Controllers
         }
         public ActionResult RemovePreference(string username, int prefId)
         {
-            if (User.Identity.IsAuthenticated && User.Identity.Name == username)
-            {
+            if(User.Identity.IsAuthenticated && User.Identity.Name == username) {
                 var user = _db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
                 var tmpPref = user.Preferences.First(p => p.ID == prefId);
 
@@ -85,11 +79,37 @@ namespace ProjectFood.Controllers
         {
             var usernameDecode = HttpUtility.HtmlDecode(username);
             if(User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode) {
+
                 ViewBag.Prefs = _db.Preferences.ToList();
+                var tmpList = new List<string>();
+                var tmp = _db.Offers;
+                foreach(var offer in tmp) {
+                    if(tmpList.Any(x => x == offer.Store)) ;
+                    else {
+                        tmpList.Add(offer.Store);
+                    }
+                }
+                ViewBag.Store = tmpList;
+
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
 
             }
+
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public void EditStore(string storename)
+        {
+            var tmpUser = _db.Users.Include(u => u.Preferences).First(u => u.Username == User.Identity.Name);
+
+            if(tmpUser.Preferences.Any(x => x.Store == true && x.Value == storename)) {
+                tmpUser.Preferences.Remove(tmpUser.Preferences.First(x => x.Store == true && x.Value == storename));
+            } else {
+                tmpUser.Preferences.Add(new Pref() { Store = true, Value = storename });
+            }
+
+            _db.SaveChanges();
         }
 
     }

@@ -47,6 +47,18 @@ function ToggleBool() {
     }
 };
 
+function ToggleBoolByID(store) {
+    if ($('input#storeCheck_' + store).val() == 'true') {
+        $('input#storeCheck_' + store).val('false');
+        $('span#check_' + store).removeClass('glyphicon-check');
+        $('span#check_' + store).addClass('glyphicon-unchecked');
+    } else {
+        $('input#storeCheck_' + store).val('true');
+        $('span#check_' + store).removeClass('glyphicon-unchecked');
+        $('span#check_' + store).addClass('glyphicon-check');
+    }
+};
+
 function ClickedStar(rating) {
 
     $('input#rateVal').val(rating);
