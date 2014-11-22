@@ -1,0 +1,66 @@
+﻿@model ProjectFood.Models.ShoppingList
+
+@{
+    ViewBag.Title = "Overvågningsliste";
+}
+
+<div class="page-header">
+    <h1>@ViewBag.Title</h1>
+
+    <p class="lead">
+        Her kan du sætte varer på en overvågningsliste, og på den måde, vil du modtage en notifikation, når varen kommer på tilbud.
+    </p>
+</div>
+<hr />
+
+<div class="row">
+    @using(Ajax.BeginForm(
+        "AddItem",
+        "ShoppingLists",
+        new { amount = 0, unit = string.Empty },
+        new AjaxOptions { HttpMethod = "POST" },
+        new { @class = "navbar-form navbar-left" }
+        )) {
+        <div class="form-group">
+            <div class="col-md-4">
+                @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+            </div>
+        </div>
+
+        <input type="hidden" name="id" value="@Model.ID" />
+
+        <button type="submit" class="btn btn-default">Tilføj vare</button>
+
+
+    }
+</div>
+
+<div class="form-group">
+    <table class="table table-striped">
+        <tr>
+            <th class="col-md-1 text-center">Fjern</th>
+            <th>Varenavn</th>
+            <th>Se tilbud!</th>
+        </tr>
+        @foreach(var item in Model.Items) {
+            <tr>
+                <td>
+                    <a href="@Url.Action("RemoveItem",
+                             new {id = Model.ID, itemID = item.ID})"
+                       class="btn btn-danger btn-xs btn-block">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @using(Ajax.BeginForm) {
+                        
+                    }
+                    @Ajax.ActionLink("+", "GetOffersForItem", "ShoppingLists", new { id = item.ID }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "alert(json)" })
+                </td>
+            </tr>
+        }
+    </table>
+</div>

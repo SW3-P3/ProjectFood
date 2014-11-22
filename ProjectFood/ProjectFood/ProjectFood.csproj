@@ -178,6 +178,10 @@
     <Compile Include="Migrations\201411221108449_Initial.Designer.cs">
       <DependentUpon>201411221108449_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201411221210594_Initial1.cs" />
+    <Compile Include="Migrations\201411221210594_Initial1.Designer.cs">
+      <DependentUpon>201411221210594_Initial1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Api\Catalog.cs" />
@@ -660,6 +664,7 @@
     <Content Include="Views\User\EditPreferences.cshtml" />
     <Content Include="Views\User\EditStores.cshtml" />
     <Content Include="Views\Offer\Search.cshtml" />
+    <Content Include="Views\ShoppingLists\WatchList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -674,6 +679,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201411221108449_Initial.resx">
       <DependentUpon>201411221108449_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411221210594_Initial1.resx">
+      <DependentUpon>201411221210594_Initial1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

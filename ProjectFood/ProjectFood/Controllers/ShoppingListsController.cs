@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web.Script.Serialization;
 using System.Web;
 using System.Web.Mvc;
 using ProjectFood.Models;
@@ -160,6 +161,21 @@ namespace ProjectFood.Controllers
             base.Dispose(disposing);
         }
 
+        public ActionResult WatchList()
+        {
+            if(User.Identity.IsAuthenticated) {
+                var user = _db.Users.Include(w => w.WatchList.Items.Select(i => i.Offers)).First(u => u.Username == User.Identity.Name);
+                if(user.WatchList == null) {
+                    user.WatchList = new ShoppingList{ Title = "watchList"};
+                    _db.SaveChanges();
+                }
+               
+                return View(user.WatchList);
+            }
+
+            return RedirectToAction("Index");
+        }
+
         public ActionResult AddItem(int id, string name, double? amount, string unit)
         {
             if(name.Trim() == string.Empty) {
@@ -195,7 +211,7 @@ namespace ProjectFood.Controllers
                 addToShoppingList_Item(tmpItem, shoppingList, amount, unit);
             }
 
-            return RedirectToAction("Details/" + id);
+            return shoppingList.Title == "watchList" ? RedirectToAction("WatchList") : RedirectToAction("Details/" + id);
         }
 
         public ActionResult RemoveItem(int id, int itemID)
@@ -217,7 +233,7 @@ namespace ProjectFood.Controllers
             _db.SaveChanges();
 
             //Update the users view of the shoppinglist
-            return RedirectToAction("Details/" + id);
+            return shoppingList.Title == "watchList" ? RedirectToAction("WatchList") : RedirectToAction("Details/" + id);
         }
 
         public ActionResult ClearShoppingList(int id)
@@ -228,7 +244,7 @@ namespace ProjectFood.Controllers
 
             _db.SaveChanges();
 
-            return RedirectToAction("Details/" + id);
+            return shoppingList.Title == "watchList" ? RedirectToAction("WatchList") : RedirectToAction("Details/" + id);
         }
 
         [HttpPost]
@@ -275,6 +291,15 @@ namespace ProjectFood.Controllers
         private List<Offer> GetOffersForItem(Item item)
         {
             return _db.Offers.Where(x => x.Heading.ToLower().Contains(item.Name.ToLower())).ToList();
+        }
+        public ActionResult GetOffersForItem(int id)
+        {
+            var item = _db.Items.Find(id);
+            var offers = _db.Offers.Where(x => x.Heading.ToLower().Contains(item.Name.ToLower())).ToList();
+
+            var jsonSerialiser = new JavaScriptSerializer();
+            var json = jsonSerialiser.Serialize(offers);
+            return Json(new { json }, JsonRequestBehavior.AllowGet);
         }
 
         //Find relevant shoppingList and include the items
