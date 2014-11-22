@@ -59,7 +59,7 @@ namespace ProjectFood.Controllers
             // ?? means if null assign the right side, else the left side.
             ViewBag.numPersons = numPersons ?? 4;
 
-            //calculate average score
+            //calculate average 
 
             ViewBag.AverageScore = recipe.Ratings.Count > 0 ? (decimal)recipe.Ratings.Select(r => r.Score).Average() : 0;
             ViewBag.RatingCount = recipe.Ratings.Count();
@@ -337,8 +337,7 @@ namespace ProjectFood.Controllers
         {
             Recipe recipe = _db.Recipes.Include(r => r.Ratings).Single(x => x.ID == id);
             User user = _db.Users.Include(u => u.Ratings).SingleOrDefault(u => u.Username == User.Identity.Name);
-            //Den når aldrig forbi ?? pga. *OrDefault(), vel?
-            Rating prevRating = user.Ratings.FirstOrDefault(r => r.Recipe.ID == id) ?? null; 
+            Rating prevRating = user.Ratings.FirstOrDefault(r => r.Recipe.ID == id); 
 
             if (prevRating != null)
             {
