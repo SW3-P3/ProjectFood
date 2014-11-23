@@ -73,7 +73,7 @@
                  new AjaxOptions { HttpMethod = "POST", OnSuccess = "$(this).parent().toggleClass('text-strikethrough')" },
                 new { @style="text-decoration: none", @class="h4" })
             </td>
-                    <td>
+                    <td contenteditable='true'>
                         @if(itemRel.Amount > 0) {
                             <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
                         }
