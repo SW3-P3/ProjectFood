@@ -42,7 +42,6 @@ namespace ProjectFood.Controllers
                     .OrderBy(d => d.Store)
                     .Select(x => x.Store)
                     .Distinct();
-                Session["ScreenName"] = tmpUser.Name;
                 ViewBag.Stores = _db.OffersFilteredByUserPrefs(tmpUser).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
