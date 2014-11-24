@@ -5,8 +5,8 @@ namespace ProjectFood.Models
 {
     public class Rating
     {
-        public readonly User User;
+        public virtual User User { get; set; }
         public decimal Score { get; set; }
-        public readonly Recipe Recipe;
+        public virtual Recipe Recipe { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ProjectFood.Models;
+using System.Net;
 
 namespace ProjectFood.Controllers
 {
@@ -16,6 +17,8 @@ namespace ProjectFood.Controllers
     public class AccountController : Controller
     {
         private ApplicationUserManager _userManager;
+
+        private readonly DataBaseContext _db = new DataBaseContext();
 
         public AccountController()
         {
@@ -82,7 +85,6 @@ namespace ProjectFood.Controllers
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
@@ -166,6 +168,9 @@ namespace ProjectFood.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
+                    _db.Users.Add(new User() { Username = model.Email });
+                    _db.SaveChanges();
+
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -182,7 +187,7 @@ namespace ProjectFood.Controllers
         {
             if (userId == null || code == null)
             {
-                return View("Error");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
@@ -293,7 +298,7 @@ namespace ProjectFood.Controllers
             var userId = await SignInManager.GetVerifiedUserIdAsync();
             if (userId == null)
             {
-                return View("Error");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
             var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
@@ -394,6 +399,7 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            Session.RemoveAll();
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }
