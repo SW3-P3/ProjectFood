@@ -6,7 +6,6 @@
     ViewBag.Title = Html.DisplayFor(model => model.Title);
 }
 
-
 <div class="page-header">
     <h1>@Html.DisplayFor(model => model.Title) <span class="badge">@Model.Items.Count() varer</span></h1>
 </div>
@@ -73,11 +72,11 @@
                  new AjaxOptions { HttpMethod = "POST", OnSuccess = "$(this).parent().toggleClass('text-strikethrough')" },
                 new { @style="text-decoration: none", @class="h4" })
             </td>
-                    <td contenteditable='true'>
-                        @if(itemRel.Amount > 0) {
-                            <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
-                        }
-                    </td>
+    <td onclick="EditAmount('@item.Name', '@itemRel.ItemID', '@itemRel.Amount', '@itemRel.Unit')">
+        @if(itemRel.Amount > 0) {
+            <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
+        }
+    </td>
             if(itemRel.selectedOffer != null) {
                 <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Price)</td>
                     <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
@@ -121,6 +120,36 @@
         }
     </table>
 </div>
+
+<div id="EditModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Luk</span></button>
+                <h4 id="modalTitle" class="modal-title"></h4>
+            </div>
+            <div id="modalBody" class="modal-body">
+                    @using(Ajax.BeginForm(
+                        "EditAmount",
+                        new { shoppingListID = @Model.ID },
+                        new AjaxOptions { HttpMethod = "POST", OnSuccess = "location.reload();" },
+                        new { @id = "EditAmountForm", @class = "navbar-form navbar-left" })) {
+                        <input type="hidden" id="itemID" name="itemID" />
+                        <input type="number" class="form-control" id="amount" name="amount" placeholder="" />
+                        <input type="text" class="form-control" id="unit" name="unit" placeholder="" />
+                    }
+                <br />
+                <br />
+                <br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Luk</button>
+                <button type="button" class="btn btn-primary" onclick="$('#EditAmountForm').submit();">Gem ændringer</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <p>
     @Html.ActionLink("Ændre navn på listen", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Tilbage til alle indkøbslister", "Index") |

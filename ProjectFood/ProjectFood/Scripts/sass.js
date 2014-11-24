@@ -46,3 +46,12 @@ function ToggleBool() {
         $('span#check').addClass('glyphicon-check');
     }
 };
+
+function EditAmount(itemName, itemID, amount, unit) {
+    $('#modalTitle').html('Sæt ny mængde for ' + itemName);
+    $('input#itemID').val(itemID);
+    $('input#amount').val(amount);
+    $('input#unit').val(unit);
+
+    $('#EditModal').modal('show');
+};
