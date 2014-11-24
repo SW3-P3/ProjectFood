@@ -1,5 +1,10 @@
-﻿@{
+﻿@model ProjectFood.Models.Item
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Tilbud for " + Html.DisplayFor(model => model.Name);
 }
 
 
+<div class="page-header">
+    <h1>@Html.DisplayFor(model => model.Name) </h1>
+</div>

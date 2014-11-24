@@ -1,0 +1,39 @@
+﻿@model ProjectFood.Models.User
+
+@{
+    ViewBag.Title = "Rediger butikker";
+}
+
+<div class="page-header">
+    <h1>Rediger butikker</h1>
+    <p class="lead">Her kan du ændre på, hvilke butikker, der <span class="text-danger">ikke</span> ønskes tilbud fra.</p>
+</div>
+<hr />
+<div class="form-group">
+    @using(Html.BeginForm("AddPreference", "User", FormMethod.Post)) {
+        @Html.AntiForgeryToken()
+
+        <div class="input-group input-group-lg">
+            <input type="hidden" name="username" value="@User.Identity.Name" />
+            <input type="hidden" name="store" value="true" />
+            @Html.TextBox("pref", "", new { @id = "autocomplete", @placeholder = "indtast butik", @class = "form-control" })
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-default">Gem</button>
+            </span>
+        </div>
+    }
+</div>
+
+<div class="list-group">
+    @foreach(var pref in Model.Preferences.Where(p => p.Store == true)) {
+        <div class="list-group-item">
+            <h3>
+                <a href="@Url.Action("RemovePreference",
+                             new {username = User.Identity.Name, prefId = @pref.ID})"
+                   class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </a>&nbsp;&nbsp;&nbsp;@pref.Value
+            </h3>
+        </div>
+    }
+</div>

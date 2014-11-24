@@ -11,12 +11,13 @@ namespace ProjectFood.Models
         public ICollection<ShoppingList> OnLists { get; set; }
 
         public ICollection<Offer> Offers { get; set; }
+        public ICollection<Recipe> InRecipes { get; set; }
 
         public Item()
         {
             OnLists = new List<ShoppingList>();
             Offers = new List<Offer>();
-            //Offers.Add(new Offer(){Store = "Erotica", Price = 999999.3M});
+            InRecipes = new List<Recipe>();
         }
     }
 }

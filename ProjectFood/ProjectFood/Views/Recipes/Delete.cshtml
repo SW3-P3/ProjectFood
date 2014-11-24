@@ -1,0 +1,23 @@
+﻿@model ProjectFood.Models.Recipe
+
+@{
+    ViewBag.Title = "Slet opskrift";
+}
+
+<div class="page-header">
+    <h1>@ViewBag.Title</h1>
+</div>
+
+<div class="alert alert-danger">
+    <h2>Er du sikker på, at du vil slette opskriften: @Model.Title?</h2>
+    <p class="lead">Opskriften kan ikke gendannes, og vil være tabt for evigt.<br /><br /></p>
+    <div class="row">
+        @using(Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+            <a href="@Url.Action("Details", "Recipe", new { id = @Model.ID })" class="btn btn-primary btn-lg btn-block">Nej, tag mig tilbage.</a>
+            <button type="submit" class="btn btn-danger btn-lg btn-block">
+                Ja, slet den!
+            </button>
+        }
+    </div>
+</div>

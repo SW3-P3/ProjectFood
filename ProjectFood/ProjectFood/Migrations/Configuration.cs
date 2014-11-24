@@ -5,14 +5,14 @@ namespace ProjectFood.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<ProjectFood.Models.ShoppingListContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<ProjectFood.Models.DataBaseContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(ProjectFood.Models.ShoppingListContext context)
+        protected override void Seed(ProjectFood.Models.DataBaseContext context)
         {
             //  This method will be called after migrating to the latest version.
 

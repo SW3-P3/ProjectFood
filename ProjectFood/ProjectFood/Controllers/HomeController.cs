@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectFood.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,8 +9,14 @@ namespace ProjectFood.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly DataBaseContext _db = new DataBaseContext();
+
         public ActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
+            }
             return View();
         }
 
