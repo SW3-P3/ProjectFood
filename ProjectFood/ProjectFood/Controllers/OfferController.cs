@@ -200,5 +200,27 @@ namespace ProjectFood.Controllers
                 .Where(x => x.Heading.ToLower().Contains(str.ToLower()))
                 .ToList();
         }
+
+        private void NotifyWatchers(List<Offer> offers)
+        {
+            var users = _db.Users.Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0).ToArray();
+
+            foreach (var user in users)
+            {
+                List<Offer> relevantOffers = new List<Offer>();
+                foreach (var item in user.WatchList.Items)
+                {
+                    relevantOffers.AddRange(GetOffersForItem(item));
+                }
+                System.Diagnostics.Debug.WriteLine("BIIIIIATCH " + relevantOffers.Count);
+            }
+        }
+
+        private List<Offer> GetOffersForItem(Item item)
+        {
+            return _db.Offers
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
+                .ToList();
+        }
     }
 }
