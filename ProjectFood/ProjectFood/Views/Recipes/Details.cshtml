@@ -59,14 +59,18 @@
             </div>
             <br />
             <div class="row">
-                @if (User.Identity.Name == Model.AuthorName)
+                @if (User.Identity.IsAuthenticated == true)
                 {
-                    @Html.ActionLink("Rediger opskrift", "Edit", new { id = Model.ID, fork = false }, new { @class = "btn btn-info btn-block" })
+                    if (User.Identity.Name == Model.AuthorName)
+                    {
+                        @Html.ActionLink("Rediger opskrift", "Edit", new { id = Model.ID, fork = false }, new { @class = "btn btn-info btn-block" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Lav din egen version af opskriften", "Edit", new { id = Model.ID, fork = true }, new { @class = "btn btn-info btn-block" })
+                    }   
                 }
-                else
-                { 
-                    @Html.ActionLink("Lav din egen version af opskriften", "Edit", new { id = Model.ID, fork = true }, new { @class = "btn btn-info btn-block" })
-                }
+
             </div>
         </div>
     </div>
