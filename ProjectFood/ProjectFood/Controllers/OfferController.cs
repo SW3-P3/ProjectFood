@@ -26,26 +26,27 @@ namespace ProjectFood.Controllers
                 var tmpUser = _db.Users
                     .Include(s => s.ShoppingLists)
                     .First(u => u.Username == User.Identity.Name);
-                if(tmpUser.ShoppingLists.Count > 0) {
-                
-                int tmpShoppingListID = shoppingListID == null ? tmpUser.ShoppingLists.First().ID : (int)shoppingListID;
-                ViewBag.SelectedShoppingListID = tmpShoppingListID;
-                
-                ViewBag.ShoppingLists = tmpUser.ShoppingLists.ToList();
-                ViewBag.OffersOnListByID = _db.ShoppingList_Item
-                    .Where(s => s.ShoppingListID == tmpShoppingListID && s.selectedOffer != null)
-                    .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID);           
+                if (tmpUser.ShoppingLists.Count > 0)
+                {
+
+                    int tmpShoppingListID = shoppingListID == null ? tmpUser.ShoppingLists.First().ID : (int)shoppingListID;
+                    ViewBag.SelectedShoppingListID = tmpShoppingListID;
+
+                    ViewBag.ShoppingLists = tmpUser.ShoppingLists.ToList();
+                    ViewBag.OffersOnListByID = _db.ShoppingList_Item
+                        .Where(s => s.ShoppingListID == tmpShoppingListID && s.selectedOffer != null)
+                        .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID);
                 }
                 ViewBag.Stores = _db
-                    .OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name))
+                    .OffersFilteredByUserPrefs(tmpUser)
                     .OrderBy(d => d.Store)
                     .Select(x => x.Store)
                     .Distinct();
-                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
-                ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name)).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
+                Session["ScreenName"] = tmpUser.Name;
+                ViewBag.Stores = _db.OffersFilteredByUserPrefs(tmpUser).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
-                return View(_db.OffersFiltered().ToList());            
+                return View(_db.OffersFilteredByUserPrefs(tmpUser).ToList());
             }
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
         }
