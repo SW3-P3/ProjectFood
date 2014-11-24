@@ -666,7 +666,6 @@
     <Content Include="Views\Recipes\Index.cshtml" />
     <Content Include="Views\Recipes\CreateSecond.cshtml" />
     <Content Include="Views\User\EditPreferences.cshtml" />
-    <Content Include="Views\User\EditStores.cshtml" />
     <Content Include="Views\Offer\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
