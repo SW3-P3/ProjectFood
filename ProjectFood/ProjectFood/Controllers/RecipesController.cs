@@ -6,8 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Antlr.Runtime;
+using Microsoft.Ajax.Utilities;
 using ProjectFood.Models;
 using System.Diagnostics;
+using WebGrease.Css.Extensions;
 
 namespace ProjectFood.Controllers
 {
@@ -22,35 +25,47 @@ namespace ProjectFood.Controllers
             {
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
             }
-           
+
             return View(_db.Recipes.Include(r => r.Ingredients).ToList());
         }
 
         // GET: Recipes/Details/5
         public ActionResult Details(int? id, int? numPersons)
         {
-            if(User.Identity.IsAuthenticated) {
+            if (id == null)
+            {
+                return RedirectToAction("index");
+            }
+
+            var recipe = _db.Recipes.Include(r => r.Ingredients).Include(r => r.Ratings).Single(x => x.ID == id);
+            ViewBag.Author = _db.Users.First(u => u.Username == recipe.AuthorName);
+            ViewBag.OriginalAuthor = _db.Users.SingleOrDefault(u => u.Username == recipe.OriginalAuthorName);
+            if (recipe.Ingredients.Count > 0)
+            {
+                ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
                 ViewBag.ShoppingLists =
                     _db.Users.Include(s => s.ShoppingLists)
                         .First(u => u.Username == User.Identity.Name)
                         .ShoppingLists.ToList();
-            } else {
+                ViewBag.UserRating = recipe.Ratings.SingleOrDefault(r => r.User.Username == User.Identity.Name);
+            }
+            else
+            {
                 ViewBag.ShoppingLists = null;
-            }
-
-            if(id == null) {
-                return RedirectToAction("index");
-            }
-
-            var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
-            ViewBag.Author = _db.Users.First(u => u.Username == recipe.AuthorName);
-            ViewBag.OriginalAuthor = _db.Users.SingleOrDefault(u => u.Username == recipe.OriginalAuthorName);
-            if(recipe.Ingredients.Count > 0) {
-                ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
+                ViewBag.UserRating = 0;
             }
 
             // ?? means if null assign the right side, else the left side.
             ViewBag.numPersons = numPersons ?? 4;
+
+            //calculate average 
+
+            ViewBag.AverageScore = recipe.Ratings.Count > 0 ? (decimal)recipe.Ratings.Select(r => r.Score).Average() : 0;
+            ViewBag.RatingCount = recipe.Ratings.Count();
 
             return View(recipe);
         }
@@ -58,7 +73,8 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Create
         public ActionResult Create()
         {
-            if(User.Identity.IsAuthenticated) {
+            if (User.Identity.IsAuthenticated)
+            {
                 return View();
             }
             return RedirectToAction("Register", "Account");
@@ -79,7 +95,8 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Edit/5
         public ActionResult Edit(int? id, bool fork)
         {
-            if(id == null) {
+            if (id == null)
+            {
                 return RedirectToAction("index");
             }
 
@@ -90,10 +107,13 @@ namespace ProjectFood.Controllers
                 return HttpNotFound();
             }
 
-            if(User.Identity.IsAuthenticated) {
-                if(fork) {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (fork)
+                {
                     var originalRecipe = recipe;
-                    var forkedRecipe = new Recipe {
+                    var forkedRecipe = new Recipe
+                    {
                         OriginalAuthorName = originalRecipe.OriginalAuthorName,
                         AuthorName = User.Identity.Name,
                         Title = originalRecipe.Title,
@@ -104,8 +124,10 @@ namespace ProjectFood.Controllers
                     };
                     _db.Recipes.Add(forkedRecipe);
 
-                    foreach(var ingredient in _db.Recipe_Ingredient.Where(i => i.RecipeID == originalRecipe.ID)) {
-                        var tmpRecipeIngredient = new Recipe_Ingredient {
+                    foreach (var ingredient in _db.Recipe_Ingredient.Where(i => i.RecipeID == originalRecipe.ID))
+                    {
+                        var tmpRecipeIngredient = new Recipe_Ingredient
+                        {
                             RecipeID = forkedRecipe.ID,
                             IngredientID = ingredient.IngredientID,
                             Recipe = forkedRecipe,
@@ -118,10 +140,12 @@ namespace ProjectFood.Controllers
                     _db.SaveChanges();
                     recipe = forkedRecipe;
                 }
-            } else {
+            }
+            else
+            {
                 return RedirectToAction("Details/" + id);
             }
-           
+
             return View(recipe);
         }
 
@@ -132,7 +156,8 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
         {
-            if(ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
                 _db.Entry(recipe).State = EntityState.Modified;
                 _db.SaveChanges();
                 return RedirectToAction("CreateSecond/" + recipe.ID);
@@ -143,13 +168,15 @@ namespace ProjectFood.Controllers
         // GET: Recipes/Delete/5
         public ActionResult Delete(int? id)
         {
-            if(id == null) {
+            if (id == null)
+            {
                 return RedirectToAction("index");
             }
-            
+
             var recipe = _db.Recipes.Find(id);
-            
-            if(recipe == null) {
+
+            if (recipe == null)
+            {
                 return HttpNotFound();
             }
 
@@ -169,7 +196,8 @@ namespace ProjectFood.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if(disposing) {
+            if (disposing)
+            {
                 _db.Dispose();
             }
             base.Dispose(disposing);
@@ -179,33 +207,39 @@ namespace ProjectFood.Controllers
         {
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
 
-            if(name.Trim() == string.Empty) {
+            if (name.Trim() == string.Empty)
+            {
                 return RedirectToAction("CreateSecond/" + id);
             }
             //allows for ingredienst with no amount and unit
-            if(amountPerPerson == null) {
+            if (amountPerPerson == null)
+            {
                 amountPerPerson = 0;
             }
 
             // If numpersons is set to zero, this value shouldn't be infinity (will give db exception)
-            amountPerPerson = numPersons > 0 ? (double) amountPerPerson/numPersons : 0;
+            amountPerPerson = numPersons > 0 ? (double)amountPerPerson / numPersons : 0;
 
             //Search in GenericLItems for item
             Item knownItem = null;
-            if(_db.Items.Any()) {
+            if (_db.Items.Any())
+            {
                 knownItem = _db.Items.SingleOrDefault(i => i.Name.CompareTo(name) == 0);
             }
 
             var tmpIngredient = knownItem ?? new Item { Name = name };
 
-            if(recipe.Ingredients.Contains(tmpIngredient)) {
+            if (recipe.Ingredients.Contains(tmpIngredient))
+            {
                 _db.Recipe_Ingredient.First(i => i.Recipe == recipe && i.Ingredient == tmpIngredient).AmountPerPerson = (double)amountPerPerson;
-            } else {
+            }
+            else
+            {
                 var recipeIngredient = new Recipe_Ingredient { RecipeID = id, Ingredient = tmpIngredient, AmountPerPerson = (double)amountPerPerson, Unit = unit };
                 recipe.Ingredients.Add(tmpIngredient);
                 _db.Recipe_Ingredient.Add(recipeIngredient);
             }
-          
+
             _db.SaveChanges();
             return RedirectToAction("CreateSecond/" + id);
         }
@@ -221,7 +255,7 @@ namespace ProjectFood.Controllers
             //Find the item in the ShoppingList_Item table
             var rmRecipeIngredient = _db.Recipe_Ingredient.SingleOrDefault(x => x.IngredientID == ingredientId && x.RecipeID == id);
             //... and remove it
-            if(rmRecipeIngredient != null)
+            if (rmRecipeIngredient != null)
                 _db.Recipe_Ingredient.Remove(rmRecipeIngredient);
 
             //Save the changes in the database
@@ -233,19 +267,24 @@ namespace ProjectFood.Controllers
 
         public ActionResult CreateSecond(int? id, int? numPersons)
         {
-            if(id == null) {
+            if (id == null)
+            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            if(User.Identity.IsAuthenticated) {
-                if(User.Identity.Name != (_db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName)
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.Identity.Name != (_db.Recipes.FirstOrDefault(r => r.ID == id)).AuthorName)
                     return RedirectToAction("Index");
-            } else {
+            }
+            else
+            {
                 return RedirectToAction("Index");
             }
 
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
-            if(recipe.Ingredients.Count > 0) {
+            if (recipe.Ingredients.Count > 0)
+            {
                 ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
             }
 
@@ -260,10 +299,12 @@ namespace ProjectFood.Controllers
             var tmpItem = _db.Items.Find(itemId);
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
-            if(amount == null) {
+            if (amount == null)
+            {
                 amount = 0;
             }
-            var shoppingListItem = new ShoppingList_Item {
+            var shoppingListItem = new ShoppingList_Item
+            {
                 Item = tmpItem,
                 ShoppingList = shoppingList,
                 Amount = (double)amount,
@@ -276,10 +317,82 @@ namespace ProjectFood.Controllers
 
             _db.SaveChanges();
 
-            return Json(new {
+            return Json(new
+            {
                 Message = "Hajtroels",
                 ItemId = itemId,
             }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult RateRecipe(User u, decimal s, Recipe r)
+        {
+            var rating = new Rating
+            {
+                Recipe = r,
+                Score = s,
+                User = u
+            };
+            _db.Ratings.Add(rating);
+            return PartialView();
+        }
+
+        [HttpPost]
+        public ActionResult AddRating(int id, int rating)
+        {
+            Recipe recipe = _db.Recipes.Include(r => r.Ratings).Single(x => x.ID == id);
+            User user = _db.Users.Include(u => u.Ratings).SingleOrDefault(u => u.Username == User.Identity.Name);
+            Rating prevRating = user.Ratings.FirstOrDefault(r => r.Recipe.ID == id); 
+
+            if (prevRating != null)
+            {
+                prevRating.Score = rating;
+            }
+            else
+            {
+                Rating rate = new Rating
+                {
+                    Recipe = recipe,
+                    Score = rating,
+                    User = user
+                };
+
+                user.Ratings.Add(rate);
+                recipe.Ratings.Add(rate);
+                _db.Ratings.Add(rate);
+            }
+
+            _db.SaveChanges();
+
+            return Json(new { 
+                rating = rating, 
+                avgRating = recipe.Ratings.Count > 0 ? recipe.Ratings.Select(r => r.Score).Average().ToString("0.0") : "0.0",
+                numRatings = recipe.Ratings.Count()
+            });
+        }
+        private IEnumerable<Tuple<Item, decimal>> getUserTaste(User u)
+        {
+            //_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).Where(x => x.Ratings == null);
+            var tmpuser =_db.Users.Include(x => x.Ratings).SingleOrDefault(x => x.Username == u.Username);
+//            var ingredients = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings == );
+
+            var ingredients = _db.Recipes
+                .Include(x => x.Ingredients)
+                .Where(x => x.Ratings
+                    .Any(y => y.User == tmpuser))
+                .Select(x => new {x.Ingredients, rating = x.Ratings
+                    .FirstOrDefault(y => y.User == u)});
+
+            var derp = ingredients.SelectMany(x => x.Ingredients).Distinct();
+
+            var itemsWithRatings = new List<Tuple<Item, decimal>>();
+
+            foreach (var i in derp)
+            {
+                Item i1 = i;
+                var recipeWithItem = _db.Recipes.Include(x => x.Ingredients).Where(x => x.Ingredients.Contains(i1));
+                itemsWithRatings.Add(new Tuple<Item, decimal>(i, recipeWithItem.First().Ratings.Where(x => x.User == tmpuser).Average(y => y.Score)));
+            }
+
+            return itemsWithRatings;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace ProjectFood.Models
         public DbSet<Recipe_Ingredient> Recipe_Ingredient { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Pref> Preferences { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
 
 
         public IEnumerable<Offer> OffersFiltered()

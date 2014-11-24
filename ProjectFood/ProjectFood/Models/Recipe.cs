@@ -16,10 +16,12 @@ namespace ProjectFood.Models
         public string Tags { get; set; }
         public int Minutes { get; set; }
         public string Instructions { get; set; }
+        public ICollection<Rating> Ratings { get; set; }
 
         public Recipe()
         {
             Ingredients = new List<Item>();
+            Ratings = new List<Rating>();
         }
 
     }

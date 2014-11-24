@@ -11,5 +11,6 @@ namespace ProjectFood.Models
         public List<Group> Groups { get; set; }
         public List<ShoppingList> ShoppingLists { get; set; }
         public List<Pref> Preferences { get; set; }
+        public List<Rating> Ratings { get; set; }
     }
 }

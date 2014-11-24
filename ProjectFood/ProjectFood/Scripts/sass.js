@@ -47,6 +47,7 @@ function ToggleBool() {
     }
 };
 
+<<<<<<< HEAD
 function ToggleBoolByID(store) {
     if ($('input#storeCheck_' + store).val() == 'true') {
         $('input#storeCheck_' + store).val('false');
@@ -56,5 +57,26 @@ function ToggleBoolByID(store) {
         $('input#storeCheck_' + store).val('true');
         $('span#check_' + store).removeClass('glyphicon-unchecked');
         $('span#check_' + store).addClass('glyphicon-check');
+=======
+function ClickedStar(rating) {
+
+    $('input#rateVal').val(rating);
+
+    $('#starForm').submit();
+};
+
+function UpdateStarsAndAvg(json) {
+    $('span#avgRating').html(json.avgRating);
+    $('span#numRatings').html(json.numRatings);
+
+    for (var i = 1; i <= 5; i++) {
+        if(json.rating >= i){
+            $('span#' + i).removeClass('glyphicon-star-empty');
+            $('span#' + i).addClass('glyphicon-star');
+        } else {
+            $('span#' + i).removeClass('glyphicon-star');
+            $('span#' + i).addClass('glyphicon-star-empty');
+        }
+>>>>>>> doesNayWork
     }
 };
