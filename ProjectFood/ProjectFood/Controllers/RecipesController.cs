@@ -37,7 +37,11 @@ namespace ProjectFood.Controllers
                 return RedirectToAction("index");
             }
 
-            var recipe = _db.Recipes.Include(r => r.Ingredients).Include(r => r.Ratings).Single(x => x.ID == id);
+            var recipe = _db.Recipes.Include(r => r.Ingredients).Include(r => r.Ratings).FirstOrDefault(x => x.ID == id);
+            if (recipe == null)
+            {
+                return RedirectToAction("index");
+            }
             ViewBag.Author = _db.Users.First(u => u.Username == recipe.AuthorName);
             ViewBag.OriginalAuthor = _db.Users.SingleOrDefault(u => u.Username == recipe.OriginalAuthorName);
             if (recipe.Ingredients.Count > 0)

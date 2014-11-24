@@ -63,7 +63,7 @@ namespace ProjectFood.Models
         }
 
         public DataBaseContext()
-            : base("Food")
+            : base("Foodzx")
         {
         }
 
