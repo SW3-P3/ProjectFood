@@ -42,7 +42,7 @@ namespace ProjectFood.Controllers
             var usernameDecode = HttpUtility.HtmlDecode(username);
             if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
             {
-                ViewBag.Store = _db.Offers.Select(x => x.Store).Distinct().ToList();
+                ViewBag.Store = _db.Offers.Select(x => x.Store).Distinct().OrderBy(x => x.ToLower()).ToList();
                 ViewBag.Prefs = _db.Preferences.ToList();
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
                 
