@@ -1,26 +1,13 @@
-﻿@using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
+﻿@if (Request.IsAuthenticated)
 {
-
-
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
         @Html.AntiForgeryToken()
-        string Name;
-        if (Session["ScreenName"] != null && Session["ScreenName"] != string.Empty)
-        {
-            Name = Session["ScreenName"].ToString();
-        }
-        else
-        {
-            Name = User.Identity.Name;
-        }
-
         <ul class="nav navbar-nav navbar-right">
             <li>
                 <a href="@Url.Action("Index", "User")"
                    title="Brugerindstillinger">
-                    <span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Hej @Name
+                    <span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Brugerinstillinger
                 </a>
             </li>
             <li>
