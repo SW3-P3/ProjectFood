@@ -44,9 +44,23 @@ namespace ProjectFood.Controllers
             if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
             {
                 ViewBag.Prefs = _db.Preferences.ToList();
+                var tmpList = new List<string>();
+                var tmp = _db.Offers;
+                foreach (var offer in tmp)
+                {
+                    if (tmpList.Any(x => x == offer.Store)) ;
+                    else
+                    {
+                        tmpList.Add(offer.Store);
+                    }
+                }
+                ViewBag.Store = tmpList;
+
+                ViewBag.Prefs = _db.Preferences.ToList();
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
                 
             }
+
             return RedirectToAction("Index");
         }
 
@@ -81,15 +95,21 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult EditStores(string username)
+        [HttpPost]
+        public void EditStore(string storename)
         {
-            var usernameDecode = HttpUtility.HtmlDecode(username);
-            if(User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode) {
-                ViewBag.Prefs = _db.Preferences.ToList();
-                return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
+            var tmpUser = _db.Users.Include(u => u.Preferences).First(u => u.Username == User.Identity.Name);
 
+            if (tmpUser.Preferences.Any(x => x.Store == true && x.Value == storename))
+            {
+                tmpUser.Preferences.Remove(tmpUser.Preferences.First(x=> x.Store == true && x.Value == storename));
             }
-            return RedirectToAction("Index");
+            else
+            {
+                tmpUser.Preferences.Add(new Pref(){Store = true, Value = storename});
+            }
+
+            _db.SaveChanges();
         }
 
     }

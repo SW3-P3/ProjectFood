@@ -45,7 +45,9 @@ namespace ProjectFood.Controllers
 
             foreach (var item in shoppingList.Items)
             {
-                item.Offers = GetOffersForItem(item).OrderBy(x=>x.Store).ToList();
+                item.Offers =
+                    _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name))
+                        .OrderBy(d => d.Store).Where(x => x.Heading.ToLower().Contains(item.Name.ToLower())).ToList();
             }
 
             _db.SaveChanges();
