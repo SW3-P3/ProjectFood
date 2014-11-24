@@ -178,6 +178,10 @@
     <Compile Include="Migrations\201411221108449_Initial.Designer.cs">
       <DependentUpon>201411221108449_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201411241237018_derp.cs" />
+    <Compile Include="Migrations\201411241237018_derp.Designer.cs">
+      <DependentUpon>201411241237018_derp.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Api\Catalog.cs" />
@@ -673,6 +677,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201411221108449_Initial.resx">
       <DependentUpon>201411221108449_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411241237018_derp.resx">
+      <DependentUpon>201411241237018_derp.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

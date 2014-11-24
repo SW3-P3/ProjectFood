@@ -47,17 +47,6 @@ function ToggleBool() {
     }
 };
 
-<<<<<<< HEAD
-function ToggleBoolByID(store) {
-    if ($('input#storeCheck_' + store).val() == 'true') {
-        $('input#storeCheck_' + store).val('false');
-        $('span#check_' + store).removeClass('glyphicon-check');
-        $('span#check_' + store).addClass('glyphicon-unchecked');
-    } else {
-        $('input#storeCheck_' + store).val('true');
-        $('span#check_' + store).removeClass('glyphicon-unchecked');
-        $('span#check_' + store).addClass('glyphicon-check');
-=======
 function ClickedStar(rating) {
 
     $('input#rateVal').val(rating);
@@ -70,13 +59,24 @@ function UpdateStarsAndAvg(json) {
     $('span#numRatings').html(json.numRatings);
 
     for (var i = 1; i <= 5; i++) {
-        if(json.rating >= i){
+        if (json.rating >= i) {
             $('span#' + i).removeClass('glyphicon-star-empty');
             $('span#' + i).addClass('glyphicon-star');
         } else {
             $('span#' + i).removeClass('glyphicon-star');
             $('span#' + i).addClass('glyphicon-star-empty');
         }
->>>>>>> doesNayWork
+    }
+};
+
+function ToggleBoolByID(store) {
+    if ($('input#storeCheck_' + store).val() == 'true') {
+        $('input#storeCheck_' + store).val('false');
+        $('span#check_' + store).removeClass('glyphicon-check');
+        $('span#check_' + store).addClass('glyphicon-unchecked');
+    } else {
+        $('input#storeCheck_' + store).val('true');
+        $('span#check_' + store).removeClass('glyphicon-unchecked');
+        $('span#check_' + store).addClass('glyphicon-check');
     }
 };
