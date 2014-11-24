@@ -365,5 +365,21 @@ namespace ProjectFood.Controllers
                 numRatings = recipe.Ratings.Count()
             });
         }
+        private IEnumerable<T> getUserTaste(User u)
+        {
+            //_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).Where(x => x.Ratings == null);
+            var tmpuser =_db.Users.Include(x => x.Ratings).SingleOrDefault(x => x.Username == u.Username);
+//            var ingredients = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings == );
+
+            var ingredients = _db.Recipes.Include(x => x.Ingredients).Where(x => x.Ratings.Any(y => y.User == tmpuser)).Select(x => x.Ingredients).ToList();
+
+            var anon = ingredients.Select(x => new { x.});
+            foreach (var i in ingredients)
+            {
+                
+
+            }
+            
+        }
     }
 }
