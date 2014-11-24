@@ -18,7 +18,6 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
                 return RedirectToAction("Index", "Manage");
             }
 
@@ -43,19 +42,7 @@ namespace ProjectFood.Controllers
             var usernameDecode = HttpUtility.HtmlDecode(username);
             if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
             {
-                ViewBag.Prefs = _db.Preferences.ToList();
-                var tmpList = new List<string>();
-                var tmp = _db.Offers;
-                foreach (var offer in tmp)
-                {
-                    if (tmpList.Any(x => x == offer.Store)) ;
-                    else
-                    {
-                        tmpList.Add(offer.Store);
-                    }
-                }
-                ViewBag.Store = tmpList;
-
+                ViewBag.Store = _db.Offers.Select(x => x.Store).Distinct().ToList();
                 ViewBag.Prefs = _db.Preferences.ToList();
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
                 
