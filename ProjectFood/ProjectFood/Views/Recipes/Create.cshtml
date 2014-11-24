@@ -33,7 +33,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">Instruktioner</label>
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Instructions, new { @class = "form-control", cols = "10", rows = "10" })
+                @Html.TextAreaFor(model => model.Instructions, new { @class = "form-control col-md-10", @style="overflow: auto; resize: none;" , rows = 8})
                 @Html.ValidationMessageFor(model => model.Instructions, "", new { @class = "text-danger" })
             </div>
         </div>
