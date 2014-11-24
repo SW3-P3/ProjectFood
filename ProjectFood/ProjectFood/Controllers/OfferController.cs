@@ -31,17 +31,11 @@ namespace ProjectFood.Controllers
 
                     int tmpShoppingListID = shoppingListID == null ? tmpUser.ShoppingLists.First().ID : (int)shoppingListID;
                     ViewBag.SelectedShoppingListID = tmpShoppingListID;
-
-                    ViewBag.ShoppingLists = tmpUser.ShoppingLists.ToList();
                     ViewBag.OffersOnListByID = _db.ShoppingList_Item
                         .Where(s => s.ShoppingListID == tmpShoppingListID && s.selectedOffer != null)
                         .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID);
                 }
-                ViewBag.Stores = _db
-                    .OffersFilteredByUserPrefs(tmpUser)
-                    .OrderBy(d => d.Store)
-                    .Select(x => x.Store)
-                    .Distinct();
+
                 ViewBag.Stores = _db.OffersFilteredByUserPrefs(tmpUser).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
