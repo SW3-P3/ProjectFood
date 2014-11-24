@@ -6,8 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Antlr.Runtime;
+using Microsoft.Ajax.Utilities;
 using ProjectFood.Models;
 using System.Diagnostics;
+using WebGrease.Css.Extensions;
 
 namespace ProjectFood.Controllers
 {
@@ -365,21 +368,31 @@ namespace ProjectFood.Controllers
                 numRatings = recipe.Ratings.Count()
             });
         }
-        private IEnumerable<T> getUserTaste(User u)
+        private IEnumerable<Tuple<Item, decimal>> getUserTaste(User u)
         {
             //_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).Where(x => x.Ratings == null);
             var tmpuser =_db.Users.Include(x => x.Ratings).SingleOrDefault(x => x.Username == u.Username);
 //            var ingredients = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings == );
 
-            var ingredients = _db.Recipes.Include(x => x.Ingredients).Where(x => x.Ratings.Any(y => y.User == tmpuser)).Select(x => x.Ingredients).ToList();
+            var ingredients = _db.Recipes
+                .Include(x => x.Ingredients)
+                .Where(x => x.Ratings
+                    .Any(y => y.User == tmpuser))
+                .Select(x => new {x.Ingredients, rating = x.Ratings
+                    .FirstOrDefault(y => y.User == u)});
 
-            var anon = ingredients.Select(x => new { x.});
-            foreach (var i in ingredients)
+            var derp = ingredients.SelectMany(x => x.Ingredients).Distinct();
+
+            var itemsWithRatings = new List<Tuple<Item, decimal>>();
+
+            foreach (var i in derp)
             {
-                
-
+                Item i1 = i;
+                var recipeWithItem = _db.Recipes.Include(x => x.Ingredients).Where(x => x.Ingredients.Contains(i1));
+                itemsWithRatings.Add(new Tuple<Item, decimal>(i, recipeWithItem.First().Ratings.Where(x => x.User == tmpuser).Average(y => y.Score)));
             }
-            
+
+            return itemsWithRatings;
         }
     }
 }
