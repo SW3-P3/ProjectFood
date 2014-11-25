@@ -1,9 +1,10 @@
 ﻿using ProjectFood.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
+
 
 namespace ProjectFood.Controllers
 {
@@ -13,6 +14,18 @@ namespace ProjectFood.Controllers
 
         public ActionResult Index()
         {
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = _db.Users.Include(w => w.WatchList.Items.Select(i => i.Offers)).First(u => u.Username == User.Identity.Name);
+                
+                foreach (var item in user.WatchList.Items)
+                {
+                    item.Offers = ShoppingListsController.GetOffersForItem(_db, item).OrderBy(x => x.Store).ToList();
+                }
+
+                ViewBag.WatchList = user.WatchList;
+            }
             return View();
         }
 

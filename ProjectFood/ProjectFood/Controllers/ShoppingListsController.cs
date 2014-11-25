@@ -46,7 +46,7 @@ namespace ProjectFood.Controllers
 
             foreach (var item in shoppingList.Items)
             {
-                item.Offers = GetOffersForItem(item).OrderBy(x=>x.Store).ToList();
+                item.Offers = GetOffersForItem(_db, item).OrderBy(x=>x.Store).ToList();
             }
 
             _db.SaveChanges();
@@ -164,31 +164,29 @@ namespace ProjectFood.Controllers
         public ActionResult WatchList()
         {
             if(User.Identity.IsAuthenticated) {
+                ViewBag.ShoppingLists =
+                       _db.Users.Include(s => s.ShoppingLists)
+                           .First(u => u.Username == User.Identity.Name)
+                           .ShoppingLists.ToList();
                 var user = _db.Users.Include(w => w.WatchList.Items.Select(i => i.Offers)).First(u => u.Username == User.Identity.Name);
                 if(user.WatchList == null) {    
                     user.WatchList = new ShoppingList { Title = "watchList"};
-                    user.RelevantOffers = new ShoppingList { Title = "relevantOffers" };
 
                     _db.SaveChanges();
                 }
 
-                if (user.RelevantOffers == null)
-                {
-                    user.RelevantOffers = new ShoppingList { Title = "relevantOffers" };
-                }
-
                 foreach (var item in user.WatchList.Items)
                 {
-                    item.Offers = GetOffersForItem(item).OrderBy(x => x.Store).ToList();
+                    item.Offers = GetOffersForItem(_db, item).OrderBy(x => x.Store).ToList();
                 }
 
                 return View(user.WatchList);
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
         }
 
-        public ActionResult AddItem(int id, string name, double? amount, string unit)
+        public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)
         {
             if(name.Trim() == string.Empty) {
                 return RedirectToAction("Details/" + id);
@@ -202,7 +200,7 @@ namespace ProjectFood.Controllers
             //Search in GenericLItems for item
             Item knownItem = null;
             if(_db.Items.Any()) { 
-                knownItem = _db.Items.SingleOrDefault(i => i.Name.CompareTo(name) == 0);
+                knownItem = _db.Items.FirstOrDefault(i => i.Name.CompareTo(name) == 0);
             }
 
             if(knownItem != null) {
@@ -221,6 +219,13 @@ namespace ProjectFood.Controllers
                 }
             } else {
                 addToShoppingList_Item(tmpItem, shoppingList, amount, unit);
+            }
+
+            if (offerID != null)
+            {
+                _db.ShoppingList_Item.First(x => x.ShoppingListID == id && x.ItemID == tmpItem.ID).selectedOffer
+                    = _db.Offers.Find((int)offerID);
+                _db.SaveChanges();
             }
 
             return shoppingList.Title == "watchList" ? RedirectToAction("WatchList") : RedirectToAction("Details/" + id);
@@ -300,9 +305,9 @@ namespace ProjectFood.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        private List<Offer> GetOffersForItem(Item item)
+        public static List<Offer> GetOffersForItem(DataBaseContext db, Item item)
         {
-            return _db.Offers
+            return db.Offers
                 .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
                 .ToList();
         }
@@ -332,7 +337,7 @@ namespace ProjectFood.Controllers
             ShoppingList list = findShoppingListFromID(shoppingListId);
             var item = list.Items.First(x => x.ID == ItemId);
 
-            _db.ShoppingList_Item.First(x => x.ItemID == ItemId).selectedOffer = _db.Offers.First(x => x.ID == offerId);
+            _db.ShoppingList_Item.First(x => x.ItemID == ItemId && x.ShoppingListID == shoppingListId).selectedOffer = _db.Offers.First(x => x.ID == offerId);
             _db.SaveChanges();
 
             return RedirectToAction("Details/" + shoppingListId);

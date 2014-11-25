@@ -11,3 +11,18 @@
     </div>
     <p><a href="http://www.cs.aau.dk" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
 </div>
+
+<div class="row">
+    <div class="col-md-4">
+        <p>
+    @if (ViewBag.WatchList != null)
+    {
+        foreach (var item in ((ProjectFood.Models.ShoppingList)ViewBag.WatchList).Items)
+        {
+        <p>@item.Name - @item.Offers.Count tilbud</p>
+        }
+    }
+        </p>
+    </div>
+
+</div>

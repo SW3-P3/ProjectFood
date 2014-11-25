@@ -218,13 +218,8 @@ namespace ProjectFood.Controllers
                     relevantOffers.AddRange(GetOffersForItem(item));
                     
                 }
-                foreach (var item in relevantOffers)
-	{
-user.RelevantOffers.Items.Add(OfferToItem(item));
-
-	}
                 
-                _db.SaveChanges();
+                //do stuff
             }
         }
 

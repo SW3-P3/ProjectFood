@@ -21,6 +21,10 @@
         $('#modalBody').html(offerTable);
         $('#offerModal').modal('show');
     };
+
+    function GetSelectedListWL(){
+        $('input#SelectedList').val($('#Selection').val());
+    };
 </script>
 
 <div class="page-header">
@@ -30,93 +34,108 @@
         Her kan du sætte varer på en overvågningsliste, og på den måde, vil du modtage en notifikation, når varen kommer på tilbud.
     </p>
 </div>
-<hr />
 
-<div class="row">
-    @using(Html.BeginForm(
+<div class="col-md-4 col-md-offset-8">
+    @if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
+                {
+                    List<SelectListItem> listItems = new List<SelectListItem>();
+
+                    foreach (var list in ViewBag.ShoppingLists)
+                    {
+                        listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
+                    }
+        <label for="Selection">Vælg indkøbsliste</label>
+        @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedListWL()" })
+
+                }
+                </div>
+    <hr />
+
+    <div class="row">
+        @using(Html.BeginForm(
         "AddItem",
         "ShoppingLists",
         new { amount = 0, unit = string.Empty },
         FormMethod.Get,
         new { @class = "navbar-form navbar-left" }
         )) {
-        <div class="form-group">
-            <div class="col-md-4">
-                @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+            <div class="form-group">
+                <div class="col-md-4">
+                    @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+                </div>
             </div>
-        </div>
 
-        <input type="hidden" name="id" value="@Model.ID" />
+            <input type="hidden" name="id" value="@Model.ID" />
 
-        <button type="submit" class="btn btn-default">Tilføj vare</button>
+            <button type="submit" class="btn btn-default">Tilføj vare</button>
 
 
     }
-</div>
+    </div>
 
-<div id="offerModal" class="modal fade">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 id="modalTitle" class="modal-title">Tilbud</h4>
-            </div>
-            <div class="modal-body">
-                <p id="modalBody"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    <div id="offerModal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 id="modalTitle" class="modal-title">Tilbud</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="modalBody"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
-<div class="form-group">
-    <table class="table table-striped">
-        <tr>
-            <th class="col-md-1 text-center">Fjern</th>
-            <th>Varenavn</th>
-            <th class="col-md-1">Se tilbud!</th>
-        </tr>
-        @foreach(var item in Model.Items) {
+    <div class="form-group">
+        <table class="table table-striped">
             <tr>
-                <td>
-                    <a href="@Url.Action("RemoveItem",
-                             new {id = Model.ID, itemID = item.ID})"
-                       class="btn btn-danger btn-xs btn-block">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
-                </td>
-                <td>
-                    @item.Name
-                </td>
-                @if (item.Offers.Count > 0)
-                {
+                <th class="col-md-1 text-center">Fjern</th>
+                <th>Varenavn</th>
+                <th class="col-md-1">Se tilbud!</th>
+            </tr>
+            @foreach(var item in Model.Items) {
+                <tr>
                     <td>
-                        <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
-                            <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
-                        </div>
+                        <a href="@Url.Action("RemoveItem",
+                             new {id = Model.ID, itemID = item.ID})"
+                           class="btn btn-danger btn-xs btn-block">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>
                     </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    @if (item.Offers.Count > 0)
+                {
+                        <td>
+                            <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
+                                <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
+                            </div>
+                        </td>
                 }
                 else
                 {
-                    <td></td>
+                        <td></td>
                 }
-                @*
-                    <td class="col-md-1">
-        @using(Ajax.BeginForm(
-            "GetOffersForItem",
-            "ShoppingLists",
-            new { id = item.ID },
-            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" })) {
-            <div onclick="$(this).parent().submit()" class="btn btn-info btn-xs btn-block">
-                <span class="glyphicon glyphicon-list-alt"></span>
-            </div>
-        }
-    </td>
-                *@
+                    @*
+                                        <td class="col-md-1">
+                            @using(Ajax.BeginForm(
+                                "GetOffersForItem",
+                                "ShoppingLists",
+                                new { id = item.ID },
+                                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" })) {
+                                <div onclick="$(this).parent().submit()" class="btn btn-info btn-xs btn-block">
+                                    <span class="glyphicon glyphicon-list-alt"></span>
+                                </div>
+                            }
+                        </td>
+                    *@
 
-            </tr>
+                </tr>
             foreach (var offer in item.Offers)
             {
                 <tr style="display: none" id="ShowOfferAll_@item.ID">
@@ -128,19 +147,27 @@
                     <td>@offer.End.ToString("ddd d- M")</td>
                     <td>@offer.Store</td>
                     <td>
-                        <a href="@Url.Action("ChooseOffer",
-                                         new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID })"
-                           class="btn btn-success btn-xs btn-block">
-                            Vælg
-                        </a>
+                        @using(Html.BeginForm(
+                            "AddItem", 
+                            "ShoppingLists", 
+                            FormMethod.Get, 
+                            new {@class = "form-group"}
+                            ))
+	{
+                            <input type="hidden" id="SelectedList" name="id" value="@ViewBag.ShoppingLists[0].ID" />
+                            <input type="hidden" name="name" value="@item.Name" />
+                            <input type="hidden" name="offerID" value="@offer.ID" />
+    <button class="btn btn-success btn-xs btn-block">Vælg</button>
+	}
+                        
                     </td>
                 </tr>
             }
         }
-    </table>
-</div>
+        </table>
+    </div>
 
-@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
+    @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
     @Scripts.Render("~/bundles/homemade")   @*  Magic part ...                                                    *@
     @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
-}
+    }
