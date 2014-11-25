@@ -5,23 +5,6 @@
 }
 
 <script type="text/javascript">
-    function ShowOffers(json) {
-        var offers = JSON.parse(json.jsonOffers);
-        $('#modalTitle').html('Tilbud på ' + json.itemName);
-        var offerTable = "<table class='table table-hover table-condensed'>";
-        for (var i = 0; i < offers.length; i++) {
-            offerTable += "<tr id='" +
-                offers[i].ID + "' ><td>" +
-                offers[i].Heading + "</td><td class='col-md-1'>" +
-                offers[i].Unit + "</td><td class='col-md-1'>" +
-                offers[i].Price + " kr.</td><td class='col-md-1'>" +
-                offers[i].Store + "</td></tr>";
-        }
-        offerTable += "</table>";
-        $('#modalBody').html(offerTable);
-        $('#offerModal').modal('show');
-    };
-
     function GetSelectedListWL(){
         $('input#SelectedList').val($('#Selection').val());
 
@@ -34,51 +17,50 @@
     };
 </script>
 
-<div class="page-header">
-    <h1>@ViewBag.Title</h1>
+<div class="container-fluid page-header">
+    <div class="col-md-6">
+        <h1>@ViewBag.Title</h1>
 
-    <p class="lead">
-        Her kan du sætte varer på en overvågningsliste, og på den måde, vil du modtage en notifikation, når varen kommer på tilbud.
-    </p>
+        <p class="lead text-muted">
+            Her kan du sætte varer på en overvågningsliste, og på den måde, vil du modtage en notifikation, når varen kommer på tilbud.
+        </p>
+    </div>
+    <div class="col-md-6">
+            @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
+                List<SelectListItem> listItems = new List<SelectListItem>();
+
+                foreach(var list in ViewBag.ShoppingLists) {
+                    listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
+                }
+                <label for="Selection">Vælg indkøbsliste</label>
+                @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedListWL()" })
+
+            }
+    </div>
 </div>
 
-<div class="col-md-4 col-md-offset-8">
-    @if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
-                {
-                    List<SelectListItem> listItems = new List<SelectListItem>();
+<hr />
 
-                    foreach (var list in ViewBag.ShoppingLists)
-                    {
-                        listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
-                    }
-        <label for="Selection">Vælg indkøbsliste</label>
-        @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedListWL()" })
-
-                }
-                </div>
-    <hr />
-
-    <div class="row">
+<div class="container-fluid">
+    <div class="col-md-6">
         @using(Html.BeginForm(
         "AddItem",
         "ShoppingLists",
         new { amount = 0, unit = string.Empty },
         FormMethod.Get,
-        new { @class = "navbar-form navbar-left" }
+        new { @class = "form-group" }
         )) {
-            <div class="form-group">
-                <div class="col-md-4">
-                    @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
-                </div>
+            <div class="input-group input-group-lg">
+                @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default">Tilføj vare</button>
+                </span>
             </div>
 
             <input type="hidden" name="id" value="@Model.ID" />
-
-            <button type="submit" class="btn btn-default">Tilføj vare</button>
-
-
-    }
+        }
     </div>
+</div>
 
     <div id="offerModal" class="modal fade">
         <div class="modal-dialog modal-lg">
@@ -180,8 +162,6 @@
         }
         </table>
     </div>
-
-<span data-toggle=snackbar data-content="This is my awesome snackbar!">Click me</span>
 
 @if(ViewBag.SelectedItem != null) {
     <script>

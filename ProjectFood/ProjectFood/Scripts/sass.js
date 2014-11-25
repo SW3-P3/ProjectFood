@@ -80,3 +80,20 @@ function UpdateStarsAndAvg(json) {
         }
     }
 };
+
+function ShowOffers(json) {
+    var offers = JSON.parse(json.jsonOffers);
+    $('#modalTitle').html('Tilbud på ' + json.itemName);
+    var offerTable = "<table class='table table-hover table-condensed'>";
+    for (var i = 0; i < offers.length; i++) {
+        offerTable += "<tr id='" +
+            offers[i].ID + "' ><td>" +
+            offers[i].Heading + "</td><td class='col-md-1'>" +
+            offers[i].Unit + "</td><td class='col-md-1'>" +
+            offers[i].Price + " kr.</td><td class='col-md-1'>" +
+            offers[i].Store + "</td></tr>";
+    }
+    offerTable += "</table>";
+    $('#modalBody').html(offerTable);
+    $('#offerModal').modal('show');
+};

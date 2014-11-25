@@ -27,7 +27,7 @@ namespace ProjectFood
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/darkly.bootstrap.css",
-                      "~/Content/snackbar.min.css",
+                      "~/Content/snackbar*",
                       "~/Content/site.css"));
             
             bundles.Add(new ScriptBundle("~/bundles/homemade").Include(
