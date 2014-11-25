@@ -174,15 +174,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-<<<<<<< HEAD
-    <Compile Include="Migrations\201411251222441_Initial.cs" />
-    <Compile Include="Migrations\201411251222441_Initial.Designer.cs">
-      <DependentUpon>201411251222441_Initial.cs</DependentUpon>
-=======
-    <Compile Include="Migrations\201411241247502_Initialderpaaa.cs" />
-    <Compile Include="Migrations\201411241247502_Initialderpaaa.Designer.cs">
-      <DependentUpon>201411241247502_Initialderpaaa.cs</DependentUpon>
->>>>>>> origin/develop
+    <Compile Include="Migrations\201411251922076_Initial.cs" />
+    <Compile Include="Migrations\201411251922076_Initial.Designer.cs">
+      <DependentUpon>201411251922076_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -683,13 +677,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <EmbeddedResource Include="Migrations\201411251222441_Initial.resx">
-      <DependentUpon>201411251222441_Initial.cs</DependentUpon>
-=======
-    <EmbeddedResource Include="Migrations\201411241247502_Initialderpaaa.resx">
-      <DependentUpon>201411241247502_Initialderpaaa.cs</DependentUpon>
->>>>>>> origin/develop
+    <EmbeddedResource Include="Migrations\201411251922076_Initial.resx">
+      <DependentUpon>201411251922076_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

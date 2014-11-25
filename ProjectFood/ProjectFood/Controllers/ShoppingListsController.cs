@@ -337,18 +337,18 @@ namespace ProjectFood.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        private List<Offer> GetOffersForItem(Item item)
-        {
-            var item = _db.Items.Find(id);
-            var offers = _db.Offers
-                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
-                .ToList();
+        //private List<Offer> GetOffersForItem(Item item)
+        //{
+        //    var item = _db.Items.Find(id);
+        //    var offers = _db.Offers
+        //        .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
+        //        .ToList();
 
-            var jsonSerialiser = new JavaScriptSerializer();
-            var jsonOffers = jsonSerialiser.Serialize(offers);
+        //    var jsonSerialiser = new JavaScriptSerializer();
+        //    var jsonOffers = jsonSerialiser.Serialize(offers);
 
-            return Json(new { itemName = item.Name ,jsonOffers }, JsonRequestBehavior.DenyGet);
-        }
+        //    return Json(new { itemName = item.Name ,jsonOffers }, JsonRequestBehavior.DenyGet);
+        //}
 
         //Find relevant shoppingList and include the items
         private ShoppingList findShoppingListFromID(int? id)
