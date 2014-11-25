@@ -24,6 +24,13 @@
 
     function GetSelectedListWL(){
         $('input#SelectedList').val($('#Selection').val());
+
+        $.snackbar({ content: "Indkøbsliste valgt" , style: "snackbar"});
+    };
+
+    function ChangeButton(json) {
+        $('#AddButton_' + json.offerID).removeClass('btn-primary').addClass('btn-success');
+        $('#AddButton_' + json.offerID).children().removeClass('glyphicon-plus').addClass('glyphicon-ok');
     };
 </script>
 
@@ -95,32 +102,40 @@
             <tr>
                 <th class="col-md-1 text-center">Fjern</th>
                 <th>Varenavn</th>
-                <th class="col-md-1">Se tilbud!</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th class="col-md-1 text-center">Se tilbud</th>
             </tr>
             @foreach(var item in Model.Items) {
-                <tr>
+                <tr class="lead">
                     <td>
                         <a href="@Url.Action("RemoveItem",
                              new {id = Model.ID, itemID = item.ID})"
-                           class="btn btn-danger btn-xs btn-block">
+                           class="btn btn-danger btn-sm btn-block">
                             <span class="glyphicon glyphicon-remove"></span>
                         </a>
                     </td>
                     <td>
-                        @item.Name
+                        @(item.Name.First().ToString().ToUpper() + item.Name.Substring(1))
                     </td>
-                    @if (item.Offers.Count > 0)
-                {
-                        <td>
-                            <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
-                                <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    @if(item.Offers.Count > 0) {
+                        <td class="col-md-1">
+                            <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow'); $(this).children('#icon').toggleClass('glyphicon-collapse-down').toggleClass('glyphicon-collapse-up');"
+                                 class="text-center">
+                                <span id="icon" class="glyphicon glyphicon-collapse-down"></span><span class="badge">@item.Offers.Count()</span>
                             </div>
                         </td>
-                }
-                else
-                {
+                    } else {
                         <td></td>
-                }
+                    }
                     @*
                                         <td class="col-md-1">
                             @using(Ajax.BeginForm(
@@ -136,8 +151,7 @@
                     *@
 
                 </tr>
-            foreach (var offer in item.Offers)
-            {
+                foreach(var offer in item.Offers) {
                 <tr style="display: none" id="ShowOfferAll_@item.ID">
                     <td>@*Should be Empty*@</td>
                     <td>@offer.Heading</td>
@@ -147,17 +161,17 @@
                     <td>@offer.End.ToString("ddd d- M")</td>
                     <td>@offer.Store</td>
                     <td>
-                        @using(Html.BeginForm(
+                        @using(Ajax.BeginForm(
                             "AddItem", 
                             "ShoppingLists", 
-                            FormMethod.Get, 
+                            new AjaxOptions {HttpMethod = "POST", OnSuccess="ChangeButton"},
                             new {@class = "form-group"}
                             ))
 	{
                             <input type="hidden" id="SelectedList" name="id" value="@ViewBag.ShoppingLists[0].ID" />
                             <input type="hidden" name="name" value="@item.Name" />
                             <input type="hidden" name="offerID" value="@offer.ID" />
-    <button class="btn btn-success btn-xs btn-block">Vælg</button>
+    <button id="AddButton_@offer.ID" class="btn btn-primary btn-xs btn-block"><span class="glyphicon glyphicon-plus"></span></button>
 	}
                         
                     </td>
@@ -166,6 +180,17 @@
         }
         </table>
     </div>
+
+<span data-toggle=snackbar data-content="This is my awesome snackbar!">Click me</span>
+
+@if(ViewBag.SelectedItem != null) {
+    <script>
+        window.onload = function () {
+            $('tr#ShowOfferAll_@ViewBag.SelectedItem').toggle('slow');
+        };
+
+    </script>
+}
 
     @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
     @Scripts.Render("~/bundles/homemade")   @*  Magic part ...                                                    *@

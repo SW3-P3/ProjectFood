@@ -15,16 +15,17 @@ namespace ProjectFood.Controllers
         public ActionResult Index()
         {
 
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = _db.Users.Include(w => w.WatchList.Items.Select(i => i.Offers)).First(u => u.Username == User.Identity.Name);
-                
-                foreach (var item in user.WatchList.Items)
-                {
+            if(User.Identity.IsAuthenticated) {
+                var user = _db.Users
+                    .Include(w => w.WatchList.Items.Select(i => i.Offers))
+                    .Include(u => u.ShoppingLists.Select(s => s.Items))
+                    .First(u => u.Username == User.Identity.Name);
+
+                foreach(var item in user.WatchList.Items) {
                     item.Offers = ShoppingListsController.GetOffersForItem(_db, item).OrderBy(x => x.Store).ToList();
                 }
-
                 ViewBag.WatchList = user.WatchList;
+                ViewBag.ShoppingLists = user.ShoppingLists;
             }
             return View();
         }

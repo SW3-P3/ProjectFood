@@ -161,13 +161,14 @@ namespace ProjectFood.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult WatchList()
+        public ActionResult WatchList(int? itemID)
         {
             if(User.Identity.IsAuthenticated) {
                 ViewBag.ShoppingLists =
                        _db.Users.Include(s => s.ShoppingLists)
                            .First(u => u.Username == User.Identity.Name)
                            .ShoppingLists.ToList();
+                ViewBag.SelectedItem = itemID;
                 var user = _db.Users.Include(w => w.WatchList.Items.Select(i => i.Offers)).First(u => u.Username == User.Identity.Name);
                 if(user.WatchList == null) {    
                     user.WatchList = new ShoppingList { Title = "watchList"};
@@ -188,33 +189,31 @@ namespace ProjectFood.Controllers
 
         public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)
         {
+            
+            ShoppingList shoppingList = findShoppingListFromID(id);
+            Item tmpItem;
+
             if(name.Trim() == string.Empty) {
-                return RedirectToAction("Details/" + id);
+                return shoppingList.Title == "watchList" ? RedirectToAction("WatchList") : RedirectToAction("Details/" + id);
             }
             if(amount == null) {
                 amount = 0;
             }
-            ShoppingList shoppingList = findShoppingListFromID(id);
-            Item tmpItem;
 
             //Search in GenericLItems for item
             Item knownItem = null;
             if(_db.Items.Any()) { 
-                knownItem = _db.Items.FirstOrDefault(i => i.Name.CompareTo(name) == 0);
+                knownItem = _db.Items.FirstOrDefault(i => i.Name.ToLower().CompareTo(name.ToLower()) == 0);
             }
 
-            if(knownItem != null) {
-                tmpItem = knownItem;
-            } else {
-                tmpItem = new Item() { Name = name };
-            }
+            tmpItem = knownItem ?? new Item() { Name = name };
 
             if(shoppingList.Items.Contains(tmpItem)) {
                 if(isOfferSelectedOnItem(id, tmpItem)) {
                     Item sameNameItem = new Item() { Name = name }; 
                     addToShoppingList_Item(sameNameItem, shoppingList, amount, unit);
                 } else { 
-                    _db.ShoppingList_Item.Single(x => x.ItemID == tmpItem.ID && x.ShoppingListID == id).Amount += (double)amount;
+                    _db.ShoppingList_Item.First(x => x.ItemID == tmpItem.ID && x.ShoppingListID == id).Amount += (double)amount;
                     _db.SaveChanges();
                 }
             } else {
@@ -229,6 +228,14 @@ namespace ProjectFood.Controllers
             }
 
             return shoppingList.Title == "watchList" ? RedirectToAction("WatchList") : RedirectToAction("Details/" + id);
+        }
+        
+        [HttpPost, ActionName("AddItem")]
+        public ActionResult AddItemAjax(int id, string name, double? amount, string unit, int? offerID)
+        {
+            AddItem(id, name, amount, unit, offerID);
+
+            return Json(new { offerID = offerID });
         }
 
         public ActionResult RemoveItem(int id, int itemID)

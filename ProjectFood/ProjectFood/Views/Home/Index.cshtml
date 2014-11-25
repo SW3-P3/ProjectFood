@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Globalization;
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -14,15 +15,58 @@
 
 <div class="row">
     <div class="col-md-4">
-        <p>
-    @if (ViewBag.WatchList != null)
-    {
-        foreach (var item in ((ProjectFood.Models.ShoppingList)ViewBag.WatchList).Items)
-        {
-        <p>@item.Name - @item.Offers.Count tilbud</p>
-        }
-    }
-        </p>
-    </div>
+        <div class="panel panel-info">
+            <div class="panel-heading lead">Tilbud til dig</div>
+            <div class="panel-body">
 
+                @if(ViewBag.WatchList != null) {
+                    <div class="list-group">
+                        @foreach(var item in ((ProjectFood.Models.ShoppingList)ViewBag.WatchList).Items) {
+                            
+                                <a href="@Url.Action("WatchList", "ShoppingLists", new { itemID = item.ID })" class="list-group-item">
+                                    @(item.Name.First().ToString().ToUpper() + item.Name.Substring(1))
+                                    <span class="badge">@item.Offers.Count</span>
+                                </a>
+                        }                          
+                    </div>
+                    
+                }
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading lead">Dine indkøbslister</div>
+            <div class="panel-body">
+
+                @if(ViewBag.ShoppingLists != null) {
+                    <div class="list-group">
+                        @foreach(var list in (IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.ShoppingLists) {
+
+                            <a href="@Url.Action("Details", "ShoppingLists", new { id = list.ID })" class="list-group-item lead">
+                                @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(list.Title)
+                                <span class="badge">@list.Items.Count</span>
+                            </a>
+                        }
+                        <a href="@Url.Action("Index", "ShoppingLists")" class="list-group-item list-group-item-info">
+                            Se alle indkøbslister
+                        </a>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading lead">Anbefalede opskrifter</div>
+            <div class="panel-body">
+
+                <p>Morten og Trøls</p>
+
+            </div>
+        </div>
+    </div>
 </div>

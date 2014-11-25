@@ -10,11 +10,6 @@ namespace ProjectFood
     {
         public void Configuration(IAppBuilder app)
         {
-            /* Add a single item to the shoppingList this is temp */
-            //Item item = new Item("Torsk");
-            //Global.GlobalShoppingList.Items.Add(item);
-            /* END */
-
             ConfigureAuth(app);
         }
     }
