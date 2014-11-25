@@ -60,7 +60,7 @@
                     @using (Ajax.BeginForm(
                 "EditStore",
                 new { storename = store },
-                new AjaxOptions { HttpMethod = "POST", OnSuccess = onSuccess }))
+                new AjaxOptions { HttpMethod = "POST", OnSuccess = onSuccess}))
                     {
                         <span class="lead" onclick="$(this).parent().submit()">
 

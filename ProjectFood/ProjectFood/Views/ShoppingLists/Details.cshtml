@@ -10,154 +10,160 @@
     <h1>@Html.DisplayFor(model => model.Title) <span class="badge">@Model.Items.Count() varer</span></h1>
 </div>
 
-<p>
-@using(Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Post, new { @class = "navbar-form navbar-left" })) {
+<div class="row">
+    @using(Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Get)) {
+        <div class="form-inline">
+            <div class="form-group">
+                    @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn", @size="30" })
+            </div>
+            <div class="form-group">
+                    @Html.TextBox("amount", null, new { @type = "number", @class = "form-control text-right", @placeholder = "Mængde"})
+            </div>
+            <div class="form-group">
+                    @Html.DropDownList("unit", new SelectList(new List<string> { "stk", "kg", "g", "liter", "ml" }), new { @class = "form-control", @placeholder = "Enhed" })
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Tilføj vare</button>
+            </div>
+        </div>
+        <input type="hidden" name="id" value="@Model.ID" />
+    }
+</div>
+<br />
+
+    <div class="row">
     <div class="form-group">
-
-        <div class="col-md-4">
-            @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
-        </div>
-        <div class="col-md-3">
-            @Html.TextBox("amount", null, new { @type = "number", @class = "form-control", @placeholder = "Mængde", })
-        </div>
-        <div class="col-md-2">
-            @Html.DropDownList("unit", new SelectList(new List<string> { "stk", "kg", "g", "liter", "ml" }), new { @class = "form-control", @placeholder = "Enhed" })
-        </div>
-    </div>
-
-    <input type="hidden" name="id" value="@Model.ID" />
-
-    <button type="submit" class="btn btn-default">Tilføj vare</button>
-
-
-}
-</p>
-<div class="row"></div>
-
-<div class="form-group">
-    <table class="table table-striped">
-        <tr>
-            <th class="col-md-1 text-center">Fjern</th>
-            <th>Varenavn</th>
-            <th class="col-md-1">Mængde</th>
-            <th class="col-md-1">Pris</th>
-            <th class="col-md-1">Begynder</th>
-            <th class="col-md-1">Udløber</th>
-            <th class="col-md-1">Butik</th>
-            <th class="col-md-1">Se Tilbud</th>
-        </tr>
-        @foreach(var item in Model.Items) {
+        <table class="table table-striped">
             <tr>
-                <td>
-                    <a href="@Url.Action("RemoveItem",
+                <th class="col-md-1 text-center">Fjern</th>
+                <th>Varenavn</th>
+                <th class="col-md-1">Mængde</th>
+                <th class="col-md-1">Pris</th>
+                <th class="col-md-1">Begynder</th>
+                <th class="col-md-1">Udløber</th>
+                <th class="col-md-1">Butik</th>
+                <th class="col-md-1">Se Tilbud</th>
+            </tr>
+            @foreach(var item in Model.Items) {
+                <tr>
+                    <td>
+                        <a href="@Url.Action("RemoveItem",
                              new {id = Model.ID, itemID = item.ID})"
-                       class="btn btn-danger btn-xs btn-block">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
-                </td>
-                @{
-            var itemRel = ((IEnumerable<ProjectFood.Models.ShoppingList_Item>)ViewBag.ShoppingList_Item).First(x => x.ItemID == item.ID);
-            string itemTitle;
-            if(itemRel.selectedOffer == null) {
-                itemTitle = item.Name;
-            } else {
-                itemTitle = itemRel.selectedOffer.Heading;
-            }
+                           class="btn btn-danger btn-xs btn-block">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                    </td>
+                    @{
+                var itemRel = ((IEnumerable<ProjectFood.Models.ShoppingList_Item>)ViewBag.ShoppingList_Item).First(x => x.ItemID == item.ID);
+                string itemTitle;
+                if(itemRel.selectedOffer == null) {
+                    itemTitle = item.Name;
+                } else {
+                    itemTitle = itemRel.selectedOffer.Heading;
+                }
 
-            <td @if(itemRel.Bought) { <text> class="text-strikethrough" </text>   }>
-                @Ajax.ActionLink(
+                <td @if(itemRel.Bought) { <text> class="text-strikethrough" </text>      }>
+                    @Ajax.ActionLink(
                 itemTitle,
                 "ToggleItemBought",
                 new { id = Model.ID, itemID = item.ID },
                  new AjaxOptions { HttpMethod = "POST", OnSuccess = "$(this).parent().toggleClass('text-strikethrough')" },
-                new { @style="text-decoration: none", @class="h4" })
-            </td>
-    <td onclick="EditAmount('@item.Name', '@itemRel.ItemID', '@itemRel.Amount', '@itemRel.Unit')">
-        @if(itemRel.Amount > 0) {
-            <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
-        }
-    </td>
-            if(itemRel.selectedOffer != null) {
-                <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Price)</td>
-                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
-                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).End)</td>
-                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Store)</td>
-            } else {
-                <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-            }
-                }
-                @if(item.Offers.Count > 0) {
-                    <td>
-                        <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
-                            <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
-                        </div>
-                    </td>
+                new { @style = "text-decoration: none", @class = "h4" })
+                </td>
+                        <td onclick="EditAmount('@item.Name', '@itemRel.ItemID', '@itemRel.Amount', '@itemRel.Unit')">
+                            @if(itemRel.Amount > 0) {
+                                <span>@itemRel.Amount.ToString() @itemRel.Unit</span>
+                            }
+                        </td>
+                if(itemRel.selectedOffer != null) {
+                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Price)</td>
+                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
+                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).End)</td>
+                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Store)</td>
                 } else {
                     <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                 }
-            </tr>
-            foreach(var offer in item.Offers) {
-                <tr style="display: none" id="ShowOfferAll_@item.ID">
-                    <td>@*Should be Empty*@</td>
-                    <td>@offer.Heading</td>
-                    <td>@offer.Unit</td>
-                    <td>@offer.Price</td>
-                    <td>@offer.Begin.ToString("ddd d- M")</td>
-                    <td>@offer.End.ToString("ddd d- M")</td>
-                    <td>@offer.Store</td>
-                    <td>
-                        <a href="@Url.Action("ChooseOffer",
-                                         new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID })"
-                           class="btn btn-success btn-xs btn-block">
-                            Vælg
-                        </a>
-                    </td>
+                    }
+                    @if(item.Offers.Count > 0) {
+                        <td>
+                            <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
+                                <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
+                            </div>
+                        </td>
+                    } else {
+                        <td></td>
+                    }
                 </tr>
+                foreach(var offer in item.Offers) {
+                    <tr style="display: none" id="ShowOfferAll_@item.ID">
+                        <td>@*Should be Empty*@</td>
+                        <td>@offer.Heading</td>
+                        <td>@offer.Unit</td>
+                        <td>@offer.Price</td>
+                        <td>@offer.Begin.ToString("ddd d- M")</td>
+                        <td>@offer.End.ToString("ddd d- M")</td>
+                        <td>@offer.Store</td>
+                        <td>
+                            <a href="@Url.Action("ChooseOffer",
+                                         new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID })"
+                               class="btn btn-success btn-xs btn-block">
+                                Vælg
+                            </a>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </table>
+        </table>
+    </div>
 </div>
 
-<div id="EditModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Luk</span></button>
-                <h4 id="modalTitle" class="modal-title"></h4>
-            </div>
-            <div id="modalBody" class="modal-body">
-                    @using(Ajax.BeginForm(
+    <div id="EditModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Luk</span></button>
+                    <h3 id="modalTitle" class="modal-title"></h3>
+                </div>
+                <div id="modalBody" class="modal-body">
+                    <div class="container-fluid">
+                        @using(Ajax.BeginForm(
                         "EditAmount",
                         new { shoppingListID = @Model.ID },
                         new AjaxOptions { HttpMethod = "POST", OnSuccess = "location.reload();" },
-                        new { @id = "EditAmountForm", @class = "navbar-form navbar-left" })) {
-                        <input type="hidden" id="itemID" name="itemID" />
-                        <input type="number" class="form-control" id="amount" name="amount" placeholder="" />
-                        <input type="text" class="form-control" id="unit" name="unit" placeholder="" />
-                    }
-                <br />
-                <br />
-                <br />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Luk</button>
-                <button type="button" class="btn btn-primary" onclick="$('#EditAmountForm').submit();">Gem ændringer</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+                        new { @id = "EditAmountForm" })) {
+                            <input type="hidden" id="itemID" name="itemID" />
 
-<p>
-    @Html.ActionLink("Ændre navn på listen", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Tilbage til alle indkøbslister", "Index") |
-    @Html.ActionLink("Ryd Liste", "ClearShoppingList", new { id = Model.ID })
-</p>
+                            <div class="form-inline">
+                                <div class="form-group form-group-lg">
 
-@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
+                                    <input type="number" class="form-control text-right" id="amount" name="amount" placeholder="Mængde" />
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    <input type="text" class="form-control" id="unit" name="unit" placeholder="Enhed" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuller</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#EditAmountForm').submit();">Gem ændringer</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <p>
+        @Html.ActionLink("Ændre navn på listen", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Tilbage til alle indkøbslister", "Index") |
+        @Html.ActionLink("Ryd Liste", "ClearShoppingList", new { id = Model.ID })
+    </p>
+
+    @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
     @Scripts.Render("~/bundles/homemade")   @*  Magic part ...                                                    *@
     @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
-}
+    }
 

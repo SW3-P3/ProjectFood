@@ -76,7 +76,7 @@
                                         new { offerID = item.ID },
                                         new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheck" })) {
                                     <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
-                                    if(((IEnumerable<int>)ViewBag.OffersOnListByID).Contains(item.ID)) {
+                                            if(((int[])ViewBag.OffersOnListByID).Count() > 0 && ((int[])ViewBag.OffersOnListByID).Contains(item.ID)) {
                                         <button id="AddOfferAll_@item.ID" type="submit" class="btn btn-success btn-xs btn-block">
                                             <span class="glyphicon glyphicon-ok"></span>
                                         </button>

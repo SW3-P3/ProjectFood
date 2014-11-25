@@ -96,6 +96,8 @@ function ToggleBoolByID(store) {
         $('span#check_' + store).removeClass('glyphicon-unchecked');
         $('span#check_' + store).addClass('glyphicon-check');
     }
+
+    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp; Gemt...' });
 };
 
 function EditAmount(itemName, itemID, amount, unit) {

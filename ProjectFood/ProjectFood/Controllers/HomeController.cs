@@ -21,6 +21,11 @@ namespace ProjectFood.Controllers
                     .Include(u => u.ShoppingLists.Select(s => s.Items))
                     .First(u => u.Username == User.Identity.Name);
 
+                if(user.WatchList == null) {
+                    user.WatchList = new ShoppingList { Title = "watchList" };
+
+                    _db.SaveChanges();
+                }
                 foreach(var item in user.WatchList.Items) {
                     item.Offers = ShoppingListsController.GetOffersForItem(_db, item).OrderBy(x => x.Store).ToList();
                 }

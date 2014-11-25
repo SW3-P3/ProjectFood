@@ -193,7 +193,7 @@ namespace ProjectFood.Controllers
             ShoppingList shoppingList = findShoppingListFromID(id);
             Item tmpItem;
 
-            if(name.Trim() == string.Empty) {
+            if(name.Trim() == string.Empty || name.Length < 2) {
                 return shoppingList.Title == "watchList" ? RedirectToAction("WatchList") : RedirectToAction("Details/" + id);
             }
             if(amount == null) {
@@ -285,7 +285,7 @@ namespace ProjectFood.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
             return Json(new {
-                Message = "DID NOT TWERK",
+                Message = "DID TWERK",
                 itemID = itemID,
             }, JsonRequestBehavior.AllowGet);
             

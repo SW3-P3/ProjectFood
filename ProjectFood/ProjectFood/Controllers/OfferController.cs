@@ -10,6 +10,7 @@ using ProjectFood.Models.Api;
 using RestSharp;
 using System.Data.Entity;
 using System.Net.Mail;
+using System.Diagnostics;
 
 
 namespace ProjectFood.Controllers
@@ -33,16 +34,23 @@ namespace ProjectFood.Controllers
                 ViewBag.SelectedShoppingListID = tmpShoppingListID;
                 
                 ViewBag.ShoppingLists = tmpUser.ShoppingLists.ToList();
+                //ViewBag.OffersOnListByID = new List<int> {1, 2 };
+                Stopwatch stopwatch = Stopwatch.StartNew();
                 ViewBag.OffersOnListByID = _db.ShoppingList_Item
                     .Where(s => s.ShoppingListID == tmpShoppingListID && s.selectedOffer != null)
-                    .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID);           
+                    .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID).ToArray();
+                stopwatch.Stop();
+                Debug.WriteLine("OffersOnListByID " + stopwatch.ElapsedMilliseconds);
                 }
+                Stopwatch stopwatch2 = Stopwatch.StartNew();
                 ViewBag.Stores = _db
                     .OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name))
                     .OrderBy(d => d.Store)
                     .Select(x => x.Store)
                     .Distinct();
-                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
+                stopwatch2.Stop();
+                Debug.WriteLine("Stores " + stopwatch2.ElapsedMilliseconds);
+
                 ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name)).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
