@@ -165,9 +165,21 @@ namespace ProjectFood.Controllers
         {
             if(User.Identity.IsAuthenticated) {
                 var user = _db.Users.Include(w => w.WatchList.Items.Select(i => i.Offers)).First(u => u.Username == User.Identity.Name);
-                if(user.WatchList == null) {
-                    user.WatchList = new ShoppingList{ Title = "watchList"};
+                if(user.WatchList == null) {    
+                    user.WatchList = new ShoppingList { Title = "watchList"};
+                    user.RelevantOffers = new ShoppingList { Title = "relevantOffers" };
+
                     _db.SaveChanges();
+                }
+
+                if (user.RelevantOffers == null)
+                {
+                    user.RelevantOffers = new ShoppingList { Title = "relevantOffers" };
+                }
+
+                foreach (var item in user.WatchList.Items)
+                {
+                    item.Offers = GetOffersForItem(item).OrderBy(x => x.Store).ToList();
                 }
 
                 return View(user.WatchList);

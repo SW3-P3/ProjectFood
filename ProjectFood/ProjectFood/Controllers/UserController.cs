@@ -84,10 +84,7 @@ namespace ProjectFood.Controllers
                 var tmpList = new List<string>();
                 var tmp = _db.Offers;
                 foreach(var offer in tmp) {
-                    if(tmpList.Any(x => x == offer.Store)) ;
-                    else {
-                        tmpList.Add(offer.Store);
-                    }
+                   
                 }
                 ViewBag.Store = tmpList;
 

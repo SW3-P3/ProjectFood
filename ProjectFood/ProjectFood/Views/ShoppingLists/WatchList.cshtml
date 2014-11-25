@@ -90,19 +90,52 @@
                 <td>
                     @item.Name
                 </td>
-                <td class="col-md-1">
-                    @using(Ajax.BeginForm(
-                        "GetOffersForItem", 
-                        "ShoppingLists", 
-                        new { id = item.ID },
-                        new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" })) {
-                        <div onclick="$(this).parent().submit()" class="btn btn-info btn-xs btn-block">
-                            <span class="glyphicon glyphicon-list-alt"></span>
+                @if (item.Offers.Count > 0)
+                {
+                    <td>
+                        <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
+                            <span class="glyphicon glyphicon-align-justify"></span> <span class="badge">@item.Offers.Count()</span>
                         </div>
-                    }
-                </td>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                @*
+                    <td class="col-md-1">
+        @using(Ajax.BeginForm(
+            "GetOffersForItem",
+            "ShoppingLists",
+            new { id = item.ID },
+            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" })) {
+            <div onclick="$(this).parent().submit()" class="btn btn-info btn-xs btn-block">
+                <span class="glyphicon glyphicon-list-alt"></span>
+            </div>
+        }
+    </td>
+                *@
 
             </tr>
+            foreach (var offer in item.Offers)
+            {
+                <tr style="display: none" id="ShowOfferAll_@item.ID">
+                    <td>@*Should be Empty*@</td>
+                    <td>@offer.Heading</td>
+                    <td>@offer.Unit</td>
+                    <td>@offer.Price</td>
+                    <td>@offer.Begin.ToString("ddd d- M")</td>
+                    <td>@offer.End.ToString("ddd d- M")</td>
+                    <td>@offer.Store</td>
+                    <td>
+                        <a href="@Url.Action("ChooseOffer",
+                                         new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID })"
+                           class="btn btn-success btn-xs btn-block">
+                            Vælg
+                        </a>
+                    </td>
+                </tr>
+            }
         }
     </table>
 </div>

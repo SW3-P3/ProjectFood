@@ -208,7 +208,7 @@ namespace ProjectFood.Controllers
 
         private void NotifyWatchers(List<Offer> offers)
         {
-            var users = _db.Users.Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0).ToArray();
+            var users = _db.Users.Include(u => u.RelevantOffers.Items).Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0).ToArray();
 
             foreach (var user in users)
             {
@@ -216,7 +216,15 @@ namespace ProjectFood.Controllers
                 foreach (var item in user.WatchList.Items)
                 {
                     relevantOffers.AddRange(GetOffersForItem(item));
-                }   
+                    
+                }
+                foreach (var item in relevantOffers)
+	{
+user.RelevantOffers.Items.Add(OfferToItem(item));
+
+	}
+                
+                _db.SaveChanges();
             }
         }
 
@@ -225,6 +233,13 @@ namespace ProjectFood.Controllers
             return _db.Offers
                 .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
                 .ToList();
+        }
+
+        private Item OfferToItem(Offer offer)
+        {
+
+
+            return new Item { Name = offer.Heading };
         }
     }
 }
