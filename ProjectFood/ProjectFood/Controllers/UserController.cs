@@ -16,8 +16,8 @@ namespace ProjectFood.Controllers
         // GET: User
         public ActionResult Index()
         {
-            if(User.Identity.IsAuthenticated) {
-                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
+            if (User.Identity.IsAuthenticated)
+            {
                 return RedirectToAction("Index", "Manage");
             }
 
@@ -39,11 +39,15 @@ namespace ProjectFood.Controllers
         public ActionResult EditPreferences(string username)
         {
             var usernameDecode = HttpUtility.HtmlDecode(username);
-            if(User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode) {
+
+            if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
+            {
+                ViewBag.Store = _db.Offers.Select(x => x.Store).Distinct().OrderBy(x => x.ToLower()).ToList();
                 ViewBag.Prefs = _db.Preferences.ToList();
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
 
             }
+
             return RedirectToAction("Index");
         }
 
@@ -72,26 +76,6 @@ namespace ProjectFood.Controllers
                 _db.SaveChanges();
                 return RedirectToAction(tmpPref.Store ? "EditStores" : "EditPreferences", new { username });
             }
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult EditStores(string username)
-        {
-            var usernameDecode = HttpUtility.HtmlDecode(username);
-            if(User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode) {
-
-                ViewBag.Prefs = _db.Preferences.ToList();
-                var tmpList = new List<string>();
-                var tmp = _db.Offers;
-                foreach(var offer in tmp) {
-                   
-                }
-                ViewBag.Store = tmpList;
-
-                return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
-
-            }
-
             return RedirectToAction("Index");
         }
 

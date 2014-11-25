@@ -318,8 +318,26 @@ namespace ProjectFood.Controllers
                 .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
                 .ToList();
         }
+
         [HttpPost]
-        public ActionResult GetOffersForItem(int id)
+        public ActionResult EditAmount(int shoppingListID, int itemID, double? amount, string unit)
+        {
+            var tmpItemRel = _db.ShoppingList_Item.SingleOrDefault(r => r.ShoppingListID == shoppingListID && r.ItemID == itemID);
+
+            tmpItemRel.Amount = amount ?? 0;
+            if(unit.Trim() != string.Empty) {
+                tmpItemRel.Unit = unit.Trim();
+            }
+
+            _db.SaveChanges();
+
+            return Json(new {
+                Message = "Hajtroels",
+                ItemId = itemID,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        private List<Offer> GetOffersForItem(Item item)
         {
             var item = _db.Items.Find(id);
             var offers = _db.Offers

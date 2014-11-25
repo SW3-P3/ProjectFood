@@ -27,7 +27,7 @@ namespace ProjectFood.Models
         public IEnumerable<Offer> OffersFilteredByUserPrefs(User u)
         {
             var prefs = Users.Include(a => a.Preferences).First(x => x.Username == u.Username).Preferences;
-            var storesBlackListed = prefs.Where(x => x.Store).Select(x => x.Value).ToArray();
+            var storesBlackListed = prefs.Select(x => x.Value).ToArray();
             return OffersFilteredWithString(storesBlackListed);
         }
 
@@ -63,7 +63,7 @@ namespace ProjectFood.Models
         }
 
         public DataBaseContext()
-            : base("Food")
+            : base("Foodzx")
         {
         }
 

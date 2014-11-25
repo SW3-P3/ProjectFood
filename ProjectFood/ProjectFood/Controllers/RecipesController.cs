@@ -6,8 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Antlr.Runtime;
+using Microsoft.Ajax.Utilities;
 using ProjectFood.Models;
 using System.Diagnostics;
+using WebGrease.Css.Extensions;
 
 namespace ProjectFood.Controllers
 {
@@ -34,7 +37,11 @@ namespace ProjectFood.Controllers
                 return RedirectToAction("index");
             }
 
-            var recipe = _db.Recipes.Include(r => r.Ingredients).Include(r => r.Ratings).Single(x => x.ID == id);
+            var recipe = _db.Recipes.Include(r => r.Ingredients).Include(r => r.Ratings).FirstOrDefault(x => x.ID == id);
+            if (recipe == null)
+            {
+                return RedirectToAction("index");
+            }
             ViewBag.Author = _db.Users.First(u => u.Username == recipe.AuthorName);
             ViewBag.OriginalAuthor = _db.Users.SingleOrDefault(u => u.Username == recipe.OriginalAuthorName);
             if (recipe.Ingredients.Count > 0)
@@ -59,7 +66,7 @@ namespace ProjectFood.Controllers
             // ?? means if null assign the right side, else the left side.
             ViewBag.numPersons = numPersons ?? 4;
 
-            //calculate average score
+            //calculate average 
 
             ViewBag.AverageScore = recipe.Ratings.Count > 0 ? (decimal)recipe.Ratings.Select(r => r.Score).Average() : 0;
             ViewBag.RatingCount = recipe.Ratings.Count();
@@ -334,8 +341,9 @@ namespace ProjectFood.Controllers
         {
             Recipe recipe = _db.Recipes.Include(r => r.Ratings).Single(x => x.ID == id);
             User user = _db.Users.Include(u => u.Ratings).SingleOrDefault(u => u.Username == User.Identity.Name);
-            //Den når aldrig forbi ?? pga. *OrDefault(), vel?
-            Rating prevRating = user.Ratings.SingleOrDefault(r => r.Recipe.ID == id) ?? null; 
+
+            Rating prevRating = user.Ratings.FirstOrDefault(r => r.Recipe.ID == id); 
+
 
             if (prevRating != null)
             {
@@ -362,6 +370,32 @@ namespace ProjectFood.Controllers
                 avgRating = recipe.Ratings.Count > 0 ? recipe.Ratings.Select(r => r.Score).Average().ToString("0.0") : "0.0",
                 numRatings = recipe.Ratings.Count()
             });
+        }
+        private IEnumerable<Tuple<Item, decimal>> getUserTaste(User u)
+        {
+            //_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).Where(x => x.Ratings == null);
+            var tmpuser =_db.Users.Include(x => x.Ratings).SingleOrDefault(x => x.Username == u.Username);
+//            var ingredients = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings == );
+
+            var ingredients = _db.Recipes
+                .Include(x => x.Ingredients)
+                .Where(x => x.Ratings
+                    .Any(y => y.User == tmpuser))
+                .Select(x => new {x.Ingredients, rating = x.Ratings
+                    .FirstOrDefault(y => y.User == u)});
+
+            var derp = ingredients.SelectMany(x => x.Ingredients).Distinct();
+
+            var itemsWithRatings = new List<Tuple<Item, decimal>>();
+
+            foreach (var i in derp)
+            {
+                Item i1 = i;
+                var recipeWithItem = _db.Recipes.Include(x => x.Ingredients).Where(x => x.Ingredients.Contains(i1));
+                itemsWithRatings.Add(new Tuple<Item, decimal>(i, recipeWithItem.First().Ratings.Where(x => x.User == tmpuser).Average(y => y.Score)));
+            }
+
+            return itemsWithRatings;
         }
     }
 }
