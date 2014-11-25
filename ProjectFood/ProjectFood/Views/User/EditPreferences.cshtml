@@ -6,85 +6,87 @@
 
 <div class="page-header">
     <h1>Rediger præferencer</h1>
-    <p class="lead">Tilføj ting du <span class="text-danger">ikke</span> ønsker at købe. Dette kan ekspelvis være varer som du er allergisk overfor. <br/>
+    <p class="lead">
+        Tilføj ting du <span class="text-danger">ikke</span> ønsker at købe. Dette kan ekspelvis være varer som du er allergisk overfor. <br />
         Du kan også fravælge butikker som du <span class="text-danger">ikke</span> ønsker at handle i.
     </p>
 </div>
 <hr />
 <div class="row">
     <div class="col-md-6">
-        <div class="form-group">
-            @using (Html.BeginForm("AddPreference", "User", FormMethod.Post))
-            {
-                @Html.AntiForgeryToken()
-
-                <div class="input-group input-group-lg">
+        <div class="well">
+            <div class="form-group">
+                @using (Html.BeginForm("AddPreference", "User", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
                     <input type="hidden" name="username" value="@User.Identity.Name" />
                     <input type="hidden" name="store" value="false" />
-                    @Html.TextBox("pref", "", new { @id = "autocomplete", @placeholder = "indtast præference", @class = "form-control" })
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn-default">Gem</button>
-                    </span>
-                </div>
-            }
-        </div>
+                    <div class="input-group input-group-lg">
+                        @Html.TextBox("pref", "", new { @id = "autocomplete", @placeholder = "indtast præference", @class = "form-control" })
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default">Tilføj</button>
+                        </span>
+                    </div>
+                }
+            </div>
 
-        <div class="list-group">
+            <div class="list-group">
 
-            @foreach (var pref in Model.Preferences.Where(p => p.Store == false))
-            {
-                <div class="list-group-item">
-                    <a>
-                        <a href="@Url.Action("RemovePreference",
+                @foreach (var pref in Model.Preferences.Where(p => p.Store == false))
+                {
+                    <div class="list-group-item">
+                        <span class="lead">
+                            <a href="@Url.Action("RemovePreference",
                              new {username = User.Identity.Name, prefId = @pref.ID})"
-                           class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>&nbsp;&nbsp;&nbsp;@pref.Value
-                    </a>
-                </div>
-            }
+                               class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>&nbsp;&nbsp;&nbsp;@pref.Value
+                        </span>
+                    </div>
+                }
 
+            </div>
         </div>
     </div>
 
     <div class="col-md-6">
-        @foreach (var store in (List<string>)ViewBag.Store)
-        {
-            string storename = store.Replace(" ", string.Empty);
-            string onSuccess = "ToggleBoolByID('" + storename + "')";
+        <div class="well container-fluid">
+            @foreach (var store in (List<string>)ViewBag.Store)
+            {
+                string storename = store.Replace(" ", string.Empty);
+                string onSuccess = "ToggleBoolByID('" + storename + "')";
 
-            <div class="form-group">
-                @using (Ajax.BeginForm(
+                <div class="col-md-6 form-group">
+                    @using (Ajax.BeginForm(
                 "EditStore",
                 new { storename = store },
                 new AjaxOptions { HttpMethod = "POST", OnSuccess = onSuccess }))
-                {
+                    {
+                        <span class="lead" onclick="$(this).parent().submit()">
 
-                    if (Model.Preferences.Any(x => x.Store == true && x.Value == store))
-                    {
-                        <div class="row" onclick="$(this).parent().submit()">
-                            <div class="col-md-3">
-                                <label>@store</label>
-                            </div><div class="col-md-1">
-                                <input type="hidden" name="StoreCheck" id="storeCheck_@storename" value="false" />
-                                <span id="check_@storename" class="glyphicon glyphicon-unchecked"></span>
-                            </div>
-                        </div>
+                            @if (Model.Preferences.Any(x => x.Store == true && x.Value == store))
+                            {
+                                <span>
+                                    <input type="hidden" name="StoreCheck" id="storeCheck_@storename" value="false" />
+                                    <span id="check_@storename" class="glyphicon glyphicon-unchecked"></span>
+                                </span>
+                                <span>@store.Trim()</span>
+                            }
+                            else
+                            {
+
+                                <span>
+                                    <input type="hidden" name="StoreCheck" id="storeCheck_@storename" value="true" />
+                                    <span id="check_@storename" class="glyphicon glyphicon-check"></span>
+                                </span>
+                                <span>@store.Trim()</span>
+                            }
+
+                        </span>
                     }
-                    else
-                    {
-                        <div class="row" onclick="$(this).parent().submit()">
-                            <div class="col-md-3">
-                                <label>@store</label>
-                            </div><div class="col-md-1">
-                                <input type="hidden" name="StoreCheck" id="storeCheck_@storename" value="true" />
-                                <span id="check_@storename" class="glyphicon glyphicon-check"></span>
-                            </div>
-                        </div>
-                    }
-                }
-            </div>
-        }
+                </div>
+            }
+        </div>
     </div>
 </div>
 
