@@ -1,47 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.Routing;
 using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
-using System.Data.Entity;
-
+using System.Threading.Tasks;
 
 namespace ProjectFood.Controllers
 {
     public class OfferController : Controller
     {
 
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private readonly ShoppingListContext _db = new ShoppingListContext();
 
         // GET: Offer
-        public ActionResult Index(int? shoppingListID)
+        public ActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                var tmpUser = _db.Users
-                    .Include(s => s.ShoppingLists)
-                    .First(u => u.Username == User.Identity.Name);
-                if (tmpUser.ShoppingLists.Count > 0)
-                {
+            ViewBag.Stores = _db.Offers.OrderBy(d => d.Store).Select(x => x.Store).Distinct();
+            ViewBag.ShoppingLists = _db.ShoppingLists.ToList();
 
-                    int tmpShoppingListID = shoppingListID == null ? tmpUser.ShoppingLists.First().ID : (int)shoppingListID;
-                    ViewBag.SelectedShoppingListID = tmpShoppingListID;
-                    ViewBag.OffersOnListByID = _db.ShoppingList_Item
-                        .Where(s => s.ShoppingListID == tmpShoppingListID && s.selectedOffer != null)
-                        .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID);
-                }
-
-                ViewBag.Stores = _db.OffersFilteredByUserPrefs(tmpUser).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
-                ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
-
-                return View(_db.OffersFilteredByUserPrefs(tmpUser).ToList());
-            }
-            return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
+            return View(_db.Offers.ToList());
         }
 
         public ActionResult ImportOffers()
@@ -132,24 +112,22 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Index");
         }
 
+        //Her skal vi lave et json result eller lignende, så vi kan fortælle brugeren, at varen er tilføjet.
+        //måske skal vi ændre knappen til et check-mark istedet for et plus
         [HttpPost]
         public ActionResult AddOfferToShoppingList(int offerId, int? shoppingListId)
         {
             var tmpOffer = _db.Offers.Find(offerId);
 
-            var tmpItem = new Item {Name = tmpOffer.Heading};
+            var tmpItem = new Item();
+            tmpItem.Name = tmpOffer.Heading;
             tmpItem.Offers.Add(tmpOffer);
+            
+            // This is a temp fix
+            if (shoppingListId == null)
+                shoppingListId = _db.ShoppingLists.First().ID;
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
-
-            var shoppingListItem = new ShoppingList_Item { 
-                Item = tmpItem, 
-                ShoppingList = shoppingList, 
-                Amount = 0, 
-                Unit = tmpOffer.Unit,
-                selectedOffer = tmpOffer};
-
-            _db.ShoppingList_Item.Add(shoppingListItem);
 
             shoppingList.Items.Add(tmpItem);
 
@@ -157,42 +135,9 @@ namespace ProjectFood.Controllers
 
             return Json(new
             {
-                Message = "Hajtroels",
+                Message = "Hej troels",
                 OfferId = offerId,
             }, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Search(string id)
-        {
-            if(id != null) 
-            {
-                ViewBag.Offers = GetOffersForItem(id);
-                ViewBag.SearchTerm = id;
-            }
-            else
-            {
-                ViewBag.Offers = new List<Offer>();
-            }
-            
-            ViewBag.ShoppingLists = _db.Users
-                .Include(s => s.ShoppingLists)
-                .First(u => u.Username == User.Identity.Name)
-                .ShoppingLists
-                .ToList();
-
-            return View();
-        }
-
-        public ActionResult SearchDone(string id)
-        {
-            return RedirectToAction("Search/" + id);
-        }
-
-        private List<Offer> GetOffersForItem(string str)
-        {
-            return _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username.Equals(User.Identity.Name)))
-                .Where(x => x.Heading.ToLower().Contains(str.ToLower()))
-                .ToList();
         }
     }
 }
