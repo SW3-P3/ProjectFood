@@ -29,11 +29,11 @@ namespace ProjectFood.Models
         public string Provider { get; set; }
 
         [Required]
-        [Display(Name = "Kode")]
+        [Display(Name = "Code")]
         public string Code { get; set; }
         public string ReturnUrl { get; set; }
 
-        [Display(Name = "Husk denne browser?")]
+        [Display(Name = "Remember this browser?")]
         public bool RememberBrowser { get; set; }
 
         public bool RememberMe { get; set; }
@@ -55,10 +55,10 @@ namespace ProjectFood.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Kodeord")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [Display(Name = "Husk mig?")]
+        [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
     }
 
@@ -70,14 +70,14 @@ namespace ProjectFood.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0}et skal være {2} tegn langt.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Kodeord")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Bekræft kodeord")]
-        [Compare("Password", ErrorMessage = "De to kodeord er ikke ens.")]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
 

@@ -9,7 +9,7 @@ namespace ProjectFood
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                        "~/Scripts/jquery-{version}.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.unobtrusive*",
@@ -21,15 +21,16 @@ namespace ProjectFood
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/bootstrap.min.js",
+                      "~/Scripts/respond.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/darkly.bootstrap.css",
+                      "~/Content/darkly.bootstrap.min.css",
                       "~/Content/site.css"));
             
             bundles.Add(new ScriptBundle("~/bundles/homemade").Include(
-                      "~/Scripts/sass.js"));
+                      "~/Scripts/shoppingList.buttons.js",
+                      "~/Scripts/offer.buttons.js"));
 
             // Set EnableOptimizations to false for debugging. For more information,
             // visit http://go.microsoft.com/fwlink/?LinkId=301862
