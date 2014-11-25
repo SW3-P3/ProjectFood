@@ -13,10 +13,6 @@ namespace ProjectFood.Controllers
 
         public ActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
-            }
             return View();
         }
 

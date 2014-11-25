@@ -9,6 +9,7 @@ using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
 using System.Data.Entity;
+using System.Net.Mail;
 
 
 namespace ProjectFood.Controllers
@@ -44,6 +45,8 @@ namespace ProjectFood.Controllers
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
                 ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name)).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
+
+                NotifyWatchers(_db.Offers.ToList());
 
                 return View(_db.OffersFiltered().ToList());            
             }
@@ -133,6 +136,8 @@ namespace ProjectFood.Controllers
                 });
             }
 
+            NotifyWatchers(_db.Offers.ToList());
+
             _db.SaveChanges();
 
             return RedirectToAction("Index");
@@ -211,8 +216,7 @@ namespace ProjectFood.Controllers
                 foreach (var item in user.WatchList.Items)
                 {
                     relevantOffers.AddRange(GetOffersForItem(item));
-                }
-                System.Diagnostics.Debug.WriteLine("BIIIIIATCH " + relevantOffers.Count);
+                }   
             }
         }
 
