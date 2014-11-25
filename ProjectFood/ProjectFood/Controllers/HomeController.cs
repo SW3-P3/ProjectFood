@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectFood.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +9,8 @@ namespace ProjectFood.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly DataBaseContext _db = new DataBaseContext();
+
         public ActionResult Index()
         {
             return View();

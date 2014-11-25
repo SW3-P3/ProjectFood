@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ProjectFood.Models.Recipe>
+
+@{
+    ViewBag.Title = "Opskrifter";
+}
+
+<div class="page-header">
+    <div class="row">
+        <div class="col-md-6"><h1><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter</h1></div>
+    </div>
+
+</div>
+
+<p>
+    @if (User.Identity.IsAuthenticated) { 
+        @Html.ActionLink("Opret ny opskrift", "Create", null, new { @class = "btn btn-success btn-block" })
+    }
+    else
+    {
+        <h3>Ved at logge ind, kan du selv tilføje opskrifter. Som bruger kan du også få anbefalet opskifter ud fra dine præferencer og bedømmelser. </h3>
+        @Html.ActionLink("Opret en bruger nu!", "Create", null, new { @class = "btn btn-success btn-block" })
+
+    }
+    <hr />
+</p>
+<div class="row">
+    @{int i = 1; 
+        foreach (var recipe in Model)
+        {
+            <div class="col-md-4">
+                <div class="panel panel-info" onclick="window.location = '@Url.Action("details", new { id = recipe.ID })'">
+                    <div class="panel-heading"><h3>@recipe.Title</h3></div>
+                    <div class="panel-body">
+                        <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                        <table class="table-condensed">
+                            @foreach (var ingredient in recipe.Ingredients)
+                            {
+                                <tr>
+                                    <td>@ingredient.Name</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <div class="panel-footer"><p>@Html.DisplayFor(modelItem => recipe.Tags)</p></div>
+                </div>
+            </div>
+            if (i % 3 == 0)
+            {
+                <div class="row"></div>
+            }
+            i++;
+        }
+    }
+</div>
