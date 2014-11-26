@@ -114,3 +114,7 @@ function EditAmount(itemName, itemID, amount, unit) {
 
     $('#EditModal').modal('show');
 };
+
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
