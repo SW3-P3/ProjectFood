@@ -58,8 +58,14 @@ function UpdateStarsAndAvg(json) {
     $('span#avgRating').html(json.avgRating);
     $('span#numRatings').html(json.numRatings);
 
+    DrawStars(json.rating);
+    
+    $.snackbar({ content: '<span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp; Vurdering givet&hellip;' });
+};
+
+function DrawStars(rating) {
     for (var i = 1; i <= 5; i++) {
-        if (json.rating >= i) {
+        if (rating >= i) {
             $('span#' + i).removeClass('glyphicon-star-empty');
             $('span#' + i).addClass('glyphicon-star');
         } else {
@@ -89,15 +95,15 @@ function ShowOffers(json) {
 function ToggleBoolByID(store) {
     if ($('input#storeCheck_' + store).val() == 'true') {
         $('input#storeCheck_' + store).val('false');
-        $('span#check_' + store).removeClass('glyphicon-check');
-        $('span#check_' + store).addClass('glyphicon-unchecked');
+        $('span#check_' + store).removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+        $('span#storeName_' + store).addClass('text-muted').addClass('text-strikethrough');
     } else {
         $('input#storeCheck_' + store).val('true');
-        $('span#check_' + store).removeClass('glyphicon-unchecked');
-        $('span#check_' + store).addClass('glyphicon-check');
+        $('span#check_' + store).removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+        $('span#storeName_' + store).removeClass('text-muted').removeClass('text-strikethrough');
     }
 
-    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp; Gemt...' });
+    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp; Gemt&hellip;' });
 };
 
 function EditAmount(itemName, itemID, amount, unit) {

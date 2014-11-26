@@ -70,13 +70,14 @@
                         new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateStarsAndAvg" },
                         new { @class = "form-group h1", @id = "starForm" }
                         )) {
-                        <input id="rateVal" type="hidden" name="rating" value="0" />
-                    var rating = ViewBag.UserRating != null ? ViewBag.UserRating.Score : 0;
+                        var rating = ViewBag.UserRating != null ? ViewBag.UserRating.Score : 0;
+                        <input id="rateVal" type="hidden" name="rating" value="@((int)rating)" />
+                        
 
-                                for(int i = 1; i <= 5; i++) {
-                                    string star = rating >= i ? "glyphicon-star" : "glyphicon-star-empty"; ;
-                                    <span id="@i" class="glyphicon @star" onclick="ClickedStar(@i)"></span>
-                                }
+                        for(int i = 1; i <= 5; i++) {
+                            string star = rating >= i ? "glyphicon-star" : "glyphicon-star-empty"; ;
+                            <span id="@i" class="glyphicon @star" onmouseover="DrawStars('@i')" onmouseout="DrawStars($('#rateVal').val())" onclick="ClickedStar(@i)"></span>
+                        }
                     }
                 }
 
