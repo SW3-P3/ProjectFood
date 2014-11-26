@@ -24,8 +24,10 @@ namespace ProjectFood.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
+                var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
+                return View(sortedRecipes.ToList());
             }
-
+            //for when user isn't logged in
             return View(_db.Recipes.Include(r => r.Ingredients).ToList());
         }
 
@@ -55,7 +57,7 @@ namespace ProjectFood.Controllers
                     _db.Users.Include(s => s.ShoppingLists)
                         .First(u => u.Username == User.Identity.Name)
                         .ShoppingLists.ToList();
-                ViewBag.UserRating = recipe.Ratings.SingleOrDefault(r => r.User.Username == User.Identity.Name);
+                ViewBag.UserRating = recipe.Ratings.FirstOrDefault(r => r.User.Username == User.Identity.Name);
             }
             else
             {
@@ -194,13 +196,17 @@ namespace ProjectFood.Controllers
         {
             var recipe = _db.Recipes.Include(r => r.Ratings).First(x => x.ID == id);
 
-            if(recipe.Ratings.Count > 0) {
+            if (recipe.Ratings.Count > 0)
+            {
                 _db.Ratings.RemoveRange(_db.Ratings.Where(r => r.Recipe.ID == id));
-                recipe.Ratings.Clear();   
+                recipe.Ratings.Clear();
             }
-            
+
+            // denne var også en løsning:
+            //var recipe = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).FirstOrDefault(x => x.ID.Equals(id));
+
             _db.Recipes.Remove(recipe);
-            
+
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -334,16 +340,14 @@ namespace ProjectFood.Controllers
                 ItemId = itemId,
             }, JsonRequestBehavior.AllowGet);
         }
-        
+
 
         [HttpPost]
         public ActionResult AddRating(int id, int rating)
         {
-            Recipe recipe = _db.Recipes.Include(r => r.Ratings).Single(x => x.ID == id);
+            Recipe recipe = _db.Recipes.Include(r => r.Ratings).FirstOrDefault(x => x.ID == id);
             User user = _db.Users.Include(u => u.Ratings).SingleOrDefault(u => u.Username == User.Identity.Name);
-
-            Rating prevRating = user.Ratings.FirstOrDefault(r => r.Recipe.ID == id); 
-
+            Rating prevRating = recipe.Ratings.FirstOrDefault(x => x.User.ID == user.ID);
 
             if (prevRating != null)
             {
@@ -365,37 +369,69 @@ namespace ProjectFood.Controllers
 
             _db.SaveChanges();
 
-            return Json(new { 
-                rating = rating, 
+            return Json(new
+            {
+                rating = rating,
                 avgRating = recipe.Ratings.Count > 0 ? recipe.Ratings.Select(r => r.Score).Average().ToString("0.0") : "0.0",
                 numRatings = recipe.Ratings.Count()
             });
         }
-        private IEnumerable<Tuple<Item, decimal>> getUserTaste(User u)
+
+        private IEnumerable<Recipe> RecommendRecipes(User user)
         {
-            //_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).Where(x => x.Ratings == null);
-            var tmpuser =_db.Users.Include(x => x.Ratings).SingleOrDefault(x => x.Username == u.Username);
-//            var ingredients = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings == );
+            // Get all recipies rated by the user
+            var recipiesRatedByUser = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings.Select(y => y.User.ID).Contains(user.ID));
 
-            var ingredients = _db.Recipes
-                .Include(x => x.Ingredients)
-                .Where(x => x.Ratings
-                    .Any(y => y.User == tmpuser))
-                .Select(x => new {x.Ingredients, rating = x.Ratings
-                    .FirstOrDefault(y => y.User == u)});
+            // Pair the ingrdients with the rating given
+            // If two ingredients are the same, take the avg of both ratings.
+            var itemsWithRatings = new List<Tuple<Item, List<decimal>>>();
 
-            var derp = ingredients.SelectMany(x => x.Ingredients).Distinct();
-
-            var itemsWithRatings = new List<Tuple<Item, decimal>>();
-
-            foreach (var i in derp)
+            foreach (var recipie in recipiesRatedByUser.ToList())
             {
-                Item i1 = i;
-                var recipeWithItem = _db.Recipes.Include(x => x.Ingredients).Where(x => x.Ingredients.Contains(i1));
-                itemsWithRatings.Add(new Tuple<Item, decimal>(i, recipeWithItem.First().Ratings.Where(x => x.User == tmpuser).Average(y => y.Score)));
+                var score = recipie.Ratings.FirstOrDefault(x => x.User == user).Score;
+                foreach (var ingredient in recipie.Ingredients)
+                {
+                    // If the element is already rated, add the new rating to the list of ratings
+                    if (itemsWithRatings.Select(x => x.Item1).Contains(ingredient))
+                    {
+                        itemsWithRatings.FirstOrDefault(x => x.Item1 == ingredient).Item2.Add(score);
+                    }
+                    else
+                    {
+                        var tmp = new Tuple<Item, List<Decimal>>(ingredient, new List<decimal>());
+                        tmp.Item2.Add(score);
+                        itemsWithRatings.Add(tmp);
+                    }
+                }
             }
 
-            return itemsWithRatings;
+            var avgRating = recipiesRatedByUser.Average(x => x.Ratings.FirstOrDefault(y => y.User.ID == user.ID).Score);
+
+            var recipiesRated = new List<Tuple<Recipe, decimal>>();
+
+            // Calculate the score for every recipie
+            foreach (var recipie in _db.Recipes.Include(x => x.Ingredients))
+            {
+                if (recipie.Ratings.FirstOrDefault(y => y.User.ID == user.ID) != null)
+                {
+                    recipiesRated.Add(new Tuple<Recipe, decimal>(recipie, recipie.Ratings.FirstOrDefault(y => y.User.ID == user.ID).Score));
+                }
+                else
+                {
+                    var score = new List<decimal>();
+                    foreach (var ingredient in recipie.Ingredients)
+                    {
+                        var derp = (itemsWithRatings.FirstOrDefault(x => x.Item1.Equals(ingredient)));
+                        score.Add(derp != null ? derp.Item2.Average() : avgRating);
+                    }
+                    recipiesRated.Add(new Tuple<Recipe, decimal>(item1: recipie, item2: score.Any() ? score.Average() : 0M));
+                }
+
+            }
+
+            // Sort the recipies descending
+            // return itz
+            return recipiesRated.OrderByDescending(x => x.Item2).Select(x => x.Item1);
         }
     }
 }
