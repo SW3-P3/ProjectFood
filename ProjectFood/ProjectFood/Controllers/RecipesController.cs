@@ -405,7 +405,7 @@ namespace ProjectFood.Controllers
                 }
             }
 
-            var avgRating = recipiesRatedByUser.Average(x => x.Ratings.FirstOrDefault(y => y.User.ID == user.ID).Score);
+            var avgRating = 2;// recipiesRatedByUser.Average(x => x.Ratings.FirstOrDefault(y => y.User.ID == user.ID).Score);
 
             var recipiesRated = new List<Tuple<Recipe, decimal>>();
 
