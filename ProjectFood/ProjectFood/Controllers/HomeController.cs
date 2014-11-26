@@ -1,4 +1,5 @@
-﻿using ProjectFood.Models;
+﻿using System.Web.Security;
+using ProjectFood.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,7 +20,16 @@ namespace ProjectFood.Controllers
                 var user = _db.Users
                     .Include(w => w.WatchList.Items.Select(i => i.Offers))
                     .Include(u => u.ShoppingLists.Select(s => s.Items))
-                    .First(u => u.Username == User.Identity.Name);
+                    .FirstOrDefault(u => u.Username == User.Identity.Name);
+
+                // The browser has the cookie of an user not in the db, log them out (this is untested)
+                if (user == null)
+                {
+                    FormsAuthentication.SignOut();
+                    Roles.DeleteCookie();
+                    Session.Clear();
+                    return View();
+                }
 
                 if(user.WatchList == null) {
                     user.WatchList = new ShoppingList { Title = "watchList" };
