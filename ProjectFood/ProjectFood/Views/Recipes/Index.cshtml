@@ -28,15 +28,25 @@
         foreach (var recipe in Model)
         {
             <div class="col-md-4">
-                <div class="panel panel-info" onclick="window.location = '@Url.Action("details", new { id = recipe.ID })'">
+                <div class="panel panel-default"
+                     style="cursor: pointer;" 
+                     onmouseover="$(this).removeClass('panel-default').addClass('panel-info');" 
+                     onmouseout="$(this).addClass('panel-default').removeClass('panel-success');" 
+                     onclick="window.location = '@Url.Action("details", new { id = recipe.ID })'">
                     <div class="panel-heading"><h3>@recipe.Title</h3></div>
                     <div class="panel-body">
                         <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
                         <table class="table-condensed">
-                            @foreach (var ingredient in recipe.Ingredients)
+                            @foreach (var ingredient in recipe.Ingredients.Take(3))
                             {
                                 <tr>
                                     <td>@ingredient.Name</td>
+                                </tr>
+                            }
+                            @if (recipe.Ingredients.Count() > 3)
+                            {
+                                <tr>
+                                    <td>&hellip;</td>
                                 </tr>
                             }
                         </table>
