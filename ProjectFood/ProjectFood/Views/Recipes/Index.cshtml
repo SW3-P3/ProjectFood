@@ -6,16 +6,29 @@
 
 <div class="page-header">
     <div class="row">
-        <div class="col-md-6"><h1><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter</h1></div>
+        <div class="col-md-6">
+            <h1><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter&nbsp;&nbsp;&nbsp;&nbsp;
+                @if (User.Identity.IsAuthenticated)
+                {
+                        <a href="@Url.Action("Create")" class="btn btn-success">Tilføj ny opskrift</a>
+                } 
+            </h1>
+            @{
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                listItems.Add(new SelectListItem {Text = "Dato (Nyeste først)", Selected = true, Value = "New"});
+                listItems.Add(new SelectListItem {Text = "Dato (Ældste først)", Selected = ViewBag.Selected.Equals("Old"), Value = "Old"});
+                listItems.Add(new SelectListItem { Text = "Anbefalinger", Selected = ViewBag.Selected.Equals("Recommend"), Value = "Recommend" });
+                listItems.Add(new SelectListItem { Text = "Bedømmelse (Faldende)", Selected = ViewBag.Selected.Equals("High"), Value = "High" });
+                <label for="Selection">Soter Opskrifter</label>
+                @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "window.location.href = '/Recipes/Index?sort=' + this.value;" })
+            }
+        </div>
     </div>
 
-</div>
+</div> 
 
 <p>
-    @if (User.Identity.IsAuthenticated) { 
-        @Html.ActionLink("Opret ny opskrift", "Create", null, new { @class = "btn btn-success btn-block" })
-    }
-    else
+    @if (!User.Identity.IsAuthenticated)
     {
         <h3>Ved at logge ind, kan du selv tilføje opskrifter. Som bruger kan du også få anbefalet opskifter ud fra dine præferencer og bedømmelser. </h3>
         @Html.ActionLink("Opret en bruger nu!", "Create", null, new { @class = "btn btn-success btn-block" })
@@ -31,11 +44,25 @@
                 <div class="panel panel-default"
                      style="cursor: pointer;" 
                      onmouseover="$(this).removeClass('panel-default').addClass('panel-info');" 
-                     onmouseout="$(this).addClass('panel-default').removeClass('panel-success');" 
+                     onmouseout="$(this).addClass('panel-default').removeClass('panel-info');" 
                      onclick="window.location = '@Url.Action("details", new { id = recipe.ID })'">
                     <div class="panel-heading"><h3>@recipe.Title</h3></div>
                     <div class="panel-body">
                         <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                        <h4><span class="glyphicon glyphicon-star"></span>
+                        @{
+            if (recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0)
+                        {
+                            <span>Ingen vuderinger givet</span>
+                        }
+                        else
+                        {
+                            var rat = recipe.Ratings.Select(x => x.Score);
+                            
+                            @rat.Average();
+                        }
+                        }
+                        </h4>
                         <table class="table-condensed">
                             @foreach (var ingredient in recipe.Ingredients.Take(3))
                             {
@@ -51,7 +78,7 @@
                             }
                         </table>
                     </div>
-                    <div class="panel-footer"><p>@Html.DisplayFor(modelItem => recipe.Tags)</p></div>
+                    <div class="panel-footer.hidden"><p class="hidden">@Html.DisplayFor(modelItem => recipe.Tags)</p></div>
                 </div>
             </div>
             if (i % 3 == 0)
