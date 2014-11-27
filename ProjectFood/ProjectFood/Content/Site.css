@@ -26,3 +26,8 @@ textarea {
 .text-strikethrough{
     text-decoration: line-through;
 }
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
