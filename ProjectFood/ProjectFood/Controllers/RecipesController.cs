@@ -23,29 +23,41 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                ViewBag.Selected = "New";
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
 
-                    //Default
-                if (sort.IsNullOrWhiteSpace())
+                    //Default OR New
+                if (sort.IsNullOrWhiteSpace() || sort.Equals("New"))
                 {
-                    return View(_db.Recipes.Include(r => r.Ingredients).ToList());
+                    var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
+                    rec.Reverse();
+                    return View(rec);
                 }
-                    //New
-
                     //Old
-
+                if (sort.Equals("Old")){
+                    ViewBag.Selected = "Old";
+                    return View(_db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList());
+                }
                     //Recommend
                 else if (sort.Equals("Recommend"))
                 {
                     var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
+                    ViewBag.Selected = "Recommend";
                     return View(sortedRecipes.ToList());
                 }
                     //High
+                else if (sort.Equals("High")) 
+                {
+                    ViewBag.Selected = "High";
+                    return View(_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).OrderByDescending(x => x.Ratings.Select(y => y.Score).Average()));
+                }
 
                     //Catch rest
                 else
                 {
-                    return View(_db.Recipes.Include(r => r.Ingredients).ToList());
+                    var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
+                    rec.Reverse();
+                    return View(rec);
                 }
 
                 

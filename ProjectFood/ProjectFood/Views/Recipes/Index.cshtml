@@ -3,30 +3,26 @@
 @{
     ViewBag.Title = "Opskrifter";
 }
-<script type="text/javascript">
-function redirect(dropDownValue) {
-    window.location.href = '/Recipes/Index/' + dropDownValue;
-}
-</script>
 
 <div class="page-header">
     <div class="row">
         <div class="col-md-6">
-            <h1><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter
-            @if (User.Identity.IsAuthenticated)
-            {
-                @Html.ActionLink("Tilføj ny opskrift", "Create", null, new { @class = "btn btn-success" })
-            }</h1>
+            <h1><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter&nbsp;&nbsp;&nbsp;&nbsp;
+                @if (User.Identity.IsAuthenticated)
+                {
+                        <a href="@Url.Action("Create")" class="btn btn-success">Tilføj ny opskrift</a>
+                } 
+            </h1>
             @{
                 List<SelectListItem> listItems = new List<SelectListItem>();
-                listItems.Add(new SelectListItem {Text = "Dato (Nyeste først)", Value = "New"});
-                listItems.Add(new SelectListItem {Text = "Dato (Ældste først)", Value = "Old"});
-                listItems.Add(new SelectListItem { Text = "Anbefalinger", Value = "Recommend" });
-                listItems.Add(new SelectListItem {Text = "Bedømmelse (Faldende)", Value = "High"});
+                listItems.Add(new SelectListItem {Text = "Dato (Nyeste først)", Selected = true, Value = "New"});
+                listItems.Add(new SelectListItem {Text = "Dato (Ældste først)", Selected = ViewBag.Selected.Equals("Old"), Value = "Old"});
+                listItems.Add(new SelectListItem { Text = "Anbefalinger", Selected = ViewBag.Selected.Equals("Recommend"), Value = "Recommend" });
+                listItems.Add(new SelectListItem { Text = "Bedømmelse (Faldende)", Selected = ViewBag.Selected.Equals("High"), Value = "High" });
                 <label for="Selection">Soter Opskrifter</label>
                 @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "window.location.href = '/Recipes/Index?sort=' + this.value;" })
             }
-        </div>  
+        </div>
     </div>
 
 </div> 
@@ -53,6 +49,20 @@ function redirect(dropDownValue) {
                     <div class="panel-heading"><h3>@recipe.Title</h3></div>
                     <div class="panel-body">
                         <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                        <h4><span class="glyphicon glyphicon-star"></span>
+                        @{
+            if (recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0)
+                        {
+                            <span>Ingen vuderinger givet</span>
+                        }
+                        else
+                        {
+                            var rat = recipe.Ratings.Select(x => x.Score);
+                            
+                            @rat.Average();
+                        }
+                        }
+                        </h4>
                         <table class="table-condensed">
                             @foreach (var ingredient in recipe.Ingredients.Take(3))
                             {
