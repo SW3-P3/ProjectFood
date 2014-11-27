@@ -19,17 +19,41 @@ namespace ProjectFood.Controllers
         private readonly DataBaseContext _db = new DataBaseContext();
 
         // GET: Recipes
-        public ActionResult Index()
+        public ActionResult Index(string sort)
         {
             if (User.Identity.IsAuthenticated)
             {
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
-                var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
-                return View(sortedRecipes.ToList());
+
+                    //Default
+                if (sort.IsNullOrWhiteSpace())
+                {
+                    return View(_db.Recipes.Include(r => r.Ingredients).ToList());
+                }
+                    //New
+
+                    //Old
+
+                    //Recommend
+                else if (sort.Equals("Recommend"))
+                {
+                    var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
+                    return View(sortedRecipes.ToList());
+                }
+                    //High
+
+                    //Catch rest
+                else
+                {
+                    return View(_db.Recipes.Include(r => r.Ingredients).ToList());
+                }
+
+                
             }
             //for when user isn't logged in
             return View(_db.Recipes.Include(r => r.Ingredients).ToList());
-        }
+            
+         }
 
         // GET: Recipes/Details/5
         public ActionResult Details(int? id, int? numPersons)
