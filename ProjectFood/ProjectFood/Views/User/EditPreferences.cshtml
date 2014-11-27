@@ -1,94 +1,133 @@
 ﻿@model ProjectFood.Models.User
 
+<div class="page-header">
+    <h1>Brugerindstillinger</h1>
+</div>
+<hr />
 @{
-    ViewBag.Title = "Rediger et eller andet der ikke helt er præferencer, fordi det egentligt består at både ting man kan lide, men også af ting man ikke kan lide...";
+    ViewBag.Title = "Bruger: " + @User.Identity.Name;
 }
 
 <div class="page-header">
-    <h1>@ViewBag.Title</h1>
+    <h1>
+        Hej @if (Model.Name != null)
+        {
+            @Model.Name
+        }
+        else
+        {
+            @User.Identity.Name
+        }
+    </h1>
 </div>
-<hr />
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+
+
 <div class="row">
-    <div class="col-md-6">
-        <div class="well">
-            <div class="lead">
-                Tilføj ting du <span class="text-danger">ikke</span> ønsker at købe. Dette kan ekspelvis være varer, som du er allergisk overfor.
-                <hr />
-            </div>
-            <div class="form-group">
-                @using (Html.BeginForm("AddPreference", "User", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="username" value="@User.Identity.Name" />
-                    <input type="hidden" name="store" value="false" />
-                    <div class="input-group input-group-lg">
-                        @Html.TextBox("pref", "", new { @id = "autocomplete", @placeholder = "indtast her", @class = "form-control" })
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-default">Tilføj</button>
-                        </span>
-                    </div>
-                }
-            </div>
-
-            <div class="list-group">
-
-                @foreach (var pref in Model.Preferences.Where(p => p.Store == false))
-                {
-                    <div class="list-group-item">
-                        <span class="lead">
-                            <a href="@Url.Action("RemovePreference",
-                             new {username = User.Identity.Name, prefId = @pref.ID})"
-                               class="btn btn-danger">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </a>&nbsp;&nbsp;&nbsp;@pref.Value
-                        </span>
-                    </div>
-                }
-
-            </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h4>Sikkerhed</h4></div>
+        <div class="panel-body">
+            @Html.ActionLink("Skift kodeord", "ChangePassword", "Manage", null, new { @class = "btn btn-primary btn btn-block" })
         </div>
     </div>
-
-    <div class="col-md-6">
-        <div class="well container-fluid">
-            <div class="lead">
-                Her kan du vælge hvilke butikker du ønsker at se tilbud fra.
-                <hr />
-            </div>
-            @foreach (var store in (List<string>)ViewBag.Store)
+    <div class="panel panel-default panel">
+        <div class="panel-heading"><h4>Dit navn</h4></div>
+        <div class="panel-body">
+            @using (Html.BeginForm("EditName", "User", new { username = User.Identity.Name }, FormMethod.Post, new { }))
             {
-                string storename = store.Replace(" ", string.Empty);
-                string onSuccess = "ToggleBoolByID('" + storename + "')";
+                @Html.AntiForgeryToken()
 
-                <div class="col-md-6 form-group">
-                    @using (Ajax.BeginForm(
-                "EditStore",
-                new { storename = store },
-                new AjaxOptions { HttpMethod = "POST", OnSuccess = onSuccess}))
-                    {
-                        <span class="lead" onclick="$(this).parent().submit()">
-                            @{
-                                bool storeBlackListed = Model.Preferences.Any(x => x.Store == true && x.Value == store);
-                                string valueReversed =  storeBlackListed ? "false" : "true";
-                                string glyphicon = storeBlackListed ? "glyphicon-unchecked" : "glyphicon-check";
-                                string textClass = storeBlackListed ? "text-muted text-strikethrough" : "";
-                            
-                            <span>
-                                <input type="hidden" name="StoreCheck" id="storeCheck_@storename" value="@valueReversed" />
-                                <span id="check_@storename" class="glyphicon @glyphicon"></span>
-                            </span>
-                            <span class="@textClass" id="storeName_@storename">@store.Trim()</span>
-}
-
-                        </span>
-                    }
+                <div class="input-group input-groupf">
+                    @Html.TextBox("name", "", new { @placeholder = "Vist navn", @class = "form-control" })
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-group-justified">Gem</button>
+                    </span>
                 </div>
             }
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well">
+                <div class="lead">
+                    Tilføj ting du <span class="text-danger">ikke</span> ønsker at købe. Dette kan ekspelvis være varer, som du er allergisk overfor.
+                    <hr />
+                </div>
+                <div class="form-group">
+                    @using (Html.BeginForm("AddPreference", "User", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="username" value="@User.Identity.Name" />
+                        <input type="hidden" name="store" value="false" />
+                        <div class="input-group input-group-lg">
+                            @Html.TextBox("pref", "", new { @id = "autocomplete", @placeholder = "indtast her", @class = "form-control" })
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default">Tilføj</button>
+                            </span>
+                        </div>
+                    }
+                </div>
 
-@section Scripts {                      @*  Don't question the JavaScript-Gods!!!                             *@
-@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
-}
+                <div class="list-group">
+
+                    @foreach (var pref in Model.Preferences.Where(p => p.Store == false))
+                    {
+                        <div class="list-group-item">
+                            <span class="lead">
+                                <a href="@Url.Action("RemovePreference",
+                             new {username = User.Identity.Name, prefId = @pref.ID})"
+                                   class="btn btn-danger">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>&nbsp;&nbsp;&nbsp;@pref.Value
+                            </span>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="well container-fluid">
+                <div class="lead">
+                    Her kan du vælge hvilke butikker du ønsker at se tilbud fra.
+                    <hr />
+                </div>
+                @foreach (var store in (List<string>)ViewBag.Store)
+                {
+                    string storename = store.Replace(" ", string.Empty);
+                    string onSuccess = "ToggleBoolByID('" + storename + "')";
+
+                    <div class="col-md-6 form-group">
+                        @using (Ajax.BeginForm(
+                "EditStore",
+                new { storename = store },
+                new AjaxOptions { HttpMethod = "POST", OnSuccess = onSuccess }))
+                        {
+                            <span class="lead" onclick="$(this).parent().submit()">
+                                @{
+                            bool storeBlackListed = Model.Preferences.Any(x => x.Store == true && x.Value == store);
+                            string valueReversed = storeBlackListed ? "false" : "true";
+                            string glyphicon = storeBlackListed ? "glyphicon-unchecked" : "glyphicon-check";
+                            string textClass = storeBlackListed ? "text-muted text-strikethrough" : "";
+
+                            <span>
+                                <input type="hidden" name="StoreCheck" id="storeCheck_@storename" value="@valueReversed" />
+                                <span id="check_@storename" class="glyphicon @glyphicon"></span>
+                            </span>
+                                    <span class="@textClass" id="storeName_@storename">@store.Trim()</span>
+                                }
+
+                            </span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {                      @*  Don't question the JavaScript-Gods!!!                             *@
+    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+    }

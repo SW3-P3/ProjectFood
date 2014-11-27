@@ -18,21 +18,22 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Manage");
+                return RedirectToRoute("EditPreferences",User.Identity.Name);
+                return View("EditPreferences?username="+User.Identity.Name);
             }
 
             return RedirectToAction("Index", "Home");
         }
-
         [ValidateAntiForgeryToken]
         public ActionResult EditName(string username, string name)
         {
-            if(User.Identity.IsAuthenticated && User.Identity.Name == username) {
+            if (User.Identity.IsAuthenticated && User.Identity.Name == username)
+            {
                 _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
-
-            return RedirectToAction("Index");
+            return RedirectToRoute("EditPreferences", User.Identity.Name);
+            return RedirectToAction("EditPreferences?username=" + User.Identity.Name);
         }
 
         [HttpGet]
@@ -47,8 +48,7 @@ namespace ProjectFood.Controllers
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
 
             }
-
-            return RedirectToAction("Index");
+            return RedirectToRoute("EditPreferences", User.Identity.Name);
         }
 
         public ActionResult AddPreference(string username, string pref, bool store)
