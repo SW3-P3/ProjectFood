@@ -26,44 +26,31 @@ namespace ProjectFood.Controllers
                 ViewBag.Selected = "New";
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
 
-                    //Default OR New
                 if (sort.IsNullOrWhiteSpace() || sort.Equals("New"))
                 {
                     var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
                     rec.Reverse();
                     return View(rec);
                 }
-                    //Old
-                if (sort.Equals("Old")){
+
+                if (sort.Equals("Old")) {
                     ViewBag.Selected = "Old";
                     return View(_db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList());
-                }
-                    //Recommend
-                else if (sort.Equals("Recommend"))
-                {
+                } else if (sort.Equals("Recommend")) {
                     var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
                     ViewBag.Selected = "Recommend";
                     return View(sortedRecipes.ToList());
-                }
-                    //High
-                else if (sort.Equals("High")) 
-                {
+                } else if (sort.Equals("High")) {
                     ViewBag.Selected = "High";
                     return View(_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).OrderByDescending(x => x.Ratings.Select(y => y.Score).Average()));
-                }
-
-                    //Catch rest
-                else
-                {
+                } else {
                     var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
                     rec.Reverse();
                     return View(rec);
-                }
-
-                
+                }                
             }
-            //for when user isn't logged in
-            return View(_db.Recipes.Include(r => r.Ingredients).ToList());
+
+            return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
             
          }
 
