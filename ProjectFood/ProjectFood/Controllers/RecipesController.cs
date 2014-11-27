@@ -19,17 +19,40 @@ namespace ProjectFood.Controllers
         private readonly DataBaseContext _db = new DataBaseContext();
 
         // GET: Recipes
-        public ActionResult Index()
+        public ActionResult Index(string sort)
         {
             if (User.Identity.IsAuthenticated)
             {
+                ViewBag.Selected = "New";
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
-                var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
-                return View(sortedRecipes.ToList());
+
+                if (sort.IsNullOrWhiteSpace() || sort.Equals("New"))
+                {
+                    var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
+                    rec.Reverse();
+                    return View(rec);
+                }
+
+                if (sort.Equals("Old")) {
+                    ViewBag.Selected = "Old";
+                    return View(_db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList());
+                } else if (sort.Equals("Recommend")) {
+                    var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
+                    ViewBag.Selected = "Recommend";
+                    return View(sortedRecipes.ToList());
+                } else if (sort.Equals("High")) {
+                    ViewBag.Selected = "High";
+                    return View(_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).OrderByDescending(x => x.Ratings.Select(y => y.Score).Average()));
+                } else {
+                    var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
+                    rec.Reverse();
+                    return View(rec);
+                }                
             }
-            //for when user isn't logged in
-            return View(_db.Recipes.Include(r => r.Ingredients).ToList());
-        }
+
+            return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
+            
+         }
 
         // GET: Recipes/Details/5
         public ActionResult Details(int? id, int? numPersons)

@@ -13,7 +13,6 @@
 <div class="page-header">
     <div class="row">
         <div class="col-md-8">
-            
             <div class="container-fluid">
                 <h1>
                     @Model.Title &nbsp;&nbsp;
@@ -30,7 +29,7 @@
                         @author @originalAuthor
                     }
                 </span>
-                
+
             </div>
             <div class="container-fluid">
                 <span class="lead">
@@ -41,23 +40,26 @@
         <div class="col-md-4">
 
             <div class="container-fluid">
-                @if(User.Identity.IsAuthenticated) {
+                @if (User.Identity.IsAuthenticated)
+                {
 
-                using(Ajax.BeginForm(
-                "AddRating",
-                new { id = Model.ID },
-                new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateStarsAndAvg" },
-                new { @class = "form-group h1", @id = "starForm" }
-                )) {
-                var rating = ViewBag.UserRating != null ? ViewBag.UserRating.Score : 0;
-                <input id="rateVal" type="hidden" name="rating" value="@((int)rating)" />
+                    using (Ajax.BeginForm(
+                    "AddRating",
+                    new { id = Model.ID },
+                    new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateStarsAndAvg" },
+                    new { @class = "form-group h1", @id = "starForm" }
+                    ))
+                    {
+                        var rating = ViewBag.UserRating != null ? ViewBag.UserRating.Score : 0;
+                        <input id="rateVal" type="hidden" name="rating" value="@((int)rating)" />
 
 
-                for(int i = 1; i <= 5; i++) {
-                string star = rating >= i ? "glyphicon-star" : "glyphicon-star-empty"; ;
-                <span id="@i" class="glyphicon @star" onmouseover="DrawStars('@i')" onmouseout="DrawStars($('#rateVal').val())" onclick="ClickedStar(@i)"></span>
-                }
-                }
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            string star = rating >= i ? "glyphicon-star" : "glyphicon-star-empty"; ;
+                            <span id="@i" class="glyphicon @star" onmouseover="DrawStars('@i')" onmouseout="DrawStars($('#rateVal').val())" onclick="ClickedStar(@i)"></span>
+                        }
+                    }
                 }
                 <span class="lead">
                     <span id="avgRating">@(((decimal)ViewBag.AverageScore).ToString("0.0"))</span>
@@ -72,17 +74,17 @@
                 {
                     if (User.Identity.Name == Model.AuthorName)
                     {
-                        
-                            @Html.ActionLink("Rediger opskrift", "Edit", new { id = Model.ID, fork = false }, new { @class = "btn btn-info btn-block" })
-                            @Html.ActionLink("Rediger indgredienser", "CreateSecond", new { id = Model.ID }, new { @class = "btn btn-info btn-block" })
+
+                        @Html.ActionLink("Rediger opskrift", "Edit", new { id = Model.ID, fork = false }, new { @class = "btn btn-info btn-block" })
+                        @Html.ActionLink("Rediger indgredienser", "CreateSecond", new { id = Model.ID }, new { @class = "btn btn-info btn-block" })
                     }
                     else
                     {
-                    @Html.ActionLink("Lav din egen version af opskriften", "Edit", new { id = Model.ID, fork = true }, new { @class = "btn btn-info btn-block" })
-                }
+                        @Html.ActionLink("Lav din egen version af opskriften", "Edit", new { id = Model.ID, fork = true }, new { @class = "btn btn-info btn-block" })
+                    }
                 }
             </div>
-            
+
             <div class="container-fluid">
                 @if (User.Identity.Name == Model.AuthorName)
                 {
@@ -102,7 +104,7 @@
                 @using (Html.BeginForm("Details", "Recipes", FormMethod.Post))
                 {
                     <label class="control-label">Antal personer</label>
-                    @Html.TextBox("numPersons", null, new {@type = "number", @min="1", @max="100", @class = "form-control", @value = "4", @onchange = "$(this).parent().submit();" })
+                    @Html.TextBox("numPersons", null, new { @type = "number", @min = "1", @max = "100", @class = "form-control", @value = "4", @onchange = "$(this).parent().submit();" })
                 }
             </div>
             <div class="col-md-8">
@@ -177,8 +179,6 @@
     </div>
 </div>
 <hr />
-
-
 <p>
 
 
@@ -186,8 +186,7 @@
 
 </p>
 
-
 @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
-@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }
