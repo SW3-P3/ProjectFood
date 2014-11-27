@@ -118,3 +118,7 @@ function EditAmount(itemName, itemID, amount, unit) {
 $(function () {
     $('[data-toggle="tooltip"]').tooltip()
 })
+
+function ShoppingListShare() {
+    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp; Indkøbsliste delt &hellip;' });
+}

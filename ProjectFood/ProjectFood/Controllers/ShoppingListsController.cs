@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Web.Script.Serialization;
 using System.Web;
 using System.Web.Mvc;
@@ -23,7 +24,22 @@ namespace ProjectFood.Controllers
             {
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
                 ViewBag.NumItems = _db.ShoppingLists.Include(s => s.Items);
-                return View(_db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists);
+
+                var userLists =
+                    _db.Users.Include(u => u.ShoppingLists)
+                        .First(u => u.Username == User.Identity.Name)
+                        .ShoppingLists.Where(l => l.Users.Count == 1);
+
+                var sharedLists =
+                    _db.Users.Include(u => u.ShoppingLists)
+                        .First(u => u.Username == User.Identity.Name)
+                        .ShoppingLists.Where(l => l.Users.Count > 1);
+                ViewBag.SharedLists = sharedLists;
+               
+
+                return View(userLists);
+
+
             }
 
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action()});
@@ -55,7 +71,7 @@ namespace ProjectFood.Controllers
                 _db.Users
                 .Include(s => s.ShoppingLists)
                 .First(u => u.Username == User.Identity.Name)
-                .ShoppingLists.Exists(s => s.ID == id))
+                .ShoppingLists.ToList().Exists(s => s.ID == id))
             {
                 return View(shoppingList);
             }
@@ -106,7 +122,7 @@ namespace ProjectFood.Controllers
                 _db.Users
                 .Include(s => s.ShoppingLists)
                 .First(u => u.Username == User.Identity.Name)
-                .ShoppingLists.Exists(s => s.ID == id))
+                .ShoppingLists.ToList().Exists(s => s.ID == id))
             {
                 return View(shoppingList);
             }
@@ -185,6 +201,20 @@ namespace ProjectFood.Controllers
             }
 
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
+        }
+
+        [HttpPost]
+        public ActionResult ShareList(int? id, string email)
+        {
+            var shoppingList = _db.ShoppingLists.Include(x => x.Users).FirstOrDefault(x => x.ID == id);
+            var user = _db.Users.Include(u => u.ShoppingLists).FirstOrDefault(u => u.Username == email);
+            if (user == null)
+            {
+                return Json(new { Message = "Email ikke fundet" });
+            }
+            user.ShoppingLists.Add(shoppingList);
+            _db.SaveChanges();
+            return Json(new { Message = "Delt" });
         }
 
         public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)

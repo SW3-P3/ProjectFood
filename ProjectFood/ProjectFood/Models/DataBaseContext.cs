@@ -67,29 +67,18 @@ namespace ProjectFood.Models
         {
         }
 
-/*        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-        //    modelBuilder.Entity<ShoppingList>().
-        //      HasMany(c => c.Items).
-        //      WithMany(p => p.OnLists).
-        //      Map(
-        //       m =>
-        //       {
-        //           m.MapLeftKey("ShoppingListID");
-        //           m.MapRightKey("ItemID");
-        //           m.ToTable("ShoppingList_Items");
-        //       });
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.ShoppingLists)
+                .WithMany(x => x.Users)
+                .Map(x =>
+                {
+                    x.ToTable("UserShoppingLists");
+                    x.MapLeftKey("UserId");
+                    x.MapRightKey("ShoppingListId");
+                });
+        }
 
-            modelBuilder.Entity<Item>().
-             HasMany(i => i.Offers).
-             WithMany(o => o.GenericItems).
-             Map(
-              m =>
-              {
-                  m.MapLeftKey("ItemID");
-                  m.MapRightKey("OfferID");
-                  m.ToTable("Items_Offers");
-              });
-        }*/
     }
 }
