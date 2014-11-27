@@ -11,9 +11,12 @@ namespace ProjectFood.Models
         public string Title { get; set; }
         public ICollection<Item> Items { get; set;}
 
+        public virtual ICollection<User> Users { get; set;} 
+
         public ShoppingList()
         {
             Items = new List<Item>();
+            Users = new List<User>();
         }
     }
 }
