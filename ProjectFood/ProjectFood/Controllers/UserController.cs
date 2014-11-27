@@ -18,8 +18,7 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToRoute("EditPreferences",User.Identity.Name);
-                return View("EditPreferences?username="+User.Identity.Name);
+                return View(User);
             }
 
             return RedirectToAction("Index", "Home");
@@ -32,23 +31,19 @@ namespace ProjectFood.Controllers
                 _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
-            return RedirectToRoute("EditPreferences", User.Identity.Name);
-            return RedirectToAction("EditPreferences?username=" + User.Identity.Name);
+            return RedirectToAction("EditPreferences");
         }
 
-        [HttpGet]
-        public ActionResult EditPreferences(string username)
+        public ActionResult EditPreferences()
         {
-            var usernameDecode = HttpUtility.HtmlDecode(username);
-
-            if (User.Identity.IsAuthenticated && User.Identity.Name == usernameDecode)
+            if (User.Identity.IsAuthenticated)
             {
                 ViewBag.Store = _db.Offers.Select(x => x.Store).Distinct().OrderBy(x => x.ToLower()).ToList();
                 ViewBag.Prefs = _db.Preferences.ToList();
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
 
             }
-            return RedirectToRoute("EditPreferences", User.Identity.Name);
+            return RedirectToRoute("EditPreferences");
         }
 
         public ActionResult AddPreference(string username, string pref, bool store)
@@ -63,7 +58,7 @@ namespace ProjectFood.Controllers
                 _db.SaveChanges();
                 return RedirectToAction(store ? "EditStores" : "EditPreferences", new { username });
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("EditPreferences");
         }
         public ActionResult RemovePreference(string username, int prefId)
         {
@@ -76,7 +71,7 @@ namespace ProjectFood.Controllers
                 _db.SaveChanges();
                 return RedirectToAction(tmpPref.Store ? "EditStores" : "EditPreferences", new { username });
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("EditPreferences");
         }
 
         [HttpPost]

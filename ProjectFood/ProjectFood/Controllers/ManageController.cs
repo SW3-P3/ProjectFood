@@ -230,10 +230,10 @@ namespace ProjectFood.Controllers
                 {
                     await SignInAsync(user, isPersistent: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+                return RedirectToAction("EditPreferences", "User");
             }
             AddErrors(result);
-            return View(model);
+            return RedirectToAction("EditPreferences", "User");
         }
 
         //
