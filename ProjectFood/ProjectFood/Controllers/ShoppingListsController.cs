@@ -209,9 +209,14 @@ namespace ProjectFood.Controllers
             {
                 return Json(new { Success = "false", Message = "Email ikke fundet" });
             }
-            user.ShoppingLists.Add(shoppingList);
-            _db.SaveChanges();
-            return Json(new { Success = "true", Message = "Delt med "+ email });
+            if (user.ShoppingLists.Where(x => x.ID == shoppingList.ID) == null)
+            {
+                user.ShoppingLists.Add(shoppingList);
+                _db.SaveChanges();
+                return Json(new {Success = "true", Message = "Delt med " + email});
+            }
+                return Json(new { Success = "false", Message = "Bruger er allerede med på Indkøbslisten" });
+            
         }
 
         public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)
