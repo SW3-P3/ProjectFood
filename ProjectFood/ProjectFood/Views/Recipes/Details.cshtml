@@ -94,7 +94,7 @@
                 @{
                     string onChange = "ChangeNumPersons(this, '" + @Model.Ingredients.Count + "')";
                     <label class="control-label">Antal personer</label>
-                    @Html.TextBox("numPersons", null, new { @type = "number", @min = "1", @max = "100", @class = "form-control", @value = "4", @onchange = onChange })
+                    @Html.TextBox("numPersons", 4, new { @type = "number", @min = "1", @max = "100", @class = "form-control", @onchange = onChange })
                 }
             </div>
             <div class="col-md-8">
