@@ -211,7 +211,7 @@ namespace ProjectFood.Controllers
             }
             user.ShoppingLists.Add(shoppingList);
             _db.SaveChanges();
-            return Json(new { Success = "true", Message = "Indkøbsliste delt" });
+            return Json(new { Success = "true", Message = "Delt med "+ email });
         }
 
         public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)

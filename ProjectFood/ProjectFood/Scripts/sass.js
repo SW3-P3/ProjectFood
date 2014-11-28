@@ -115,9 +115,9 @@ function EditAmount(itemName, itemID, amount, unit) {
     $('#EditModal').modal('show');
 };
 
-$(function () {
+$(function() {
     $('[data-toggle="tooltip"]').tooltip()
-})
+});
 
 function ShoppingListShare(message) {
     $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;' + message + '&hellip;' });
