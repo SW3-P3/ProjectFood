@@ -127,7 +127,7 @@ namespace ProjectFood.Controllers
             }
 
             var recipe = _db.Recipes.Include(r => r.Ingredients).First(r => r.ID == id);
-            System.Diagnostics.Debug.WriteLine("OLD ID: " + recipe.ID);
+            ViewBag.Forked = fork;
 
             if (recipe == null)
             {
@@ -166,17 +166,12 @@ namespace ProjectFood.Controllers
                     }
                     _db.SaveChanges();
                     recipe = forkedRecipe;
-                    ViewBag.Forked = true;
-                } else {
-                    ViewBag.Forked = false;
                 }
             }
             else
             {
                 return RedirectToAction("Details/" + id);
             }
-
-            System.Diagnostics.Debug.WriteLine("NEW ID: " + recipe.ID);
 
             return View(recipe);
         }

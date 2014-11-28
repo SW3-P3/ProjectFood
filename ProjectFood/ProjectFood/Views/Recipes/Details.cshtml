@@ -4,31 +4,6 @@
     ViewBag.Title = "Details";
 }
 
-<script type="text/javascript">
-    function GetSelectedList() {
-        $('input#shoppingListId').val($('#Selection').val());
-    };
-
-    function AddAllTheItems(numItems) {
-        for (var i = 0; i < numItems; i++) {
-            $('form#AddItem_' + i).submit();
-        }
-    };
-
-    function ChangeNumPersons(element, numItems) {
-        var numPersons = $(element).val();
-        var amountPP;
-        var amount;
-        
-        for (var i = 0; i < numItems; i++) {
-            amountPP = $('span#amountPP_' + i).html();
-            amount = amountPP * numPersons;
-            $('input#amount_' + i).val(parseFloat(amount).toLocaleString('da-DK'));
-            $('span#amount_' + i).html(parseFloat(amount).toLocaleString('da-DK'));
-        }
-    };
-</script>
-
 <div class="page-header">
     <div class="row">
         <div class="col-md-8">
@@ -216,6 +191,6 @@
 </p>
 
 @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
-@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }
