@@ -1,25 +1,20 @@
 ﻿@model ProjectFood.Models.User
 
-<div class="page-header">
-    <h1>Brugerindstillinger for 
-    @if (Model.Name != null)
-    {
-        @Model.Name
-    }
-    else
-    {
-        @User.Identity.Name
-    }</h1>
-</div>
-<hr />
 @{
     ViewBag.Title = "Bruger: " + @User.Identity.Name;
 }
 
+<div class="page-header">
+    <h1>Brugerindstillinger for 
+    @(Model.Name ?? User.Identity.Name)
+    </h1>
+</div>
+<hr />
+
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div class="row">
     <div class="col-md-6">
-        <div class="panelpanel-default panel">
+        <div class="panel panel-default">
             <div class="panel-heading"><h4>Dit navn</h4></div>
             <div class="panel-body">
                 @using (Html.BeginForm("EditName", "User", new { username = User.Identity.Name }, FormMethod.Post, new { }))
@@ -45,7 +40,6 @@
         </div>
     </div>
 </div>
-@*<hr style="margin-top: 0px;"/>*@
 <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
