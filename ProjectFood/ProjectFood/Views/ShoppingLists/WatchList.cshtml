@@ -39,8 +39,6 @@
     </div>
 </div>
 
-<hr />
-
 <div class="container-fluid">
     <div class="col-md-6">
         @using(Html.BeginForm(
@@ -143,18 +141,20 @@
                     <td>@offer.End.ToString("ddd d- M")</td>
                     <td>@offer.Store</td>
                     <td>
-                        @using(Ajax.BeginForm(
-                            "AddItem", 
-                            "ShoppingLists", 
-                            new AjaxOptions {HttpMethod = "POST", OnSuccess="ChangeButton"},
-                            new {@class = "form-group"}
-                            ))
-	{
-                            <input type="hidden" id="SelectedList" name="id" value="@ViewBag.ShoppingLists[0].ID" />
-                            <input type="hidden" name="name" value="@item.Name" />
-                            <input type="hidden" name="offerID" value="@offer.ID" />
-    <button id="AddButton_@offer.ID" class="btn btn-primary btn-xs btn-block"><span class="glyphicon glyphicon-plus"></span></button>
-	}
+                        @if(ViewBag.ShoppingLists.Count > 0) {
+                            using(Ajax.BeginForm(
+                            "AddItem",
+                            "ShoppingLists",
+                            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeButton" },
+                            new { @class = "form-group" }
+                            )) {
+                                <input type="hidden" id="SelectedList" name="id" value="@ViewBag.ShoppingLists[0].ID" />
+                                <input type="hidden" name="name" value="@item.Name" />
+                                <input type="hidden" name="offerID" value="@offer.ID" />
+                                <button id="AddButton_@offer.ID" class="btn btn-primary btn-xs btn-block"><span class="glyphicon glyphicon-plus"></span></button>
+                            }
+                        }
+                        
                         
                     </td>
                 </tr>

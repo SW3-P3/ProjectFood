@@ -20,7 +20,7 @@
 };
 
 function ChangeToCheckRecipe(json) {
-    var recipeButton = '#AddItem_' + json.ItemId;
+    var recipeButton = '#AddItem_' + json.itemID;
 
     $(recipeButton)
         .removeClass('btn-info')
@@ -29,6 +29,8 @@ function ChangeToCheckRecipe(json) {
     $(recipeButton + ' span')
         .removeClass('glyphicon-plus')
         .addClass('glyphicon-ok');
+
+    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Vare tilføjet til ' + json.shoppingListTitle });
 };
 
 function ToggleLineThrough(element) {

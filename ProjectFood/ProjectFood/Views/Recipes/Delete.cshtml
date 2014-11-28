@@ -14,7 +14,7 @@
     <div class="row">
         @using(Html.BeginForm()) {
             @Html.AntiForgeryToken()
-            <a href="@Url.Action("Details", "Recipe", new { id = @Model.ID })" class="btn btn-primary btn-lg btn-block">Nej, tag mig tilbage.</a>
+            <a href="@Url.Action("Details", "Recipes", new { id = @Model.ID })" class="btn btn-primary btn-lg btn-block">Nej, tag mig tilbage.</a>
             <button type="submit" class="btn btn-danger btn-lg btn-block">
                 Ja, slet den!
             </button>
