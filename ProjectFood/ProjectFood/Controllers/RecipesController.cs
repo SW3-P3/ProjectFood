@@ -55,7 +55,7 @@ namespace ProjectFood.Controllers
          }
 
         // GET: Recipes/Details/5
-        public ActionResult Details(int? id, int? numPersons)
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -88,9 +88,6 @@ namespace ProjectFood.Controllers
                 ViewBag.UserRating = 0;
             }
 
-            // ?? means if null assign the right side, else the left side.
-            ViewBag.numPersons = numPersons ?? 4;
-
             //calculate average 
 
             ViewBag.AverageScore = recipe.Ratings.Count > 0 ? (decimal)recipe.Ratings.Select(r => r.Score).Average() : 0;
@@ -118,7 +115,7 @@ namespace ProjectFood.Controllers
         {
             _db.Recipes.Add(recipe);
             _db.SaveChanges();
-            return RedirectToAction("CreateSecond/" + recipe.ID);
+            return RedirectToAction("Ingredients/" + recipe.ID);
         }
 
         // GET: Recipes/Edit/5
@@ -130,6 +127,7 @@ namespace ProjectFood.Controllers
             }
 
             var recipe = _db.Recipes.Include(r => r.Ingredients).First(r => r.ID == id);
+            System.Diagnostics.Debug.WriteLine("OLD ID: " + recipe.ID);
 
             if (recipe == null)
             {
@@ -145,7 +143,7 @@ namespace ProjectFood.Controllers
                     {
                         OriginalAuthorName = originalRecipe.OriginalAuthorName,
                         AuthorName = User.Identity.Name,
-                        Title = originalRecipe.Title,
+                        Title = originalRecipe.Title + ", ny version",
                         Ingredients = new List<Item>(originalRecipe.Ingredients),
                         Tags = originalRecipe.Tags,
                         Minutes = originalRecipe.Minutes,
@@ -168,12 +166,17 @@ namespace ProjectFood.Controllers
                     }
                     _db.SaveChanges();
                     recipe = forkedRecipe;
+                    ViewBag.Forked = true;
+                } else {
+                    ViewBag.Forked = false;
                 }
             }
             else
             {
                 return RedirectToAction("Details/" + id);
             }
+
+            System.Diagnostics.Debug.WriteLine("NEW ID: " + recipe.ID);
 
             return View(recipe);
         }
@@ -183,13 +186,17 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
+        public ActionResult Edit([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions,Tags")] Recipe recipe, bool done)
         {
+
             if (ModelState.IsValid)
             {
                 _db.Entry(recipe).State = EntityState.Modified;
                 _db.SaveChanges();
-                return RedirectToAction("CreateSecond/" + recipe.ID);
+                if(_db.Recipes.FirstOrDefault(r => r.ID == recipe.ID).Title == null) {
+                    return View(recipe);
+                }
+                return RedirectToAction((done ? "Details/" : "Ingredients/") + recipe.ID);
             }
             return View(recipe);
         }
@@ -249,7 +256,7 @@ namespace ProjectFood.Controllers
 
             if (name.Trim() == string.Empty)
             {
-                return RedirectToAction("CreateSecond/" + id);
+                return RedirectToAction("Ingredients/" + id);
             }
             //allows for ingredienst with no amount and unit
             if (amountPerPerson == null)
@@ -281,7 +288,7 @@ namespace ProjectFood.Controllers
             }
 
             _db.SaveChanges();
-            return RedirectToAction("CreateSecond/" + id);
+            return RedirectToAction("Ingredients/" + id);
         }
 
         public ActionResult RemoveIngredient(int id, int ingredientId)
@@ -302,10 +309,10 @@ namespace ProjectFood.Controllers
             _db.SaveChanges();
 
             //Update the users view of the shoppinglist
-            return RedirectToAction("CreateSecond/" + id);
+            return RedirectToAction("Ingredients/" + id);
         }
 
-        public ActionResult CreateSecond(int? id, int? numPersons)
+        public ActionResult Ingredients(int? id, int? numPersons)
         {
             if (id == null)
             {

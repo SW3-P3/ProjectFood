@@ -8,6 +8,25 @@
     function GetSelectedList() {
         $('input#shoppingListId').val($('#Selection').val());
     };
+
+    function AddAllTheItems(numItems) {
+        for (var i = 0; i < numItems; i++) {
+            $('form#AddItem_' + i).submit();
+        }
+    };
+
+    function ChangeNumPersons(element, numItems) {
+        var numPersons = $(element).val();
+        var amountPP;
+        var amount;
+        
+        for (var i = 0; i < numItems; i++) {
+            amountPP = $('span#amountPP_' + i).html();
+            amount = amountPP * numPersons;
+            $('input#amount_' + i).val(parseFloat(amount).toLocaleString('da-DK'));
+            $('span#amount_' + i).html(parseFloat(amount).toLocaleString('da-DK'));
+        }
+    };
 </script>
 
 <div class="page-header">
@@ -40,22 +59,19 @@
         <div class="col-md-4">
 
             <div class="container-fluid">
-                @if (User.Identity.IsAuthenticated)
-                {
+                @if(User.Identity.IsAuthenticated) {
 
-                    using (Ajax.BeginForm(
+                    using(Ajax.BeginForm(
                     "AddRating",
                     new { id = Model.ID },
                     new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateStarsAndAvg" },
                     new { @class = "form-group h1", @id = "starForm" }
-                    ))
-                    {
+                    )) {
                         var rating = ViewBag.UserRating != null ? ViewBag.UserRating.Score : 0;
                         <input id="rateVal" type="hidden" name="rating" value="@((int)rating)" />
 
 
-                        for (int i = 1; i <= 5; i++)
-                        {
+                        for(int i = 1; i <= 5; i++) {
                             string star = rating >= i ? "glyphicon-star" : "glyphicon-star-empty"; ;
                             <span id="@i" class="glyphicon @star" onmouseover="DrawStars('@i')" onmouseout="DrawStars($('#rateVal').val())" onclick="ClickedStar(@i)"></span>
                         }
@@ -70,24 +86,19 @@
 
             <div class="row">&nbsp;</div>
             <div class="container-fluid">
-                @if (User.Identity.IsAuthenticated == true)
-                {
-                    if (User.Identity.Name == Model.AuthorName)
-                    {
+                @if(User.Identity.IsAuthenticated == true) {
+                    if(User.Identity.Name == Model.AuthorName) {
 
                         @Html.ActionLink("Rediger opskrift", "Edit", new { id = Model.ID, fork = false }, new { @class = "btn btn-info btn-block" })
-                        @Html.ActionLink("Rediger indgredienser", "CreateSecond", new { id = Model.ID }, new { @class = "btn btn-info btn-block" })
-                    }
-                    else
-                    {
+                        @Html.ActionLink("Rediger indgredienser", "Ingredients", new { id = Model.ID }, new { @class = "btn btn-info btn-block" })
+                    } else {
                         @Html.ActionLink("Lav din egen version af opskriften", "Edit", new { id = Model.ID, fork = true }, new { @class = "btn btn-info btn-block" })
                     }
                 }
             </div>
 
             <div class="container-fluid">
-                @if (User.Identity.Name == Model.AuthorName)
-                {
+                @if(User.Identity.Name == Model.AuthorName) {
                     <div class="row">&nbsp;</div>
                     @Html.ActionLink("Slet opskrift", "Delete", new { id = Model.ID }, new { @class = "btn btn-danger btn-block" })
                 }
@@ -101,24 +112,27 @@
     <div class="col-md-5">
         <div class="container-fluid">
             <div class="col-md-4">
-                @using (Html.BeginForm("Details", "Recipes", FormMethod.Post))
-                {
+                @{
+                    string onChange = "ChangeNumPersons(this, '" + @Model.Ingredients.Count + "')";
                     <label class="control-label">Antal personer</label>
-                    @Html.TextBox("numPersons", null, new { @type = "number", @min = "1", @max = "100", @class = "form-control", @value = "4", @onchange = "$(this).parent().submit();" })
+                    @Html.TextBox("numPersons", null, new { @type = "number", @min = "1", @max = "100", @class = "form-control", @value = "4", @onchange = onChange })
                 }
             </div>
             <div class="col-md-8">
-                @if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
-                {
+                @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
                     List<SelectListItem> listItems = new List<SelectListItem>();
-
-                    foreach (var list in ViewBag.ShoppingLists)
-                    {
+                    foreach(var list in ViewBag.ShoppingLists) {
                         listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
                     }
                     <label for="Selection">Vælg indkøbsliste</label>
                     @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
 
+                } else {
+                    <label>&nbsp;</label>
+                    <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
+                        Opret ny indkøbsliste
+                    </div>
+                    @Html.Partial("_CreateShoppingList")
                 }
             </div>
         </div>
@@ -126,46 +140,57 @@
         <div class="container-fluid nopadding">
             <table class="table table-striped">
                 <tr>
-                    @if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
-                    {
-                        <th class="col-md-1">Tilføj vare</th>
+                    @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
+                        <th class="col-md-1 text-center">Tilføj</th>
                     }
                     <th class="col-md-2"></th>
                     <th>Ingrediens</th>
                 </tr>
                 @{
-                    foreach (var item in Model.Ingredients)
-                    {
+                    int numItem = 0;
+                    foreach(var item in Model.Ingredients) {
                         var ingredientRel = ((IEnumerable<ProjectFood.Models.Recipe_Ingredient>)ViewBag.Recipe_Ingredient)
                         .Where(x => x.IngredientID == item.ID)
                         .First();
                         <tr>
 
-                            @if (ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0)
-                            {
+                            @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
                                 <td class="col-md-1">
-                                    @using (Ajax.BeginForm(
-                    "AddItemToShoppingList",
-                    new { itemID = item.ID, amount = ingredientRel.AmountPerPerson, unit = ingredientRel.Unit },
-                    new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckRecipe" }))
-                                    {
-                                        <input type="hidden" name="shoppingListId" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
+                                    @using(Ajax.BeginForm(
+                                        "AddItem",
+                                        "ShoppingLists",
+                                        new { name = item.Name, unit = ingredientRel.Unit, itemID = item.ID },
+                                        new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckRecipe" },
+                                        new { @id = "AddItem_" + numItem })) {
+                                        <input type="hidden" name="amount" id="amount_@numItem" value="@(ingredientRel.AmountPerPerson * 4)" />
+                                        <input type="hidden" name="id" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
                                         <button id="AddItem_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </button>
+                                        
                                     }
                                 </td>
                             }
                             <td class="col-md-2 text-right">
-                                @if (ingredientRel.AmountPerPerson > 0)
-                                {
-                                    <span>@(ingredientRel.AmountPerPerson * ViewBag.numPersons) @ingredientRel.Unit</span>
+                                @if(ingredientRel.AmountPerPerson > 0) {
+                                    <span class="hidden" id="amountPP_@numItem">@((ingredientRel.AmountPerPerson).ToString().Replace(",","."))</span>
+                                    <span id="amount_@numItem">@(ingredientRel.AmountPerPerson * 4)</span> @ingredientRel.Unit
+                                    @*<span>@(ingredientRel.AmountPerPerson * ViewBag.numPersons) @ingredientRel.Unit</span>*@
                                 }
 
                             </td>
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                         </tr>
+                    numItem++;
                     }
+                    <tr>
+                        <td colspan="3">
+                            <div class="btn btn-info btn-block"
+                                 onclick="AddAllTheItems('@numItem')">
+                                Tilføj alle varer til den valgte indkøbsliste
+                            </div>
+                        </td>
+                    </tr>
                 }
             </table>
         </div>
@@ -187,6 +212,6 @@
 </p>
 
 @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
-    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }

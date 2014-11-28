@@ -4,23 +4,38 @@
 @{
     ViewBag.Title = "Indkøbslister";
 }
-
 <div class="page-header">
-    <h1><span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;Personlige Indkøbslister</h1>
-</div>
-
-<div id="createForm" style="display:none" class="well">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3 col-sm-6">@Html.Partial("_CreateShoppingList")</div>
+        <div class="col-md-8">
+            <h1><span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;Indkøbslister</h1>
+        </div>
+        <div class="col-md-4">
+            <div class="row">&nbsp;</div>
+            <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 500);" class="btn btn-primary btn-lg btn-block">
+                Opret ny indkøbsliste
+            </div>
+        </div>
     </div>
 </div>
+   
+@Html.Partial("_CreateShoppingList")
 
+<div class="row">
+    <h2>Personlige</h2>
+    @if(Model.Count() < 1) {
+        <div class="alert alert-warning" role="alert"
+             onclick="$('div#createModal').modal('show'); $('input#title').focus();"
+             style="cursor:pointer">
+            Du har ingen personlige indkøbslister. Klik her for at oprette en.
+        </div>
+    }
 
-    <table class="table table-striped">
-        @foreach (var list in Model)
-        {
+    <table class="table table-striped table-hover">
+        @foreach(var list in Model) {
             <tr>
-                <td class="lead" style="vertical-align:middle">
+                <td class="lead"
+                    style="vertical-align:middle; cursor:pointer;"
+                    onclick="window.location = '@Url.Action("Details", new { id = list.ID })'">
                     &nbsp;&nbsp;
                     @Html.DisplayFor(modelItem => list.Title)
                     <span class="badge">@(((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.NumItems).Where(x => x.ID == list.ID).First().Items.Count)</span>
@@ -29,7 +44,7 @@
                     @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
                 </td>
                 <td class="col-md-2 text-center">
-                    
+
                     <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>
                     </a>
@@ -39,37 +54,44 @@
 
     </table>
 
-    <p>
-        <div onclick="$('div#createForm').show('slow')" class="btn btn-default btn-lg btn-block">Opret Indkøbsliste</div>
-    </p>
-    
-    
-    <div class="page-header">
-        <h1><span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;Delte Indkøbslister</h1>
-    </div>
-    
-    <table class="table table-striped">
-        @foreach (ShoppingList list in ViewBag.SharedLists)
-        {
-                <tr>
-                    <td class="lead" style="vertical-align:middle">
-                        &nbsp;&nbsp;
-                        @list.Title
-                        <span class="badge">@(((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.NumItems).Where(x => x.ID == list.ID).First().Items.Count)</span>
-                    </td>
-                    <td class="col-md-2">
-                        @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
-                    </td>
-                    <td class="col-md-2 text-center">
+</div>
 
-                        <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>
-                    </td>
-                </tr>
+
+
+<div class="row">
+    <h2>Delte</h2>
+    @if(((IEnumerable<ShoppingList>)ViewBag.SharedLists).Count() < 1) {
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            Du har ingen delte indkøbslister
+        </div>
+    }
+    
+    <table class="table table-striped table-hover">
+        @foreach(ShoppingList list in ViewBag.SharedLists) {
+            <tr>
+                <td class="lead"
+                    style="vertical-align:middle; cursor:pointer;"
+                    onclick="window.location = '@Url.Action("Details", new { id = list.ID })'">
+                    &nbsp;&nbsp;
+                    @list.Title
+                    <span class="badge">@(((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.NumItems).Where(x => x.ID == list.ID).First().Items.Count)</span>
+                </td>
+                <td class="col-md-2">
+                    @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
+                </td>
+                <td class="col-md-2 text-center">
+
+                    <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </td>
+            </tr>
         }
 
-        </table>
+    </table>
+</div>
+
 
 
 @section Scripts {                              @*  Don't question the JavaScript-Gods!!!                             *@
