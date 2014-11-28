@@ -10,7 +10,6 @@ namespace ProjectFood.Models
         public int ID { get; set; }
         public string Title { get; set; }
         public ICollection<Item> Items { get; set;}
-
         public virtual ICollection<User> Users { get; set;} 
 
         public ShoppingList()

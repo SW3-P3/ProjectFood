@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Web.Script.Serialization;
-using System.Web;
 using System.Web.Mvc;
 using ProjectFood.Models;
-using ProjectFood.Models.Api;
 
 namespace ProjectFood.Controllers
 {
@@ -95,12 +88,10 @@ namespace ProjectFood.Controllers
                     _db.Users.Include(u => u.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.Add(shoppingList);
                 }
                
-
                 _db.SaveChanges();
-                return RedirectToAction("Index");
             }
 
-            return View(shoppingList);
+            return RedirectToAction("Index");
         }
 
         // GET: ShoppingLists/Edit/5
@@ -209,14 +200,15 @@ namespace ProjectFood.Controllers
             {
                 return Json(new { Success = "false", Message = "Email ikke fundet" });
             }
-            if (user.ShoppingLists.Where(x => x.ID == shoppingList.ID) == null)
+
+            if (!user.ShoppingLists.Any(x => x.ID == shoppingList.ID))
             {
                 user.ShoppingLists.Add(shoppingList);
                 _db.SaveChanges();
-                return Json(new {Success = "true", Message = "Delt med " + email});
+                return Json(new { Success = "true", Message = "Delt med " + email });
             }
-                return Json(new { Success = "false", Message = "Bruger er allerede med på Indkøbslisten" });
-            
+
+            return Json(new { Success = "false", Message = "Bruger er allerede med på Indkøbslisten" });
         }
 
         public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)

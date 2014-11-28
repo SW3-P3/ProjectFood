@@ -125,7 +125,7 @@ function ShoppingListShare(message) {
 
 function ShareStatus(json) {
     if (json.Success == 'true') {
-        $('#errorMessage').html(' ').addClass('hidden');
+        $('#errorMessage').addClass('hidden');
         ShoppingListShare(json.Message);
     } else {
         $('#errorMessage').html(json.Message).removeClass('hidden');
