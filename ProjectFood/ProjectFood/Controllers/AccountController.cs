@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -168,7 +169,12 @@ namespace ProjectFood.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    _db.Users.Add(new User() { Username = model.Email });
+                    var list = new ShoppingList();
+                    list.Title = "Min Indkøbsliste";
+                    var tmpUser = new User() {Username = model.Email};
+                    _db.Users.Add(tmpUser);
+                    tmpUser.ShoppingLists.Add(list);
+
                     _db.SaveChanges();
 
                     return RedirectToAction("Index", "Home");
