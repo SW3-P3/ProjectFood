@@ -17,12 +17,12 @@
         <div class="form-inline">
             <div class="form-group">
                 @using (Ajax.BeginForm("ShareList", new { id = Model.ID },
-                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShoppingListShare" }))
-                {
-                    <div class="form-group">
-                        @Html.TextBox("email", null, new { @class = "form-control", @placeholder = "Indtast Email", @size = "30" })
-                    </div>
-                }
+                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShoppingListShare", OnFailure = "$(this).children().popover('show')" }))
+{
+    <div class="form-group" data-toggle="popover" title="E-mail ikke fundet">
+        @Html.TextBox("email", null, new { @class = "form-control", @placeholder = "Indtast Email", @size = "30" })
+    </div>
+}
             </div>
         </div>
     </div>

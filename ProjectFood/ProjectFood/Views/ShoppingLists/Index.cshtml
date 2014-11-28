@@ -15,20 +15,7 @@
     </div>
 </div>
 
-@if (Model.ToList().Count == 0)
-{
-    <div class="alert alert-warning">
-        <h2>Åh nej!</h2>
-        <p class="lead">Der er endnu ikke oprettet nogle indkøbslister...<br /><br /></p>
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    @Html.Partial("_CreateShoppingList")
-                </div>
-            </div>
-    </div>
-}
-else
-{
+
     <table class="table table-striped">
         @foreach (var list in Model)
         {
@@ -51,7 +38,7 @@ else
         }
 
     </table>
-}
+
     <p>
         <div onclick="$('div#createForm').show('slow')" class="btn btn-default btn-lg btn-block">Opret Indkøbsliste</div>
     </p>

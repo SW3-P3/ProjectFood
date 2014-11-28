@@ -210,11 +210,11 @@ namespace ProjectFood.Controllers
             var user = _db.Users.Include(u => u.ShoppingLists).FirstOrDefault(u => u.Username == email);
             if (user == null)
             {
-                return Json(new { Message = "Email ikke fundet" });
+                return Json(new {message = "Email ikke fundet"});
             }
             user.ShoppingLists.Add(shoppingList);
             _db.SaveChanges();
-            return Json(new { Message = "Delt" });
+            return Json(new { Message = "Delt med "+ email });
         }
 
         public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)

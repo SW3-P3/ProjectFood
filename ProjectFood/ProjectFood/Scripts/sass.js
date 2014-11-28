@@ -115,10 +115,18 @@ function EditAmount(itemName, itemID, amount, unit) {
     $('#EditModal').modal('show');
 };
 
-$(function () {
+$(function() {
     $('[data-toggle="tooltip"]').tooltip()
+});
+
+$(function () {
+    $('[data-toggle="popover"]').popover()
 })
 
 function ShoppingListShare() {
     $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp; Indkøbsliste delt &hellip;' });
-}
+};
+
+function EmailNotFound(parameters) {
+    
+};
