@@ -119,6 +119,15 @@ $(function () {
     $('[data-toggle="tooltip"]').tooltip()
 })
 
-function ShoppingListShare() {
-    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp; Indkøbsliste delt &hellip;' });
-}
+function ShoppingListShare(message) {
+    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;' + message + '&hellip;' });
+};
+
+function ShareStatus(json) {
+    if (json.Success == 'true') {
+        $('#errorMessage').html(' ').addClass('hidden');
+        ShoppingListShare(json.Message);
+    } else {
+        $('#errorMessage').html(json.Message).removeClass('hidden');
+    }
+};

@@ -22,7 +22,6 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
                 ViewBag.NumItems = _db.ShoppingLists.Include(s => s.Items);
 
                 var userLists =
@@ -38,8 +37,6 @@ namespace ProjectFood.Controllers
                
 
                 return View(userLists);
-
-
             }
 
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action()});
@@ -210,11 +207,11 @@ namespace ProjectFood.Controllers
             var user = _db.Users.Include(u => u.ShoppingLists).FirstOrDefault(u => u.Username == email);
             if (user == null)
             {
-                return Json(new { Message = "Email ikke fundet" });
+                return Json(new { Success = "false", Message = "Email ikke fundet" });
             }
             user.ShoppingLists.Add(shoppingList);
             _db.SaveChanges();
-            return Json(new { Message = "Delt" });
+            return Json(new { Success = "true", Message = "Indkøbsliste delt" });
         }
 
         public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)

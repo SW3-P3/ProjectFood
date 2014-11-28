@@ -12,13 +12,13 @@
 <div class="row">
     <p>Del din indkøbsliste</p>
 </div>
-<p>
     <div class="row">
         <div class="form-inline">
             <div class="form-group">
                 @using (Ajax.BeginForm("ShareList", new { id = Model.ID },
-                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShoppingListShare" }))
+                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShareStatus" }))
                 {
+                    <p id="errorMessage" class="text-danger hidden"></p>
                     <div class="form-group">
                         @Html.TextBox("email", null, new { @class = "form-control", @placeholder = "Indtast Email", @size = "30" })
                     </div>
@@ -26,7 +26,6 @@
             </div>
         </div>
     </div>
-</p>
 
 <div class="row">
     <p>Tilføj vare</p>
