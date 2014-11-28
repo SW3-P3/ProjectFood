@@ -1,4 +1,4 @@
-﻿@model ProjectFood.Models.IndexViewModel
+﻿@model ProjectFood.Models.User
 @{
     ViewBag.Title = "Bruger: " + @User.Identity.Name;
 }
@@ -16,41 +16,65 @@
 
 
 <div class="row">
-    <div class="col-md-4">
         <div class="panel panel-default">
-            <div class="panel-heading"><h3>Sikkerhed</h3></div>
+            <div class="panel-heading"><h4>Sikkerhed</h4></div>
             <div class="panel-body">
-                @if(Model.HasPassword) {
-                    @Html.ActionLink("Skift kodeord", "ChangePassword", null, new { @class="btn btn-primary btn-lg btn-block" })
-                } else {
-                    @Html.ActionLink("Opret kodeord", "SetPassword", null, new { @class = "btn btn-primary btn-lg btn-block" })
-                }
+                    @Html.ActionLink("Skift kodeord", "ChangePassword", null, new { @class="btn btn-primary btn btn-block" })
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading"><h3>Præferencer</h3></div>
-            <div class="panel-body">
-                <a href="@Url.Action("EditPreferences", "User", new { username = User.Identity.Name})" class="btn btn-primary btn-lg btn-block">Rediger præferencer</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading"><h3>Personlig data</h3></div>
+        <div class="panel panel-default panel">
+            <div class="panel-heading"><h4>Dit navn</h4></div>
             <div class="panel-body">
                 @using (Html.BeginForm("EditName", "User", new { username = User.Identity.Name }, FormMethod.Post, new { }))
                 {
                     @Html.AntiForgeryToken()
 
-                    <div class="input-group input-group-lg">
+                    <div class="input-group input-groupf">
                         @Html.TextBox("name", "", new { @placeholder = "Vist navn", @class = "form-control" })
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-default">Gem</button>
+                            <button type="submit" class="btn btn-default btn-group-justified">Gem</button>
                         </span>
                     </div>
                 }
+            </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="well">
+            <div class="lead">
+                Tilføj ting du <span class="text-danger">ikke</span> ønsker at købe. Dette kan ekspelvis være varer, som du er allergisk overfor.
+                <hr />
+            </div>
+            <div class="form-group">
+                @using (Html.BeginForm("AddPreference", "User", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="username" value="@User.Identity.Name" />
+                    <input type="hidden" name="store" value="false" />
+                    <div class="input-group input-group">
+                        @Html.TextBox("pref", "", new { @id = "autocomplete", @placeholder = "indtast her", @class = "form-control" })
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default">Tilføj</button>
+                        </span>
+                    </div>
+                }
+            </div>
+
+            <div class="list-group">
+
+                @foreach (var pref in Model.Preferences.Where(p => p.Store == false))
+                {
+                    <div class="list-group-item">
+                        <span class="lead">
+                            <a href="@Url.Action("RemovePreference",
+                             new {username = User.Identity.Name, prefId = @pref.ID})"
+                               class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>&nbsp;&nbsp;&nbsp;@pref.Value
+                        </span>
+                    </div>
+                }
+
             </div>
         </div>
     </div>
