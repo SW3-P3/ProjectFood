@@ -43,7 +43,7 @@ namespace ProjectFood.Controllers
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
 
             }
-            return RedirectToRoute("EditPreferences");
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult AddPreference(string username, string pref, bool store)

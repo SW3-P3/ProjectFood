@@ -19,7 +19,7 @@
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-default panel">
+        <div class="panelpanel-default panel">
             <div class="panel-heading"><h4>Dit navn</h4></div>
             <div class="panel-body">
                 @using (Html.BeginForm("EditName", "User", new { username = User.Identity.Name }, FormMethod.Post, new { }))
