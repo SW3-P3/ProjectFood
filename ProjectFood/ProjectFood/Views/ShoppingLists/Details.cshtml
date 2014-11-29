@@ -13,43 +13,46 @@
         $(element).siblings('#hint').toggleClass('hidden');
     };
 </script>
-<div class="page-header">
-    <h1>@Html.DisplayFor(model => model.Title) <span class="badge">@Model.Items.Count() varer</span></h1>
 
-    <div class="text-muted">
-        Brugere på listen:
-        @{
-            string sharedWith = "";
-            foreach(var user in Model.Users) {
-                sharedWith += (user.Name ?? user.Username) + ", ";
-            }
-            @sharedWith.Remove(sharedWith.Length - 2)
-        }
-    </div>
-</div>
-<div class="row">
-    <p>Del din indkøbsliste</p>
-</div>
-<div class="row">
-    <div class="form-inline">
-        <div class="form-group">
-            @using(Ajax.BeginForm("ShareList", new { id = Model.ID },
-                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShareStatus" })) {
-                <p id="errorMessage" class="text-danger hidden"></p>
-                <div class="form-group">
-                    @Html.TextBox("email", null, new { @class = "form-control", @placeholder = "Indtast Email", @size = "30" })
-                </div>
+<div class="page-header nopadding-xs">
+    
+    <div class="col-md-8 nopadding-sides-xs">
+        <h1>@Html.DisplayFor(model => model.Title) <span class="badge">@Model.Items.Count() varer</span></h1>
+
+        <div class="text-muted">
+            Brugere på listen:
+            @{
+                string sharedWith = "";
+                foreach(var user in Model.Users) {
+                    sharedWith += (user.Name ?? user.Username) + ", ";
+                }
+                @sharedWith.Remove(sharedWith.Length - 2)
             }
         </div>
     </div>
+    <div class="col-md-4 nopadding-sides-xs">
+        <div class="form-group">
+            <div class="input-group">
+                @using(Ajax.BeginForm("ShareList", new { id = Model.ID },
+                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShareStatus" })) {
+                    <label for="email">Del din indkøbsliste</label>
+                    <p id="errorMessage" class="text-danger hidden"></p>
+                    <div class="input-group">
+                        @Html.TextBox("email", null, new { @type = "email", @class = "form-control", @placeholder = "Indtast Email", @size = "30" })
+                        <div class="input-group-btn hi">
+                            <button type="submit" class="btn btn-primary">Del</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
-
-<div class="row">
-    <p>Tilføj vare</p>
-</div>
-
-<div class="row">
+<div class="row hidden-xs">&nbsp;</div>
+<div class="row hidden-xs">&nbsp;</div>
+<div class="container-fluid nopadding hidden-xs">
     @using(Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Get)) {
+        <label>Tilføj vare</label>
         <div class="form-inline">
             <div class="form-group">
                 @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn", @size = "30" })
@@ -61,7 +64,27 @@
                 @Html.DropDownList("unit", new SelectList(new List<string> { "stk", "kg", "g", "liter", "ml" }), new { @class = "form-control", @placeholder = "Enhed" })
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-default">Tilføj vare</button>
+                <button type="submit" class="btn btn-primary">Tilføj vare</button>
+            </div>
+        </div>
+        <input type="hidden" name="id" value="@Model.ID" />
+    }
+</div>
+<div class="container-fluid visible-xs nopadding-xs">
+    @using(Html.BeginForm("AddItem", "ShoppingLists", FormMethod.Get)) {
+        <label>Tilføj vare</label>
+        <div class="form-inline">
+            <div class="form-group">
+                @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn", @size = "30" })
+            </div>
+            <div class="form-group col-xs-6 nopadding-sides-xs">
+                @Html.TextBox("amount", null, new { @type = "number", @class = "form-control text-right", @placeholder = "Mængde" })
+            </div>
+            <div class="form-group col-xs-6 nopadding-sides-xs">
+                @Html.DropDownList("unit", new SelectList(new List<string> { "stk", "kg", "g", "liter", "ml" }), new { @class = "form-control", @placeholder = "Enhed" })
+            </div>
+            <div class="form-group col-xs-12 nopadding-xs">
+                <button type="submit" class="btn btn-primary btn-block">Tilføj vare</button>
             </div>
         </div>
         <input type="hidden" name="id" value="@Model.ID" />
@@ -70,18 +93,18 @@
 
 <br />
 
-<div class="row">
+<div class="container-fluid nopadding">
     <div class="form-group">
-        <table class="table table-striped table-hover">
+        <table class="table table-striped table-hover table-responsive">
             <tr>
                 <th class="col-md-1 text-center">Fjern</th>
                 <th>Varenavn</th>
                 <th class="col-md-1">Mængde</th>
                 <th class="col-md-1">Pris</th>
-                <th class="col-md-1">Begynder</th>
-                <th class="col-md-1">Udløber</th>
-                <th class="col-md-1">Butik</th>
-                <th class="col-md-1 text-center">Tilbud</th>
+                <th class="col-md-1 hidden-xs">Begynder</th>
+                <th class="col-md-1 hidden-xs">Udløber</th>
+                <th class="col-md-1 hidden-xs">Butik</th>
+                <th class="col-md-1 hidden-xs text-center">Tilbud</th>
             </tr>
             @foreach(var item in Model.Items) {
                 <tr>
@@ -97,7 +120,7 @@
                 string itemBought = itemRel.Bought ? "text-strikethrough text-muted" : "";
                 string itemTitle = itemRel.selectedOffer == null ? item.Name : itemRel.selectedOffer.Heading;
 
-                <td class="h4 @itemBought"
+                <td class="@itemBought"
                     style="cursor:pointer;"
                     onclick="$(this).children().submit()"
                     onmouseover="$(this).children('span#hint').removeClass('text-hide')"
@@ -109,12 +132,12 @@
                     new AjaxOptions { HttpMethod = "POST", OnSuccess = "ToggleBoughtStatus(this)" }
                     )) { }
                     <span id="itemTitle">@itemTitle</span>
-                    <span id="hint" class="text-hide text-muted">
+                    <span id="hint" class="hidden-xs text-hide text-muted">
                         &nbsp;
                         <span class="glyphicon glyphicon-ok-circle"></span>
                         <span id="hintText">marker som købt</span>
                     </span>
-                    <span id="hint" class="hidden text-hide text-muted">
+                    <span id="hint" class="hidden-xs hidden text-hide text-muted">
                         &nbsp;
                         <span class="glyphicon glyphicon-remove-circle"></span>
                         <span id="hintText">marker som ikke købt</span>
@@ -140,17 +163,15 @@
                         </td>
                 if(itemRel.selectedOffer != null) {
                     <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Price)</td>
-                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
-                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).End)</td>
-                        <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Store)</td>
+                        <td class="hidden-xs col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
+                        <td class="hidden-xs col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).End)</td>
+                        <td class="hidden-xs col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Store)</td>
                 } else {
                     <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <td class="hidden-xs" colspan="3"></td>
                 }
                     }
-                    <td class="text-center">
+                    <td class="hidden-xs text-center">
                         @if(item.Offers.Count > 0) {
 
                             <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow')" class=" btn btn-info btn-xs btn-block">
@@ -183,15 +204,8 @@
                             </tr>
                         }
                         if(tmp % 2 == 1) {
-                            <tr style="display: none" id="ShowOfferAll_@item.ID">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr class="hidden">
+                                <td colspan="8"></td>
                             </tr>
                         }
             }
@@ -202,42 +216,41 @@
 <div id="EditModal" class="modal fade">
     <div class="modal-dialog" style="margin-top: 10%;">
         <div class=" modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Luk</span></button>
-            <h3 id="modalTitle" class="modal-title"></h3>
-        </div>
-        <div id="modalBody" class="modal-body">
-            <div class="container-fluid">
-                @using(Ajax.BeginForm(
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Luk</span></button>
+                <h3 id="modalTitle" class="modal-title"></h3>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <div class="container-fluid">
+                    @using(Ajax.BeginForm(
                         "EditAmount",
                         new { shoppingListID = @Model.ID },
                         new AjaxOptions { HttpMethod = "POST", OnSuccess = "location.reload();" },
                         new { @id = "EditAmountForm" })) {
-                    <input type="hidden" id="itemID" name="itemID" />
+                        <input type="hidden" id="itemID" name="itemID" />
 
-                    <div class="form-inline">
-                        <div class="form-group">
+                        <div class="form-inline">
+                            <div class="form-group">
 
-                            <input type="number" class="form-control text-right" id="amount" name="amount" placeholder="Mængde" />
+                                <input type="number" class="form-control text-right" id="amount" name="amount" placeholder="Mængde" />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="unit" name="unit" placeholder="Enhed" />
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="unit" name="unit" placeholder="Enhed" />
-                        </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Annuller</button>
-            <button type="button" class="btn btn-primary" onclick="$('#EditAmountForm').submit();">Gem ændringer</button>
-        </div>
-    </div><!-- /.modal-content -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuller</button>
+                <button type="button" class="btn btn-primary" onclick="$('#EditAmountForm').submit();">Gem ændringer</button>
+            </div>
+        </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 <p>
     @Html.ActionLink("Ændre navn på listen", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Tilbage til alle indkøbslister", "Index") |
     @Html.ActionLink("Ryd Liste", "ClearShoppingList", new { id = Model.ID })
 </p>
 

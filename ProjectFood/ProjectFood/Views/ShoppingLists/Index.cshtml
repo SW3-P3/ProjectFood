@@ -4,24 +4,23 @@
 @{
     ViewBag.Title = "Indkøbslister";
 }
-<div class="page-header">
+<div class="page-header nopadding-xs">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8 col-xs-12">
             <h1><span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;Indkøbslister</h1>
         </div>
-        <div class="col-md-4">
-            <div class="row">&nbsp;</div>
+        <div class="col-md-4 col-xs-12">
+            <div class="row hidden-xs">&nbsp;</div>
             <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 500);" class="btn btn-primary btn-lg btn-block">
                 Opret ny indkøbsliste
             </div>
+            <div class="row visible-xs">&nbsp;</div>
         </div>
     </div>
 </div>
-   
 @Html.Partial("_CreateShoppingList")
-
-<div class="row">
-    <h2>Personlige</h2>
+<div class="container-fluid nopadding">
+    <h2 class="nopadding-xs">Personlige</h2>
     @if(Model.Count() < 1) {
         <div class="alert alert-warning" role="alert"
              onclick="$('div#createModal').modal('show'); $('input#title').focus();"
@@ -40,10 +39,10 @@
                     @Html.DisplayFor(modelItem => list.Title)
                     <span class="badge">@(((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.NumItems).Where(x => x.ID == list.ID).First().Items.Count)</span>
                 </td>
-                <td class="col-md-2">
+                <td class="col-md-2 hidden-xs">
                     @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
                 </td>
-                <td class="col-md-2 text-center">
+                <td class="col-md-2 col-xs-1 text-center">
 
                     <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>
@@ -58,8 +57,8 @@
 
 
 
-<div class="row">
-    <h2>Delte</h2>
+<div class="container-fluid nopadding">
+    <h2 class="nopadding-xs">Delte</h2>
     @if(((IEnumerable<ShoppingList>)ViewBag.SharedLists).Count() < 1) {
         <div class="alert alert-info alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -77,10 +76,10 @@
                     @list.Title
                     <span class="badge">@(((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.NumItems).Where(x => x.ID == list.ID).First().Items.Count)</span>
                 </td>
-                <td class="col-md-2">
+                <td class="col-md-2 hidden-xs">
                     @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
                 </td>
-                <td class="col-md-2 text-center">
+                <td class="col-md-2 col-xs-1 text-center">
 
                     <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>
