@@ -100,7 +100,11 @@
             <div class="container-fluid">
                 @if(User.Identity.Name == Model.AuthorName) {
                     <div class="row">&nbsp;</div>
-                    @Html.ActionLink("Slet opskrift", "Delete", new { id = Model.ID }, new { @class = "btn btn-danger btn-block" })
+    <div onclick="$('div#deleteRecipeModal').modal('show');" class="btn btn-danger btn-block">
+        Slet opskrift
+    </div>
+                    @*@Html.ActionLink("Slet opskrift", "Delete", new { id = Model.ID }, new { @class = "btn btn-danger btn-block" })*@
+                    @Html.Partial("_Delete", Model);
                 }
 
             </div>

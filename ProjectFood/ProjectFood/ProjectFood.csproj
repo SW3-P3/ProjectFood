@@ -659,7 +659,7 @@
     <Content Include="Views\Offer\Index.cshtml" />
     <Content Include="Views\Shared\_CreateShoppingList.cshtml" />
     <Content Include="Views\Recipes\Create.cshtml" />
-    <Content Include="Views\Recipes\Delete.cshtml" />
+    <Content Include="Views\Recipes\_Delete.cshtml" />
     <Content Include="Views\Recipes\Details.cshtml" />
     <Content Include="Views\Recipes\Edit.cshtml" />
     <Content Include="Views\Recipes\Index.cshtml" />

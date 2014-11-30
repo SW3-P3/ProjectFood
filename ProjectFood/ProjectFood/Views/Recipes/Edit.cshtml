@@ -4,7 +4,7 @@
     ViewBag.Title = "Rediger opskrift";
 }
 
-<div class="page-header">
+<div class="page-header nopadding-xs">
     <h1>Rediger opskrift</h1>
 </div>
 
@@ -42,7 +42,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">Instruktioner</label>
             <div class="col-md-10">
-                   @Html.TextAreaFor(model => model.Instructions, new { @class = "form-control col-md-10", @style = "overflow: auto; resize: none;", rows = 8 })
+                   @Html.TextAreaFor(model => model.Instructions, new { @class = "form-control", @style = "overflow: auto; resize: none;", rows = 8 })
                     @Html.ValidationMessageFor(model => model.Instructions, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -56,8 +56,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" name="done" value="true" class="btn btn-success btn-lg">Færdig</button>
-                <button type="submit" name="done" value="false" class="btn btn-success btn-lg">Videre til ingredienser</button>
+                <button type="submit" name="done" value="true" class="btn btn-success">Færdig</button>
+                <button type="submit" name="done" value="false" class="btn btn-success">Videre til ingredienser</button>
             </div>
         </div>
     </div>
