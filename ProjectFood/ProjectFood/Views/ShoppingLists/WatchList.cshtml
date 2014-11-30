@@ -5,10 +5,10 @@
 }
 
 <script type="text/javascript">
-    function GetSelectedListWL(){
+    function GetSelectedListWL() {
         $('input#SelectedList').val($('#Selection').val());
 
-        $.snackbar({ content: "Indkøbsliste valgt" , style: "snackbar"});
+        $.snackbar({ content: "Indkøbsliste valgt", style: "snackbar" });
     };
 
     function ChangeButton(json) {
@@ -17,15 +17,16 @@
     };
 </script>
 
-<div class="container-fluid page-header">
-    <div class="col-md-6">
+<div class="page-header nopadding-xs">
+    <div class="col-md-8">
         <h1>@ViewBag.Title</h1>
 
         <p class="lead text-muted">
             Her kan du sætte varer på en overvågningsliste, og på den måde, vil du modtage en notifikation, når varen kommer på tilbud.
         </p>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
+        <div class="container-fluid nopadding">
             @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
                 List<SelectListItem> listItems = new List<SelectListItem>();
 
@@ -35,11 +36,18 @@
                 <label for="Selection">Vælg indkøbsliste</label>
                 @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedListWL()" })
 
-            }
+            } else {
+                <div class="row">&nbsp;</div>
+                <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
+                    Opret ny indkøbsliste
+                </div>
+                @Html.Partial("_CreateShoppingList")
+        }</div>
     </div>
 </div>
+<hr />
 
-<div class="container-fluid">
+<div class="container-fluid nopadding">
     <div class="col-md-6">
         @using(Html.BeginForm(
         "AddItem",
@@ -48,7 +56,7 @@
         FormMethod.Get,
         new { @class = "form-group" }
         )) {
-            <div class="input-group input-group-lg">
+            <div class="input-group">
                 @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Varenavn" })
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">Tilføj vare</button>
@@ -60,80 +68,64 @@
     </div>
 </div>
 
-    <div id="offerModal" class="modal fade">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 id="modalTitle" class="modal-title">Tilbud</h4>
-                </div>
-                <div class="modal-body">
-                    <p id="modalBody"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-
-    <div class="form-group">
-        <table class="table table-striped">
-            <tr>
-                <th class="col-md-1 text-center">Fjern</th>
-                <th>Varenavn</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th class="col-md-1 text-center">Se tilbud</th>
-            </tr>
-            @foreach(var item in Model.Items) {
-                <tr class="lead">
-                    <td>
-                        <a href="@Url.Action("RemoveItem",
+<div class="container-fluid nopadding">
+    <table class="table table-striped">
+        <tr>
+            <th class="col-md-1 text-center">Fjern</th>
+            <th>Varenavn</th>
+            <th colspan="5"></th>
+            <th class="col-md-1 text-center">Se tilbud</th>
+        </tr>
+        @foreach(var item in Model.Items) {
+            <tr class="lead">
+                <td>
+                    <a href="@Url.Action("RemoveItem",
                              new {id = Model.ID, itemID = item.ID})"
-                           class="btn btn-danger btn-sm btn-block">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>
+                       class="btn btn-danger btn-sm btn-block">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </td>
+                <td colspan="6">
+                    @(item.Name.First().ToString().ToUpper() + item.Name.Substring(1))
+                </td>
+                @if(item.Offers.Count > 0) {
+                    <td class="col-md-1">
+                        <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow'); $(this).children('#icon').toggleClass('glyphicon-collapse-down').toggleClass('glyphicon-collapse-up');"
+                             class="text-center"
+                             style="cursor:pointer">
+                            <span id="icon" class="glyphicon glyphicon-collapse-down"></span><span class="badge">@item.Offers.Count()</span>
+                        </div>
                     </td>
-                    <td>
-                        @(item.Name.First().ToString().ToUpper() + item.Name.Substring(1))
-                    </td>
+                } else {
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    @if(item.Offers.Count > 0) {
-                        <td class="col-md-1">
-                            <div onclick="$('tr#ShowOfferAll_@item.ID').toggle('slow'); $(this).children('#icon').toggleClass('glyphicon-collapse-down').toggleClass('glyphicon-collapse-up');"
-                                 class="text-center">
-                                <span id="icon" class="glyphicon glyphicon-collapse-down"></span><span class="badge">@item.Offers.Count()</span>
+                }
+                @*
+                                    <td class="col-md-1">
+                        @using(Ajax.BeginForm(
+                            "GetOffersForItem",
+                            "ShoppingLists",
+                            new { id = item.ID },
+                            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" })) {
+                            <div onclick="$(this).parent().submit()" class="btn btn-info btn-xs btn-block">
+                                <span class="glyphicon glyphicon-list-alt"></span>
                             </div>
-                        </td>
-                    } else {
-                        <td></td>
-                    }
-                    @*
-                                        <td class="col-md-1">
-                            @using(Ajax.BeginForm(
-                                "GetOffersForItem",
-                                "ShoppingLists",
-                                new { id = item.ID },
-                                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" })) {
-                                <div onclick="$(this).parent().submit()" class="btn btn-info btn-xs btn-block">
-                                    <span class="glyphicon glyphicon-list-alt"></span>
-                                </div>
-                            }
-                        </td>
-                    *@
+                        }
+                    </td>
+                *@
 
-                </tr>
-                foreach(var offer in item.Offers) {
+            </tr>
+            <tr style="display: none" id="ShowOfferAll_@item.ID">
+                <th colspan="2"></th>
+                <th>Mængde</th>
+                <th>Pris</th>
+                <th>Gælder fra</th>
+                <th>Gælder til</th>
+                <th>Butik</th>
+                <th></th>
+            </tr>
+            foreach(var offer in item.Offers) {
                 <tr style="display: none" id="ShowOfferAll_@item.ID">
-                    <td>@*Should be Empty*@</td>
+                    <td></td>
                     <td>@offer.Heading</td>
                     <td>@offer.Unit</td>
                     <td>@offer.Price</td>
@@ -145,23 +137,28 @@
                             using(Ajax.BeginForm(
                             "AddItem",
                             "ShoppingLists",
-                            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeButton" },
-                            new { @class = "form-group" }
+                            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeButton" }
                             )) {
                                 <input type="hidden" id="SelectedList" name="id" value="@ViewBag.ShoppingLists[0].ID" />
                                 <input type="hidden" name="name" value="@item.Name" />
                                 <input type="hidden" name="offerID" value="@offer.ID" />
                                 <button id="AddButton_@offer.ID" class="btn btn-primary btn-xs btn-block"><span class="glyphicon glyphicon-plus"></span></button>
                             }
+                        } else {
+                            <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" 
+                                 class="btn btn-primary btn-xs btn-block"
+                                 style="cursor: pointer">
+                                Opret ny indkøbsliste
+                            </div>
                         }
-                        
-                        
+
+
                     </td>
                 </tr>
             }
         }
-        </table>
-    </div>
+    </table>
+</div>
 
 @if(ViewBag.SelectedItem != null) {
     <script>
@@ -172,7 +169,7 @@
     </script>
 }
 
-    @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
-    @Scripts.Render("~/bundles/homemade")   @*  Magic part ...                                                    *@
-    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
-    }
+@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
+@Scripts.Render("~/bundles/homemade")   @*  Magic part ...                                                    *@
+@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+}

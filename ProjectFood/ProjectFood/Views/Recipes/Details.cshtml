@@ -19,7 +19,7 @@
         var numPersons = $(element).val();
         var amountPP;
         var amount;
-        
+
         for (var i = 0; i < numItems; i++) {
             amountPP = $('span#amountPP_' + i).html();
             amount = amountPP * numPersons;
@@ -31,7 +31,7 @@
 
 <div class="page-header">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div class="container-fluid">
                 <h1>
                     @Model.Title &nbsp;&nbsp;
@@ -48,7 +48,6 @@
                         @author @originalAuthor
                     }
                 </span>
-
             </div>
             <div class="container-fluid">
                 <span class="lead">
@@ -56,9 +55,8 @@
                 </span>
             </div>
         </div>
-        <div class="col-md-4">
-
-            <div class="container-fluid">
+        <div class="col-md-3">
+            <div class="container-fluid nopadding">
                 @if(User.Identity.IsAuthenticated) {
 
                     using(Ajax.BeginForm(
@@ -85,7 +83,7 @@
             </div>
 
             <div class="row">&nbsp;</div>
-            <div class="container-fluid">
+            <div class="container-fluid nopadding">
                 @if(User.Identity.IsAuthenticated == true) {
                     if(User.Identity.Name == Model.AuthorName) {
 
@@ -97,12 +95,12 @@
                 }
             </div>
 
-            <div class="container-fluid">
+            <div class="container-fluid nopadding">
                 @if(User.Identity.Name == Model.AuthorName) {
                     <div class="row">&nbsp;</div>
-    <div onclick="$('div#deleteRecipeModal').modal('show');" class="btn btn-danger btn-block">
-        Slet opskrift
-    </div>
+                    <div onclick="$('div#deleteRecipeModal').modal('show');" class="btn btn-danger btn-block">
+                        Slet opskrift
+                    </div>
                     @*@Html.ActionLink("Slet opskrift", "Delete", new { id = Model.ID }, new { @class = "btn btn-danger btn-block" })*@
                     @Html.Partial("_Delete", Model);
                 }
@@ -171,13 +169,13 @@
                                         <button id="AddItem_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </button>
-                                        
+
                                     }
                                 </td>
                             }
                             <td class="col-md-2 text-right">
                                 @if(ingredientRel.AmountPerPerson > 0) {
-                                    <span class="hidden" id="amountPP_@numItem">@((ingredientRel.AmountPerPerson).ToString().Replace(",","."))</span>
+                                    <span class="hidden" id="amountPP_@numItem">@((ingredientRel.AmountPerPerson).ToString().Replace(",", "."))</span>
                                     <span id="amount_@numItem">@(ingredientRel.AmountPerPerson * 4)</span> @ingredientRel.Unit
                                     @*<span>@(ingredientRel.AmountPerPerson * ViewBag.numPersons) @ingredientRel.Unit</span>*@
                                 }
@@ -185,7 +183,7 @@
                             </td>
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                         </tr>
-                    numItem++;
+                                numItem++;
                     }
                     <tr>
                         <td colspan="3">

@@ -79,19 +79,35 @@ function DrawStars(rating) {
 
 function ShowOffers(json) {
     var offers = JSON.parse(json.jsonOffers);
-    $('#modalTitle').html('Tilbud på ' + json.itemName);
-    var offerTable = "<table class='table table-hover table-condensed'>";
+    var offerTable = "<table class='table table-striped'>";
+    offerTable += "<thead><tr>"
+                    + "<th class='col-md-1 text-center'>Tilføj</th>"
+                    + "<th class='col-md-7'>Navn</th>"
+                    + "<th class='col-md-1'>Pris</th>"
+                    + "<th class='col-md-1'>Mængde</th>"
+                    + "<th class='col-md-1'>Udløber</th>";
+    offerTable += json.store == 'all' ? "<th class='col-md-1'>Store</th></tr></thead>" : "</tr></thead>";
+    var all = json.store == 'all' ? "All" : "";
     for (var i = 0; i < offers.length; i++) {
-        offerTable += "<tr id='" +
-            offers[i].ID + "' ><td>" +
+        var endDate = new Date(parseInt(offers[i].End.substr(6)));
+        offerTable += "<tr id='" + offers[i].ID + "' ><td>" +
+            "<form action='/Offer/AddOfferToShoppingList?offerID=" + offers[i].ID +
+            "' data-ajax='true' data-ajax-method='POST' data-ajax-success='ChangeToCheck' id='form0' method='post'>" +
+            "<input type='hidden' name='shoppingListId' value=''>" + "<button id='AddOffer" + all + "_" + offers[i].ID + "' type='submit' class='btn btn-info btn-xs btn-block'>" +
+            "<span class='glyphicon glyphicon-plus'></span></button></form>" + 
+            offers[i].ID + "</td><td>" +
             offers[i].Heading + "</td><td class='col-md-1'>" +
-            offers[i].Unit + "</td><td class='col-md-1'>" +
-            offers[i].Price + " kr.</td><td class='col-md-1'>" +
-            offers[i].Store + "</td></tr>";
+            offers[i].Price + "</td><td class='col-md-1'>" +
+            offers[i].Unit + " kr.</td><td class='col-md-1'>" +
+            endDate.toLocaleDateString("da-DK") + "</td>";
+        offerTable += json.store == 'all' ? "<td class='col-md-1'>" + offers[i].Store + "</td></tr>" : "</tr>";
     }
     offerTable += "</table>";
-    $('#modalBody').html(offerTable);
-    $('#offerModal').modal('show');
+    $('div#' + json.store).children('#offerTable').html(offerTable);
+    alert(json.store);
+    alert(json.page);
+    $('div#' + json.store).children('#pages').children('nav').children('ul').children('li').removeClass('active');
+    $('div#' + json.store).children('#pages').children('nav').children('ul').children('li#' + json.page).addClass('active');
 };
 
 function ToggleBoolByID(store) {
