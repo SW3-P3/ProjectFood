@@ -22,7 +22,7 @@
                     @Html.AntiForgeryToken()
 
                     <div class="input-group input-group">
-                        @Html.TextBox("name", "", new { @placeholder = (Model.Name == null) ? @User.Identity.Name : @Model.Name, @class = "form-control" })
+                        <input type="text" name="name" class="form-control" placeholder="@(Model.Name == null ? User.Identity.Name : Model.Name)" required />
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-default btn-group">Gem</button>
                         </span>
