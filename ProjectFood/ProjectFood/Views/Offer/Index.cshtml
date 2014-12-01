@@ -8,6 +8,15 @@
     ViewBag.Title = "Tilbud";
 }
 
+@using(Ajax.BeginForm(
+    "AddOfferToShoppingList",
+    "Offer",
+    new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" },
+    new { @class="hidden", @id="AddOffer" })) {
+    <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
+    <input type="hidden" id="offerID" name="offerId" value="" />                                         
+}
+
 <div class="page-header nopadding-xs">
     <div class="row">
         <div class="col-md-8">
@@ -23,8 +32,8 @@
                     }
 
 
-                        <label for="Selection">Vælg indkøbsliste</label>
-                        @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
+                    <label for="Selection">Vælg indkøbsliste</label>
+                    @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
                 } else {
                     <div class="row">&nbsp;</div>
                     <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
@@ -51,11 +60,11 @@
                     <thead>
                         <tr>
                             <th class="col-md-1 text-center">Tilføj</th>
-                            <th>Navn</th>
-                            <th>Pris</th>
-                            <th>Mængde</th>
-                            <th>Udløber</th>
-                            <th>Butik</th>
+                            <th class="col-md-7">Navn</th>
+                            <th class="col-md-1">Pris</th>
+                            <th class="col-md-1">Mængde</th>
+                            <th class="col-md-1">Udløber</th>
+                            <th class="col-md-1">Butik</th>
                         </tr>
                     </thead>
                     @foreach(var item in Model.OrderBy(o => o.Heading).Take(25)) {
@@ -125,10 +134,10 @@
                         <thead>
                             <tr>
                                 <th class="col-md-1 text-center">Tilføj</th>
-                                <th>Navn</th>
-                                <th>Pris</th>
-                                <th>Mængde</th>
-                                <th>Udløber</th>
+                                <th class="col-md-7">Navn</th>
+                                <th class="col-md-1">Pris</th>
+                                <th class="col-md-1">Mængde</th>
+                                <th class="col-md-1">Udløber</th>
                             </tr>
                         </thead>
                         @foreach(var item in Model.Where(i => i.Store == @store).OrderBy(o => o.Heading).Take(25)) {
@@ -197,7 +206,8 @@
     @Html.ActionLink("Hent tilbud fra API igen", "ImportOffers", null, new { @class = "btn btn-default btn-xs" })
 </p>
 
-@section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
-@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+@section Scripts {                              @*  Don't question the JavaScript-Gods!!!                             *@
+@Scripts.Render("~/bundles/homemade")       @*  Magic part that makes the buttons change if POST was succesfull   *@
+@Scripts.Render("~/bundles/jqueryval")      @*  Magic part that makes the AJAX POST possible                      *@
+@Scripts.Render("~/bundles/jsontablemagic")
 }

@@ -1,4 +1,4 @@
-﻿$(function() {
+﻿$(function () {
     $('[data-toggle="tooltip"]').tooltip()
 });
 
@@ -147,37 +147,40 @@ function ChangeToCheckOffer(json) {
 };
 
 function ShowOffers(json) {
-    var offers = JSON.parse(json.jsonOffers);
-    var offerTable = "<table class='table table-striped'>";
-    offerTable += "<thead><tr>"
+    var jsonOffers = JSON.parse(json.jsonOffers);
+    var table = $('<table>', { 'class': 'table table-striped' });
+    var table_head = $('<thead>').html("<tr>"
                     + "<th class='col-md-1 text-center'>Tilføj</th>"
                     + "<th class='col-md-7'>Navn</th>"
                     + "<th class='col-md-1'>Pris</th>"
                     + "<th class='col-md-1'>Mængde</th>"
-                    + "<th class='col-md-1'>Udløber</th>";
-    offerTable += json.store == 'all' ? "<th class='col-md-1'>Store</th></tr></thead>" : "</tr></thead>";
-    var all = json.store == 'all' ? "All" : "";
-    var selectedList = $('#Selection').val();
-    for (var i = 0; i < offers.length; i++) {
-        var endDate = new Date(parseInt(offers[i].End.substr(6)));
-        offerTable += "<tr id='" + offers[i].ID + "' ><td>" +
-            "<form action='/Offer/AddOfferToShoppingList?offerID=" + offers[i].ID +
-            "' data-ajax='true' data-ajax-method='POST' data-ajax-success='ChangeToCheckOffer' id='form0' method='post'>" +
-            "<input type='hidden' name='shoppingListId' value='" + selectedList
-            + "'>" + "<button id='AddOffer" + all + "_" + offers[i].ID + "' type='submit' class='btn btn-info btn-xs btn-block'>" +
-            "<span class='glyphicon glyphicon-plus'></span></button></form>" + 
-            "</td><td>" +
-            offers[i].Heading + "</td><td class='col-md-1'>" +
-            offers[i].Price + "</td><td class='col-md-1'>" +
-            offers[i].Unit + " kr.</td><td class='col-md-1'>" +
-            endDate.toLocaleDateString("da-DK") + "</td>";
-        offerTable += json.store == 'all' ? "<td class='col-md-1'>" + offers[i].Store + "</td></tr>" : "</tr>";
-    }
-    offerTable += "</table>";
-    $('div#' + json.store).children('#offerTable').html(offerTable);
+                    + "<th class='col-md-1'>Udløber</th>"
+                    + "<th class='col-md-1" +
+                    (json.store == "all" ? "" : " hidden") + 
+                    "'>Butik</th></tr>")
+    table.append(table_head);
+    $.each(jsonOffers, function (index, offer) {
+        var table_row = $('<tr>');
+        var all = json.store == "all" ? "All_" : "_";
+        var add_button = $('<button>', {id: 'AddOffer' + all + offer.ID, 'class': 'btn btn-info btn-xs btn-block' }).html("<span class='glyphicon glyphicon-plus'></span>");
+        add_button.click(function () {
+            $('input#offerID').val(offer.ID).parents().submit();
+        })
+        var table_add = $('<td>').append(add_button);
+        var table_heading = $('<td>', { html: offer.Heading});
+        var table_price = $('<td>', { html: offer.Price });
+        var table_unit = $('<td>', { html: offer.Unit });
+        var table_end = $('<td>', { html: (new Date(parseInt(offer.End.substr(6))).toLocaleDateString('da-DK')) });
+        var table_store = $('<td>', { html: offer.Store, 'class': json.store == "all" ? "" : "hidden"});
+        table_row.append(table_add).append(table_heading).append(table_price).append(table_unit).append(table_end).append(table_store);
+        table.append(table_row);
+    })
+
+    $('div#' + json.store).children('#offerTable').html(table);
     $('div#' + json.store).children('#pages').children('nav').children('ul').children('li').removeClass('active');
     $('div#' + json.store).children('#pages').children('nav').children('ul').children('li#' + json.page).addClass('active');
 };
+
 //END_Offers
 
 //WatchList

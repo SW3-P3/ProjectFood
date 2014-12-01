@@ -141,25 +141,17 @@
                         <td style="cursor:pointer;"
                             onclick="EditAmount('@item.Name', '@itemRel.ItemID', '@itemRel.Amount', '@itemRel.Unit')"
                             onmouseover="$(this).children().children().removeClass('text-hide')"
-                            onmouseout="$(this).children().children().addClass('text-hide')"
-                            @*onmouseover="$(this).children().tooltip('show')"
-        onmouseout="$(this).children().tooltip('hide')"*@>
-                            <span @*data-toggle="tooltip"
-              data-placement="left"
-              title="Klik her for at ændre mængde og enhed"*@>
+                            onmouseout="$(this).children().children().addClass('text-hide')">
+                            <span>
                                 @Html.Raw(itemRel.Amount == 0 ? "&nbsp;" : Html.Encode(itemRel.Amount.ToString() + " " + itemRel.Unit))
-                                @*@if(itemRel.Amount > 0) {
-                                        @itemRel.Amount.ToString() @itemRel.Unit
-                                    }*@
                                 <span class="text-hide text-muted glyphicon glyphicon-pencil"></span>
                             </span>
-
                         </td>
                 if(itemRel.selectedOffer != null) {
-                    <td class="col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Price)</td>
-                        <td class="hidden-xs col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Begin)</td>
-                        <td class="hidden-xs col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).End)</td>
-                        <td class="hidden-xs col-md-1">@Html.DisplayFor(modelItem => item.Offers.First(x => x.ID == itemRel.selectedOffer.ID).Store)</td>
+                        <td class="col-md-1">@itemRel.selectedOffer.Price</td>
+                        <td class="hidden-xs col-md-1">@itemRel.selectedOffer.Begin</td>
+                        <td class="hidden-xs col-md-1">@itemRel.selectedOffer.End</td>
+                        <td class="hidden-xs col-md-1">@itemRel.selectedOffer.Store</td>
                 } else {
                     <td></td>
                     <td class="hidden-xs" colspan="3"></td>

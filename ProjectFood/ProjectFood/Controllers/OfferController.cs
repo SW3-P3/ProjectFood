@@ -154,10 +154,14 @@ namespace ProjectFood.Controllers
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
 
+            double num;
+            bool res = double.TryParse(tmpOffer.Unit, out num);
+
+
             var shoppingListItem = new ShoppingList_Item {
                 Item = tmpItem,
                 ShoppingList = shoppingList,
-                Amount = 0,
+                Amount = res ? num : 0,
                 Unit = tmpOffer.Unit,
                 selectedOffer = tmpOffer
             };
