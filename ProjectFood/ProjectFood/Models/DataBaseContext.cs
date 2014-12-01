@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ProjectFood.Models
 {
-    public class DataBaseContext : DbContext
+    public class DataBaseContext : DbContext, IDataBaseContext
     {
         public DbSet<ShoppingList> ShoppingLists { get; set; }
         public DbSet<Item> Items { get; set; }
@@ -29,6 +29,10 @@ namespace ProjectFood.Models
             var prefs = Users.Include(a => a.Preferences).First(x => x.Username == u.Username).Preferences;
             var storesBlackListed = prefs.Select(x => x.Value).ToArray();
             return OffersFilteredWithString(storesBlackListed);
+        }
+        public void MarkAsModified(ShoppingList item)
+        {
+            Entry(item).State = EntityState.Modified;
         }
 
         public IEnumerable<Offer> OffersFilteredWithString(params string[] args)
