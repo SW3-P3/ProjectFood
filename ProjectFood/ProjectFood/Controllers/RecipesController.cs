@@ -435,7 +435,7 @@ namespace ProjectFood.Controllers
             var recipiesRated = new List<Tuple<Recipe, decimal>>();
 
             // Calculate the score for every recipie
-            foreach (var recipie in _db.Recipes.Include(x => x.Ingredients))
+            foreach (var recipie in _db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings))
             {
                 if (recipie.Ratings.FirstOrDefault(y => y.User.ID == user.ID) != null)
                 {
