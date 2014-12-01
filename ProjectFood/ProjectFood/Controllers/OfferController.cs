@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
 using ProjectFood.Models;
@@ -126,10 +128,12 @@ namespace ProjectFood.Controllers
                 listofApiOffers.AddRange(offersResult);
             }
 
+            /*
             foreach( var a in _db.Offers)
             {
                 _db.Offers.Remove(a);
             }
+             */
 
             foreach (var o in listofApiOffers)
             {
@@ -144,9 +148,9 @@ namespace ProjectFood.Controllers
                 });
             }
 
-            NotifyWatchers(_db.Offers.ToList());
-
             _db.SaveChanges();
+
+            NotifyWatchers(_db.Offers.ToList());
 
             return RedirectToAction("Index");
         }
@@ -216,20 +220,62 @@ namespace ProjectFood.Controllers
 
         private void NotifyWatchers(List<Offer> offers)
         {
-            var users = _db.Users.Include(u => u.RelevantOffers.Items).Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0).ToArray();
+            NotifyWatchers();
+        }
+        private void NotifyWatchers()
+        {
+            var users = _db.Users.Include(u => u.RelevantOffers.Items).Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0);
 
             foreach (var user in users)
             {
-                List<Offer> relevantOffers = new List<Offer>();
+                var relevantOffers = new List<Offer>();
                 foreach (var item in user.WatchList.Items)
                 {
-                    relevantOffers.AddRange(GetOffersForItem(item));
-                    
+                    //relevantOffers.AddRange(GetOffersFilteredForItem(item, user));
+                    relevantOffers.AddRange(GetOffersForItem(item.Name));
                 }
-                
-                //do stuff
+
+                try
+                {
+                    /* Make a SMTP Client to send emails.*/
+                    var smtp = new SmtpClient
+                    {
+                        Port = 587,
+                        Host = "smtp.gmail.com",
+                        EnableSsl = true,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential("ProjectFoodHype@gmail.com", "PFHype!123"),
+                        DeliveryMethod = SmtpDeliveryMethod.Network
+                    };
+
+                    /* construct the message*/
+                    var message = new MailMessage();
+                    message.From = new MailAddress("ProjectFoodHype@gmail.com");
+                    message.To.Add(new MailAddress("ProjectFoodHype@gmail.com"));
+
+                    //message.To.Add(new MailAddress(user.Username));
+
+                    message.Subject = string.Format("ProjectFood har tilbud på dine {0} overvågede varer!", relevantOffers.Count);
+
+                    var body = string.Empty;
+
+                    body += ("Følgende tilbud er fundet:\n");
+
+                    body = relevantOffers.Aggregate(body, (current, relevantOffer) => current + string.Format("\"{0}\" til {1} kr. i {2}\n", relevantOffer.Heading, relevantOffer.Price, relevantOffer.Store));
+
+                    body += "Se mere på: %foobar.com%";
+
+                    message.Body = body;
+
+                    smtp.Send(message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("err: " + ex.Message);
+                }
             }
         }
+
 
         private List<Offer> GetOffersForItem(Item item)
         {
@@ -237,11 +283,15 @@ namespace ProjectFood.Controllers
                 .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
                 .ToList();
         }
+        private IEnumerable<Offer> GetOffersFilteredForItem(Item item, User u)
+        {
+            return _db.OffersFilteredByUserPrefs(u)
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
+                .ToList();
+        }
 
         private Item OfferToItem(Offer offer)
         {
-
-
             return new Item { Name = offer.Heading };
         }
     }
