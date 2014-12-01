@@ -7,12 +7,6 @@
 @{
     ViewBag.Title = Html.DisplayFor(model => model.Title);
 }
-<script type="text/javascript">
-    function ToggleBoughtStatus(element) {
-        $(element).siblings('#itemTitle').toggleClass('text-strikethrough').toggleClass('text-muted');
-        $(element).siblings('#hint').toggleClass('hidden');
-    };
-</script>
 
 <div class="page-header nopadding-xs">
     

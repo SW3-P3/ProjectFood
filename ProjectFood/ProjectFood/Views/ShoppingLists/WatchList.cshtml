@@ -4,21 +4,9 @@
     ViewBag.Title = "Overvågningsliste";
 }
 
-<script type="text/javascript">
-    function GetSelectedListWL() {
-        $('input#SelectedList').val($('#Selection').val());
-
-        $.snackbar({ content: "Indkøbsliste valgt", style: "snackbar" });
-    };
-
-    function ChangeButton(json) {
-        $('#AddButton_' + json.offerID).removeClass('btn-primary').addClass('btn-success');
-        $('#AddButton_' + json.offerID).children().removeClass('glyphicon-plus').addClass('glyphicon-ok');
-    };
-</script>
-
 <div class="page-header nopadding-xs">
     <div class="col-md-8">
+
         <h1>@ViewBag.Title</h1>
 
         <p class="lead text-muted">

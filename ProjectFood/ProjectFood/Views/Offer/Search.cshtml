@@ -72,7 +72,7 @@
                             using (Ajax.BeginForm(
                                 "AddOfferToShoppingList",
                                 new { offerID = offer.ID },
-                                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheck" }))
+                                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" }))
                             {
                                 <input type="hidden" name="shoppingListId" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
                                 <button id="AddOfferAll_@offer.ID" type="submit" class="btn btn-info btn-xs btn-block">
