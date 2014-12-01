@@ -157,14 +157,16 @@ function ShowOffers(json) {
                     + "<th class='col-md-1'>Udløber</th>";
     offerTable += json.store == 'all' ? "<th class='col-md-1'>Store</th></tr></thead>" : "</tr></thead>";
     var all = json.store == 'all' ? "All" : "";
+    var selectedList = $('#Selection').val();
     for (var i = 0; i < offers.length; i++) {
         var endDate = new Date(parseInt(offers[i].End.substr(6)));
         offerTable += "<tr id='" + offers[i].ID + "' ><td>" +
             "<form action='/Offer/AddOfferToShoppingList?offerID=" + offers[i].ID +
-            "' data-ajax='true' data-ajax-method='POST' data-ajax-success='ChangeToCheck' id='form0' method='post'>" +
-            "<input type='hidden' name='shoppingListId' value=''>" + "<button id='AddOffer" + all + "_" + offers[i].ID + "' type='submit' class='btn btn-info btn-xs btn-block'>" +
+            "' data-ajax='true' data-ajax-method='POST' data-ajax-success='ChangeToCheckOffer' id='form0' method='post'>" +
+            "<input type='hidden' name='shoppingListId' value='" + selectedList
+            + "'>" + "<button id='AddOffer" + all + "_" + offers[i].ID + "' type='submit' class='btn btn-info btn-xs btn-block'>" +
             "<span class='glyphicon glyphicon-plus'></span></button></form>" + 
-            offers[i].ID + "</td><td>" +
+            "</td><td>" +
             offers[i].Heading + "</td><td class='col-md-1'>" +
             offers[i].Price + "</td><td class='col-md-1'>" +
             offers[i].Unit + " kr.</td><td class='col-md-1'>" +
@@ -173,8 +175,6 @@ function ShowOffers(json) {
     }
     offerTable += "</table>";
     $('div#' + json.store).children('#offerTable').html(offerTable);
-    alert(json.store);
-    alert(json.page);
     $('div#' + json.store).children('#pages').children('nav').children('ul').children('li').removeClass('active');
     $('div#' + json.store).children('#pages').children('nav').children('ul').children('li#' + json.page).addClass('active');
 };

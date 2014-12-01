@@ -234,7 +234,7 @@ namespace ProjectFood.Controllers
         [HttpPost]
         public ActionResult GetOffers(int page, string storename)
         {
-            int PerPage = 10;
+            int PerPage = 25;
             IQueryable<Offer> offers;
             if(storename == "all") {
                 offers = _db.OffersFiltered().AsQueryable()

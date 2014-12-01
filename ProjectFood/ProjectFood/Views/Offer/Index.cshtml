@@ -22,10 +22,9 @@
                         listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
                     }
 
-                    using(Html.BeginForm("Index", "Offer", FormMethod.Get)) {
+
                         <label for="Selection">Vælg indkøbsliste</label>
-                        @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "$(this).parent().submit()" })
-                    }
+                        @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
                 } else {
                     <div class="row">&nbsp;</div>
                     <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
@@ -59,14 +58,14 @@
                             <th>Butik</th>
                         </tr>
                     </thead>
-                    @foreach(var item in Model.OrderBy(o => o.Heading).Take(10)) {
+                    @foreach(var item in Model.OrderBy(o => o.Heading).Take(25)) {
                         <tr>
                             <td class="col-md-1">
                                 @if(ViewBag.ShoppingLists.Count > 0) {
                                     using(Ajax.BeginForm(
                                             "AddOfferToShoppingList",
                                             new { offerID = item.ID },
-                                            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheck" })) {
+                                            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" })) {
                                         <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
                                                 if(((int[])ViewBag.OffersOnListByID).Count() > 0 && ((int[])ViewBag.OffersOnListByID).Contains(item.ID)) {
                                                     <button id="AddOfferAll_@item.ID" type="submit" class="btn btn-success btn-xs btn-block">
@@ -102,7 +101,7 @@
                     <ul class="pagination">
                         <li id="1" class="active"><a href="javascript:$('input#Page_all').val('1').parents().submit()">1</a></li>
                         @{
-                            int offersLeft = Model.Count() - 10;
+                            int offersLeft = Model.Count() - 25;
                             int k = 2;
                             while(offersLeft > 0) {
                                 <li id="@k">
@@ -111,7 +110,7 @@
                                     </a>
                                 </li>
                                 k++;
-                                offersLeft -= 10;
+                                offersLeft -= 25;
                             }
                         }
                     </ul>
@@ -123,15 +122,23 @@
             <div class="tab-pane fade" id="@storename">
                 <div id="offerTable">
                     <table class="table table-striped">
-
-                        @foreach(var item in Model.Where(i => i.Store == @store).OrderBy(o => o.Heading).Take(10)) {
+                        <thead>
+                            <tr>
+                                <th class="col-md-1 text-center">Tilføj</th>
+                                <th>Navn</th>
+                                <th>Pris</th>
+                                <th>Mængde</th>
+                                <th>Udløber</th>
+                            </tr>
+                        </thead>
+                        @foreach(var item in Model.Where(i => i.Store == @store).OrderBy(o => o.Heading).Take(25)) {
                             <tr>
                                 <td class="col-md-1">
                                     @if(ViewBag.ShoppingLists.Count > 0) {
                                         using(Ajax.BeginForm(
                                                 "AddOfferToShoppingList",
                                                 new { offerID = item.ID },
-                                                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheck" })) {
+                                                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" })) {
                                             <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
                                                     if(((IEnumerable<int>)ViewBag.OffersOnListByID).Contains(item.ID)) {
                                                         <button id="AddOffer_@item.ID" type="submit" class="btn btn-success btn-xs btn-block">
@@ -166,7 +173,7 @@
                         <ul class="pagination">
                             <li id="1" class="active"><a href="javascript:$(this).parents('li').siblings().removeClass('active');$('input#Page_@(store.Replace(" ", String.Empty))').val('1').parents().submit()">1</a></li>
                             @{
-                    int offersLeft2 = Model.Where(o => o.Store == store).Count() - 10;
+                    int offersLeft2 = Model.Where(o => o.Store == store).Count() - 25;
                     int j = 2;
                     while(offersLeft2 > 0) {
                         <li id="@j">
@@ -175,7 +182,7 @@
                             </a>
                         </li>
                         j++;
-                        offersLeft2 -= 10;
+                        offersLeft2 -= 25;
                     }
                             }
                         </ul>
