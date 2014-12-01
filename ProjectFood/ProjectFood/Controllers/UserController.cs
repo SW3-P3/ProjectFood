@@ -26,7 +26,7 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditName(string username, string name)
         {
-            if (User.Identity.IsAuthenticated && User.Identity.Name == username)
+            if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
             {
                 _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();

@@ -4,21 +4,30 @@
     ViewBag.Title = "Rediger opskrift";
 }
 
-<div class="page-header">
+<div class="page-header nopadding-xs">
     <h1>Rediger opskrift</h1>
 </div>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+    <input type="hidden" name="ID" value="@Model.ID" />
+    <input type="hidden" name="OriginalAuthorName" value="@Model.OriginalAuthorName" />
+    <input type="hidden" name="AuthorName" value="@User.Identity.Name" />
+
+
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             <label class="control-label col-md-2">Titel</label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                @if((ViewBag.Forked ?? false)) {
+                    <input type="text" name="Title" value="" placeholder="Navngiv din opskrift" class="form-control" required/>
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                } else {
+                    <input type="text" name="Title" value="@Model.Title" class="form-control" required />
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                }
             </div>
         </div>
 
@@ -33,7 +42,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">Instruktioner</label>
             <div class="col-md-10">
-                   @Html.TextAreaFor(model => model.Instructions, new { @class = "form-control col-md-10", @style = "overflow: auto; resize: none;", rows = 8 })
+                   @Html.TextAreaFor(model => model.Instructions, new { @class = "form-control", @style = "overflow: auto; resize: none;", rows = 8 })
                     @Html.ValidationMessageFor(model => model.Instructions, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -47,10 +56,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="hidden" name="ID" value="@Model.ID" />
-                <input type="hidden" name="OriginalAuthorName" value="@Model.OriginalAuthorName" />
-                <input type="hidden" name="AuthorName" value="@User.Identity.Name" />
-                <input type="submit" value="Videre til ingredienser" class="btn btn-success btn-lg" />
+                <button type="submit" name="done" value="true" class="btn btn-success">Færdig</button>
+                <button type="submit" name="done" value="false" class="btn btn-success">Videre til ingredienser</button>
             </div>
         </div>
     </div>

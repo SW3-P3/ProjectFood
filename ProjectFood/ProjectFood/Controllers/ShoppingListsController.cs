@@ -79,7 +79,7 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Title")] ShoppingList shoppingList)
+        public ActionResult Create([Bind(Include = "ID,Title")] ShoppingList shoppingList, string from)
         {
             if(ModelState.IsValid) {
                 _db.ShoppingLists.Add(shoppingList);
@@ -91,7 +91,7 @@ namespace ProjectFood.Controllers
                 _db.SaveChanges();
             }
 
-            return RedirectToAction("Index");
+            return Redirect(from);
         }
 
         // GET: ShoppingLists/Edit/5
@@ -211,7 +211,7 @@ namespace ProjectFood.Controllers
             return Json(new { Success = "false", Message = "Bruger er allerede med på Indkøbslisten" });
         }
 
-        public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID)
+        public ActionResult AddItem(int id, string name, double? amount, string unit, int? offerID, int? itemID)
         {
             
             ShoppingList shoppingList = findShoppingListFromID(id);
@@ -226,7 +226,9 @@ namespace ProjectFood.Controllers
 
             //Search in GenericLItems for item
             Item knownItem = null;
-            if(_db.Items.Any()) { 
+            if(itemID != null) {
+                knownItem = _db.Items.Find(itemID);
+            }else if(_db.Items.Any()) { 
                 knownItem = _db.Items.FirstOrDefault(i => i.Name.ToLower().CompareTo(name.ToLower()) == 0);
             }
 
@@ -255,11 +257,11 @@ namespace ProjectFood.Controllers
         }
         
         [HttpPost, ActionName("AddItem")]
-        public ActionResult AddItemAjax(int id, string name, double? amount, string unit, int? offerID)
+        public ActionResult AddItemAjax(int id, string name, double? amount, string unit, int? offerID, int? itemID)
         {
-            AddItem(id, name, amount, unit, offerID);
+            AddItem(id, name, amount, unit, offerID, itemID);
 
-            return Json(new { offerID = offerID });
+            return Json(new { shoppingListTitle = _db.ShoppingLists.Find(id).Title, offerID = offerID, itemID = itemID });
         }
 
         public ActionResult RemoveItem(int id, int itemID)
