@@ -14,11 +14,10 @@ namespace ProjectFood.Tests
         public static ShoppingList GetDemoShoppingListWithItem(int amount)
         {
             var demoList = new ShoppingList() {ID = 1, Title = "DemoShopList"};
-            int setid = 1;
-            for (int i = 0; i < amount; i++)
+            
+            for (int i = 0, setid = 0; i < amount; i++, setid++)
             {                
                 demoList.Items.Add(GetDemoItem(setid));
-                setid++;
             }
             return demoList;
         }
