@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ProjectFood.Models.Recipe>
+﻿@using ProjectFood.Models
+@model IEnumerable<ProjectFood.Models.Recipe>
 
 @{
     ViewBag.Title = "Opskrifter";
@@ -56,7 +57,7 @@
     
 <div class="row">
     
-    @if (ViewBag.SearchedRecipes.Count() == 0)
+    @if (((List<Recipe>)ViewBag.SearchedRecipes) == null)
     {
         {
             int i = 1;
@@ -114,7 +115,7 @@
     }
     else
     {
-        
+        <p> lol </p>
     }
     
 </div>
