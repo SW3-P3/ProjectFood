@@ -15,12 +15,12 @@
                 } 
             </h1>
             <div class="container-fluid nopadding hidden-xs">
-                @using (Html.BeginForm("SearchRecipe", "Recipes", FormMethod.Get))
+                @using (Html.BeginForm("Index", "Recipes", FormMethod.Get))
                 {
                     <label>Søg efter opskrifter</label>
                     <div class="form-inline">
                         <div class="form-group">
-                            @Html.TextBox("searchstring", null, new { @class = "form-control", @placeholder = "Indtast Opskriftnavn ex. Lasagne", @size = "30" })
+                            @Html.TextBox("searchString", null, new { @class = "form-control", @placeholder = "Indtast Opskriftnavn ex. Lasagne", @size = "30", @id = "Search"})
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Søg</button>
@@ -36,8 +36,9 @@
                 listItems.Add(new SelectListItem {Text = "Dato (Ældste først)", Selected = ViewBag.Selected.Equals("Old"), Value = "Old"});
                 listItems.Add(new SelectListItem { Text = "Anbefalinger", Selected = ViewBag.Selected.Equals("Recommend"), Value = "Recommend" });
                 listItems.Add(new SelectListItem { Text = "Bedømmelse (Faldende)", Selected = ViewBag.Selected.Equals("High"), Value = "High" });
-                <label for="Selection">Soter Opskrifter</label>
-                @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "window.location.href = '/Recipes/Index?sort=' + this.value;" })
+                <label for="Selection">Sorter Opskrifter</label>
+                @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", 
+                @onchange = "window.location.href = '/Recipes/Index?searchString='getElementById(Search).value'&sort=' + this.value;" })
             }
         </div>
     </div>
@@ -56,11 +57,8 @@
     
     
 <div class="row">
-    
-    @if (((List<Recipe>)ViewBag.SearchedRecipes) == null)
-    {
-        {
-            int i = 1;
+        
+            @{int i = 1;
             foreach (var recipe in Model)
             {
                 <div class="col-md-4">
@@ -112,11 +110,6 @@
                 i++;
             }
         }
-    }
-    else
-    {
-        <p> lol </p>
-    }
     
 </div>
 @*End*@
