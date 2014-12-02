@@ -247,7 +247,7 @@ namespace ProjectFood.Controllers
                     .Take(PerPage);
             } else {
                 offers = _db.OffersFiltered().AsQueryable()
-                    .Where(o => o.Store == storename).OrderBy(o => o.Heading)
+                    .Where(o => o.Store.Replace("ø", string.Empty).Replace(" ", string.Empty) == storename).OrderBy(o => o.Heading)
                     .Skip((page - 1) * PerPage)
                     .Take(PerPage);
             }
