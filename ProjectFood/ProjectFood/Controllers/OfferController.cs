@@ -13,6 +13,7 @@ using RestSharp;
 using System.Data.Entity;
 using System.Net.Mail;
 using System.Diagnostics;
+using RestSharp.Extensions;
 
 
 namespace ProjectFood.Controllers
@@ -55,8 +56,6 @@ namespace ProjectFood.Controllers
 
                 ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name)).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
-
-                NotifyWatchers(_db.Offers.ToList());
 
                 return View(_db.OffersFiltered().ToList());            
             }
@@ -222,60 +221,76 @@ namespace ProjectFood.Controllers
         {
             NotifyWatchers();
         }
-        private void NotifyWatchers()
+        public void NotifyWatchers()
         {
             var users = _db.Users.Include(u => u.RelevantOffers.Items).Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0);
 
             foreach (var user in users)
             {
-                var relevantOffers = new List<Offer>();
-                foreach (var item in user.WatchList.Items)
+                if (user.LastSentNotification != null)
                 {
-                    //relevantOffers.AddRange(GetOffersFilteredForItem(item, user));
-                    relevantOffers.AddRange(GetOffersForItem(item.Name));
-                }
-
-                try
-                {
-                    /* Make a SMTP Client to send emails.*/
-                    var smtp = new SmtpClient
+                    DateTime dt = (DateTime)user.LastSentNotification;
+                    // Only sent notification if non have been sent for 3 days.
+                    if (dt.AddDays(3) < DateTime.Now)
                     {
-                        Port = 587,
-                        Host = "smtp.gmail.com",
-                        EnableSsl = true,
-                        UseDefaultCredentials = false,
-                        Credentials = new NetworkCredential("ProjectFoodHype@gmail.com", "PFHype!123"),
-                        DeliveryMethod = SmtpDeliveryMethod.Network
-                    };
+                        var relevantOffers = new List<Offer>();
+                        foreach (var item in user.WatchList.Items)
+                        {
+                            relevantOffers.AddRange(GetOffersForItem(item.Name));
+                        }
 
-                    /* construct the message*/
-                    var message = new MailMessage();
-                    message.From = new MailAddress("ProjectFoodHype@gmail.com");
-                    message.To.Add(new MailAddress("ProjectFoodHype@gmail.com"));
-
-                    //message.To.Add(new MailAddress(user.Username));
-
-                    message.Subject = string.Format("ProjectFood har tilbud på dine {0} overvågede varer!", relevantOffers.Count);
-
-                    var body = string.Empty;
-
-                    body += ("Følgende tilbud er fundet:\n");
-
-                    body = relevantOffers.Aggregate(body, (current, relevantOffer) => current + string.Format("\"{0}\" til {1} kr. i {2}\n", relevantOffer.Heading, relevantOffer.Price, relevantOffer.Store));
-
-                    body += "Se mere på: %foobar.com%";
-
-                    message.Body = body;
-
-                    smtp.Send(message);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("err: " + ex.Message);
+                        if (relevantOffers.Count > 0)
+                        {
+                            SendEmailToUser(relevantOffers, user);
+                        }
+                        user.LastSentNotification = DateTime.Now;
+                    }
                 }
             }
+            _db.SaveChanges();
         }
 
+        private static void SendEmailToUser(IEnumerable<Offer> offers, User user)
+        {
+            try
+            {
+                /* Make a SMTP Client to send emails.*/
+                var smtp = new SmtpClient
+                {
+                    Port = 587,
+                    Host = "smtp.gmail.com",
+                    EnableSsl = true,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential("ProjectFoodHype@gmail.com", "PFHype!123"),
+                    DeliveryMethod = SmtpDeliveryMethod.Network
+                };
+
+                /* construct the message*/
+                var message = new MailMessage();
+                message.From = new MailAddress("ProjectFoodHype@gmail.com");
+                message.To.Add(new MailAddress("ProjectFoodHype@gmail.com"));
+
+                //message.To.Add(new MailAddress(user.Username));
+
+                message.Subject = string.Format("ProjectFood har tilbud på dine {0} overvågede varer!", offers.Count());
+
+                var body = string.Empty;
+
+                body += ("Følgende tilbud er fundet:\n");
+
+                body = offers.Aggregate(body, (current, relevantOffer) => current + string.Format("\"{0}\" til {1} kr. i {2}\n", relevantOffer.Heading, relevantOffer.Price, relevantOffer.Store));
+
+                body += "Se mere på: %foobar.com%";
+
+                message.Body = body;
+
+                smtp.Send(message);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("err: " + ex.Message);
+            }
+        }
 
         private List<Offer> GetOffersForItem(Item item)
         {

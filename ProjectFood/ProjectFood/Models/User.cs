@@ -11,6 +11,7 @@ namespace ProjectFood.Models
         public string Name { get; set; }
         public virtual ICollection<ShoppingList> ShoppingLists { get; set; }
         public virtual ShoppingList WatchList { get; set; }
+        public DateTime? LastSentNotification { get; set; }
         public virtual ShoppingList RelevantOffers { get; set; }
         public List<Pref> Preferences { get; set; }
         public List<Rating> Ratings { get; set; }
@@ -20,6 +21,7 @@ namespace ProjectFood.Models
             ShoppingLists = new List<ShoppingList>();
             Preferences = new List<Pref>();
             Ratings = new List<Rating>();
+            LastSentNotification = new DateTime(2014,01,01);
         }
     }
 }

@@ -182,6 +182,10 @@
     <Compile Include="Migrations\201412020006123_RemovedUnused.Designer.cs">
       <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201412020035571_AddedDateTimeForLastSentToUser.cs" />
+    <Compile Include="Migrations\201412020035571_AddedDateTimeForLastSentToUser.Designer.cs">
+      <DependentUpon>201412020035571_AddedDateTimeForLastSentToUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Api\Catalog.cs" />
@@ -688,6 +692,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201412020006123_RemovedUnused.resx">
       <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412020035571_AddedDateTimeForLastSentToUser.resx">
+      <DependentUpon>201412020035571_AddedDateTimeForLastSentToUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
