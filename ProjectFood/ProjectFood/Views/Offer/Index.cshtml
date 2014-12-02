@@ -8,13 +8,24 @@
     ViewBag.Title = "Tilbud";
 }
 
-@using(Ajax.BeginForm(
+<script type="text/javascript">
+    window.onload = function () {
+        $('#Form_all').submit();
+        @foreach (var store in ViewBag.Stores)
+        {
+            <text>$('#Form_@(store.Replace(" ", string.Empty).Replace("ø", string.Empty))').submit();</text>
+        }
+    };
+</script>
+
+@using (Ajax.BeginForm(
     "AddOfferToShoppingList",
     "Offer",
     new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" },
-    new { @class="hidden", @id="AddOffer" })) {
+    new { @class = "hidden", @id = "AddOffer" }))
+{
     <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
-    <input type="hidden" id="offerID" name="offerId" value="" />                                         
+    <input type="hidden" id="offerID" name="offerId" value="" />
 }
 
 <div class="page-header nopadding-xs">
@@ -24,17 +35,21 @@
         </div>
         <div class="col-md-4">
             <div class="container-fluid nopadding">
-                @if(ViewBag.ShoppingLists.Count > 0) {
+                @if (ViewBag.ShoppingLists.Count > 0)
+                {
                     List<SelectListItem> listItems = new List<SelectListItem>();
 
-                    foreach(var list in ViewBag.ShoppingLists) {
+                    foreach (var list in ViewBag.ShoppingLists)
+                    {
                         listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
                     }
 
 
                     <label for="Selection">Vælg indkøbsliste</label>
                     @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
-                } else {
+                }
+                else
+                {
                     <div class="row">&nbsp;</div>
                     <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
                         Opret ny indkøbsliste
@@ -49,151 +64,81 @@
 <div class="row">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#all" data-toggle="tab">Alle tilbud</a></li>
-        @foreach(var store in ViewBag.Stores) {
-            <li><a href="#@store.Replace(" ", String.Empty)" data-toggle="tab">@store</a></li>
+        @foreach (var store in ViewBag.Stores)
+        {
+            <li><a href="#@store.Replace(" ", String.Empty).Replace("ø", string.Empty)" data-toggle="tab">@store</a></li>
         }
     </ul>
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade active in" id="all">
-            <div id="offerTable">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th class="col-md-1 text-center">Tilføj</th>
-                            <th class="col-md-7">Navn</th>
-                            <th class="col-md-1">Pris</th>
-                            <th class="col-md-1">Mængde</th>
-                            <th class="col-md-1">Udløber</th>
-                            <th class="col-md-1">Butik</th>
-                        </tr>
-                    </thead>
-                    @foreach(var item in Model.OrderBy(o => o.Heading).Take(25)) {
-                        <tr>
-                            <td class="col-md-1">
-                                @if(ViewBag.ShoppingLists.Count > 0) {
-                                    using(Ajax.BeginForm(
-                                            "AddOfferToShoppingList",
-                                            new { offerID = item.ID },
-                                            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" })) {
-                                        <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
-                                                if(((int[])ViewBag.OffersOnListByID).Count() > 0 && ((int[])ViewBag.OffersOnListByID).Contains(item.ID)) {
-                                                    <button id="AddOfferAll_@item.ID" type="submit" class="btn btn-success btn-xs btn-block">
-                                                        <span class="glyphicon glyphicon-ok"></span>
-                                                    </button>
-                                                } else {
-                                                    <button id="AddOfferAll_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
-                                                        <span class="glyphicon glyphicon-plus"></span>
-                                                    </button>
-                                                }
-                                    }
-                                }
-                            </td>
-                            <td>@Html.DisplayFor(modelItem => item.Heading)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Price) kr.</td>
-                            <td>@Html.DisplayFor(modelItem => item.Unit)</td>
-                            <td>@Html.DisplayFor(modelItem => item.End)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Store)</td>
-                        </tr>
-                    }
-                </table>
-            </div>
+            <div id="offerTable"></div>
             <div id="pages">
-                @using(Ajax.BeginForm(
+                @using (Ajax.BeginForm(
                             "GetOffers",
                             "Offer",
                             new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" },
-                            new { @id = "Form_all" })) {
+                            new { @id = "Form_all" }))
+                {
                     <input type="hidden" name="storename" value="all" />
-                    <input type="hidden" name="page" value="1" id="Page_all" />
+                    <input type="hidden" name="page" value="1" id="page" />
                 }
                 <nav>
-                    <ul class="pagination">
-                        <li id="1" class="active"><a href="javascript:$('input#Page_all').val('1').parents().submit()">1</a></li>
-                        @{
-                            int offersLeft = Model.Count() - 25;
-                            int k = 2;
-                            while(offersLeft > 0) {
-                                <li id="@k">
-                                    <a href="javascript:$('input#Page_all').val('@k').parents().submit()">
-                                        @k
-                                    </a>
-                                </li>
-                                k++;
-                                offersLeft -= 25;
-                            }
-                        }
+                    <ul class="pager">
+                        <li id="previousPage" class="disabled">
+                            <a href="#" onclick="ChangePage(this)">
+                                <span id="val" class="hidden">0</span>
+                                &larr; Forrige side
+                            </a>
+                        </li>
+                        <li id="currentPage" class="disabled">
+                            <a href="#">
+                                <span id="val">1</span> ud af <span id="maxPage">@(Model.Count() % 25)</span>
+                            </a>
+                        </li>
+                        <li id="nextPage" class="">
+                            <a href="#" onclick="ChangePage(this)">
+                                <span id="val" class="hidden">2</span>
+                                Næste side &rarr;
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
         </div>
-        @foreach(var store in ViewBag.Stores) {
-            string storename = ((string)store).Replace(" ", string.Empty);
+        @foreach (var store in ViewBag.Stores)
+        {
+            string storename = ((string)store).Replace(" ", string.Empty).Replace("ø", string.Empty);
             <div class="tab-pane fade" id="@storename">
-                <div id="offerTable">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th class="col-md-1 text-center">Tilføj</th>
-                                <th class="col-md-7">Navn</th>
-                                <th class="col-md-1">Pris</th>
-                                <th class="col-md-1">Mængde</th>
-                                <th class="col-md-1">Udløber</th>
-                            </tr>
-                        </thead>
-                        @foreach(var item in Model.Where(i => i.Store == @store).OrderBy(o => o.Heading).Take(25)) {
-                            <tr>
-                                <td class="col-md-1">
-                                    @if(ViewBag.ShoppingLists.Count > 0) {
-                                        using(Ajax.BeginForm(
-                                                "AddOfferToShoppingList",
-                                                new { offerID = item.ID },
-                                                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" })) {
-                                            <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
-                                                    if(((IEnumerable<int>)ViewBag.OffersOnListByID).Contains(item.ID)) {
-                                                        <button id="AddOffer_@item.ID" type="submit" class="btn btn-success btn-xs btn-block">
-                                                            <span class="glyphicon glyphicon-ok"></span>
-                                                        </button>
-                                                    } else {
-                                                        <button id="AddOffer_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
-                                                            <span class="glyphicon glyphicon-plus"></span>
-                                                        </button>
-                                                    }
-                                        }
-                                    }
-                                </td>
-                                <td class="col-md-7">@Html.DisplayFor(modelItem => item.Heading)</td>
-                                <td class="col-md-1">@Html.DisplayFor(modelItem => item.Price) kr.</td>
-                                <td class="col-md-1">@Html.DisplayFor(modelItem => item.Unit)</td>
-                                <td class="col-md-1">@Html.DisplayFor(modelItem => item.End)</td>
-                            </tr>
-                        }
-                    </table>
-                </div>
+                <div id="offerTable"></div>
                 <div id="pages">
-                    @using(Ajax.BeginForm(
+                    @using (Ajax.BeginForm(
                             "GetOffers",
                             "Offer",
                             new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" },
-                            new { @id = "Form_" + storename })) {
-                        <input type="hidden" name="storename" value="@store" />
-                        <input type="hidden" name="page" value="1" id="Page_@storename" />
+                            new { @id = "Form_" + storename }))
+                    {
+                        <input type="hidden" name="storename" value="@storename" />
+                        <input type="hidden" name="page" value="1" id="page" />
                     }
                     <nav>
-                        <ul class="pagination">
-                            <li id="1" class="active"><a href="javascript:$(this).parents('li').siblings().removeClass('active');$('input#Page_@(store.Replace(" ", String.Empty))').val('1').parents().submit()">1</a></li>
-                            @{
-                    int offersLeft2 = Model.Where(o => o.Store == store).Count() - 25;
-                    int j = 2;
-                    while(offersLeft2 > 0) {
-                        <li id="@j">
-                            <a href="javascript:$(this).parents('li').siblings().removeClass('active');$('input#Page_@storename').val('@j').parents().submit()">
-                                @j
-                            </a>
-                        </li>
-                        j++;
-                        offersLeft2 -= 25;
-                    }
-                            }
+                        <ul class="pager">
+                            <li id="previousPage" class="disabled">
+                                <a href="#" onclick="ChangePage(this)">
+                                    <span id="val" class="hidden">0</span>
+                                    &larr; Forrige side
+                                </a>
+                            </li>
+                            <li id="currentPage" class="disabled">
+                                <a href="#">
+                                    <span id="val">1</span> ud af <span id="maxPage">@(Model.Where(o => o.Store == storename).Count() % 25)</span>
+                                </a>
+                            </li>
+                            <li id="nextPage" class="">
+                                <a href="#" onclick="ChangePage(this)">
+                                    <span id="val" class="hidden">2</span>
+                                    Næste side &rarr;
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
@@ -209,5 +154,4 @@
 @section Scripts {                              @*  Don't question the JavaScript-Gods!!!                             *@
 @Scripts.Render("~/bundles/homemade")       @*  Magic part that makes the buttons change if POST was succesfull   *@
 @Scripts.Render("~/bundles/jqueryval")      @*  Magic part that makes the AJAX POST possible                      *@
-@Scripts.Render("~/bundles/jsontablemagic")
 }

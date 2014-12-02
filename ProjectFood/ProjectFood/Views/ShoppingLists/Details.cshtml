@@ -149,8 +149,8 @@
                         </td>
                 if(itemRel.selectedOffer != null) {
                         <td class="col-md-1">@itemRel.selectedOffer.Price</td>
-                        <td class="hidden-xs col-md-1">@itemRel.selectedOffer.Begin</td>
-                        <td class="hidden-xs col-md-1">@itemRel.selectedOffer.End</td>
+                        <td class="hidden-xs col-md-1">@itemRel.selectedOffer.Begin.ToString("ddd d. MM")</td>
+                        <td class="hidden-xs col-md-1">@itemRel.selectedOffer.End.ToString("ddd d. MM")</td>
                         <td class="hidden-xs col-md-1">@itemRel.selectedOffer.Store</td>
                 } else {
                     <td></td>
@@ -217,8 +217,7 @@
 
                         <div class="form-inline">
                             <div class="form-group">
-
-                                <input type="number" class="form-control text-right" id="amount" name="amount" placeholder="Mængde" />
+                                <input type="number" step="0.1" class="form-control text-right" id="amount" name="amount" placeholder="Mængde" />
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="unit" name="unit" placeholder="Enhed" />
