@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Web.Http.Results;
 using System.Net;
 using ProjectFood.Models;
 using ProjectFood.Controllers;
@@ -13,20 +13,27 @@ namespace ProjectFood.Tests
     public class TestShoppingListsController
     {
         [TestMethod]
-        public void PostShoppingLists_ShouldReturnSameShoppingLists()
+        public void RemoveItem_ShouldBeGone()
         {
-            var controller = new ShoppingListsController(new TestProjectFoodContext());
+            var mockData = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockData);
 
-            var DemoSList = GetDemoShoppingLists();
+            var shoppinglist = new ShoppingList();
+            var item = new Item();
+            item.Name = "Bukser";
+            item.ID = 1;
+            shoppinglist.Items.Add(item);
+            shoppinglist.ID = 1;
 
-            var result =
-                controller.Create(DemoSList, "details") as CreatedAtRouteNegotiatedContentResult<ShoppingList>;
+            mockData.ShoppingLists.Add(shoppinglist);
+
+
+            var result = controller.RemoveItem(1,1);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.RouteName, "DefaultApi");
-            Assert.AreEqual(result.RouteValues["id"], result.Content.ID);
-            Assert.AreEqual(result.Content.Title, DemoSList.Title);
-        }
+            Assert.AreEqual(0 ,mockData.ShoppingLists.First().Items.Count);
+
+        }/*
 
         [TestMethod]
         public void PutShoppingLists_ShouldReturnStatusCode()
@@ -97,8 +104,8 @@ namespace ProjectFood.Tests
          /*   var DemoItem = new Item() {ID = 1, Name = "DemoItem"};
             var DemoList = new List<Item>();
             DemoList.Add(DemoItem);
-            var DemoUser = new User() {ID = 1, Name = "DemoName"} */
+            var DemoUser = new User() {ID = 1, Name = "DemoName"} 
             return new ShoppingList() { ID = 3, Title = "Demo name"};
-        }
+        }*/
     }
 }
