@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectFood", "ProjectFood\ProjectFood.csproj", "{1DE9C96B-20BF-4601-99D9-3358ED13B09B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectFood.Tests", "ProjectFood.Tests\ProjectFood.Tests.csproj", "{91EA6756-99D0-4A34-B6B1-3D6B3ACC5A5E}"
+EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject1", "ModelingProject1\ModelingProject1.modelproj", "{4C342730-0F11-40E3-BA91-10C16EA6EFA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{91EA6756-99D0-4A34-B6B1-3D6B3ACC5A5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91EA6756-99D0-4A34-B6B1-3D6B3ACC5A5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91EA6756-99D0-4A34-B6B1-3D6B3ACC5A5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C342730-0F11-40E3-BA91-10C16EA6EFA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C342730-0F11-40E3-BA91-10C16EA6EFA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C342730-0F11-40E3-BA91-10C16EA6EFA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C342730-0F11-40E3-BA91-10C16EA6EFA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
