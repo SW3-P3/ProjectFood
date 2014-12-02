@@ -203,6 +203,7 @@
     <Compile Include="Models\Api\Stores.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\IDataBaseContext.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Offer.cs" />

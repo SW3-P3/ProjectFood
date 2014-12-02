@@ -8,7 +8,14 @@ namespace ProjectFood.Controllers
 {
     public class ShoppingListsController : Controller
     {
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
+
+        public ShoppingListsController() { }
+
+        public ShoppingListsController(IDataBaseContext context)
+        {
+            _db = context;
+        }
 
         // GET: ShoppingLists
         public ActionResult Index()
@@ -126,7 +133,7 @@ namespace ProjectFood.Controllers
         public ActionResult Edit([Bind(Include = "ID,Title")] ShoppingList shoppingList)
         {
             if(ModelState.IsValid) {
-                _db.Entry(shoppingList).State = EntityState.Modified;
+                _db.MarkAsModified(shoppingList);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -338,9 +345,9 @@ namespace ProjectFood.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public static List<Offer> GetOffersForItem(DataBaseContext db, Item item)
+        public static List<Offer> GetOffersForItem(IDataBaseContext db, Item item)
         {
-            return db.Offers
+            return db.Offers 
                 .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
                 .ToList();
         }
