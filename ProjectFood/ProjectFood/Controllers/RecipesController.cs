@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml;
 using Antlr.Runtime;
 using Microsoft.Ajax.Utilities;
 using ProjectFood.Models;
@@ -457,6 +458,19 @@ namespace ProjectFood.Controllers
             // Sort the recipies descending
             // return itz
             return recipiesRated.OrderByDescending(x => x.Item2).Select(x => x.Item1);
+        }
+
+        public ActionResult SearchRecipe(string searchstring)
+        {
+            var recipes =
+                _db.Recipes.Include(r => r.Ingredients)
+                    .Include(x => x.Ratings)
+                    .Where(x=> x.Title.ToLower().Contains(searchstring.ToLower())).ToList();
+
+            ViewBag.SearchedRecipes = recipes;
+
+            return RedirectToAction("Index");
+
         }
     }
 }

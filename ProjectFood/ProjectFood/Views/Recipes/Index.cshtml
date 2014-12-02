@@ -14,18 +14,20 @@
                 } 
             </h1>
             <div class="container-fluid nopadding hidden-xs">
-                @using (Html.BeginForm("SearchRecipe", "Recipe", FormMethod.Get))
+                @using (Html.BeginForm("SearchRecipe", "Recipes", FormMethod.Get))
                 {
                     <label>Søg efter opskrifter</label>
                     <div class="form-inline">
                         <div class="form-group">
-                            @Html.TextBox("name", null, new { @class = "form-control", @placeholder = "Indtast Opskriftnavn ex. Lasagne", @size = "30" })
+                            @Html.TextBox("searchstring", null, new { @class = "form-control", @placeholder = "Indtast Opskriftnavn ex. Lasagne", @size = "30" })
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Søg</button>
                         </div>
                     </div>
                 }
+                <div class="row hidden-xs">&nbsp;</div>
+                <div class="row hidden-xs">&nbsp;</div>
             </div>
             @{
                 List<SelectListItem> listItems = new List<SelectListItem>();
@@ -50,57 +52,70 @@
     }
     <hr />
 </p>
+    
+    
 <div class="row">
-    @{int i = 1; 
-        foreach (var recipe in Model)
+    
+    @if (ViewBag.SearchedRecipes.Count() == 0)
+    {
         {
-            <div class="col-md-4">
-                <div class="panel panel-default"
-                     style="cursor: pointer;" 
-                     onmouseover="$(this).removeClass('panel-default').addClass('panel-info');" 
-                     onmouseout="$(this).addClass('panel-default').removeClass('panel-info');" 
-                     onclick="window.location = '@Url.Action("details", new { id = recipe.ID })'">
-                    <div class="panel-heading"><h3>@recipe.Title</h3></div>
-                    <div class="panel-body">
-                        <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
-                        <h4><span class="glyphicon glyphicon-star"></span>
-                        @{
-            if (recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0)
-                        {
-                            <span>Ingen vuderinger givet</span>
-                        }
-                        else
-                        {
-                            var rat = recipe.Ratings.Select(x => x.Score);
-                            
-                            @rat.Average();
-                        }
-                        }
-                        </h4>
-                        <table class="table-condensed">
-                            @foreach (var ingredient in recipe.Ingredients.Take(3))
-                            {
-                                <tr>
-                                    <td>@ingredient.Name</td>
-                                </tr>
-                            }
-                            @if (recipe.Ingredients.Count() > 3)
-                            {
-                                <tr>
-                                    <td>&hellip;</td>
-                                </tr>
-                            }
-                        </table>
-                    </div>
-                    <div class="panel-footer.hidden"><p class="hidden">@Html.DisplayFor(modelItem => recipe.Tags)</p></div>
-                </div>
-            </div>
-            if (i % 3 == 0)
+            int i = 1;
+            foreach (var recipe in Model)
             {
-                <div class="row"></div>
+                <div class="col-md-4">
+                    <div class="panel panel-default"
+                         style="cursor: pointer;" 
+                         onmouseover=" $(this).removeClass('panel-default').addClass('panel-info'); " 
+                         onmouseout=" $(this).addClass('panel-default').removeClass('panel-info'); " 
+                         onclick=" window.location = '@Url.Action("details", new {id = recipe.ID})' ">
+                        <div class="panel-heading"><h3>@recipe.Title</h3></div>
+                        <div class="panel-body">
+                            <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                            <h4><span class="glyphicon glyphicon-star"></span>
+                                @{
+                                    if (recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0)
+                                    {
+                                        <span>Ingen vuderinger givet</span>
+                                    }
+                                    else
+                                    {
+                                        var rat = recipe.Ratings.Select(x => x.Score);
+
+                                        @rat.Average()
+                                        ;
+                                    }
+                                }
+                            </h4>
+                            <table class="table-condensed">
+                                @foreach (var ingredient in recipe.Ingredients.Take(3))
+                                {
+                                    <tr>
+                                        <td>@ingredient.Name</td>
+                                    </tr>
+                                }
+                                @if (recipe.Ingredients.Count() > 3)
+                                {
+                                    <tr>
+                                        <td>&hellip;</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <div class="panel-footer.hidden"><p class="hidden">@Html.DisplayFor(modelItem => recipe.Tags)</p></div>
+                    </div>
+                </div>
+                if (i%3 == 0)
+                {
+                    <div class="row"></div>
+                }
+                i++;
             }
-            i++;
         }
     }
+    else
+    {
+        
+    }
+    
 </div>
 @*End*@
