@@ -108,6 +108,7 @@
     <Compile Include="DemoGetMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDbSet.cs" />
+    <Compile Include="TestRecipesController.cs" />
     <Compile Include="TestShoppingListDbSet.cs" />
     <Compile Include="TestProjectFoodContext.cs" />
     <Compile Include="TestRatingDbSet.cs" />

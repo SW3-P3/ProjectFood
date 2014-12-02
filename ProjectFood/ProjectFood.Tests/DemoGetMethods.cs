@@ -46,5 +46,25 @@ namespace ProjectFood.Tests
             return new Rating() {ID = id, Score = score};
         }
 
+
+#region RecipeController
+
+        public static Recipe GetDemoRecipeWithItem(int amount, int recipeID)
+        {
+            var demoRecipe = new Recipe() { ID = 1, Title = "DemoRecipe" };
+
+            for (int i = 0, IngID = 0; i < amount; i++, IngID++)
+            {
+                demoRecipe.Ingredients.Add(GetDemoItem(IngID));
+            }
+
+            return demoRecipe;
+        }
+
+        public static Recipe_Ingredient GetDemoingredient(int IngID, int RecID)
+        {
+            return new Recipe_Ingredient() {IngredientID = IngID, RecipeID = RecID, Ingredient = GetDemoItem(1)};
+        }
+#endregion 
     }
 }
