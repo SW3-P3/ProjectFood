@@ -12,52 +12,40 @@ namespace ProjectFood.Tests
     class DemoGetMethods
     {
 
-        public static ShoppingList GetDemoShoppingListThreeItems()
+        public static ShoppingList GetDemoShoppingListWithItem(int amount)
         {
             var demoList = new ShoppingList() {ID = 1, Title = "DemoShopList"};
-            demoList.Items.Add(GetDemoItem1());
-            demoList.Items.Add(GetDemoItem2());
-            demoList.Items.Add(GetDemoItem3());
+            for (int i = 0; i < amount; i++)
+            {
+                int id = 1;
+                demoList.Items.Add(GetDemoItem(id));
+                id++;
+            }
             return demoList;
         }
-        public static ShoppingList GetDemoShoppingListWithItem()
-        {
-            var demoList = new ShoppingList() {ID = 1, Title = "DemoShopList"};
-            demoList.Items.Add(GetDemoItem1());
-            return demoList;
-        }
-
         public static ShoppingList GetDemoShoppingListEmpty()
         {
             return new ShoppingList() {ID = 1, Title = "DemoShopList"};
         }
 
-        public static Item GetDemoItem1()
+        public static Item GetDemoItem(int id)
         {
-            return new Item() {ID = 1, Name = "DemoItem"};
-        }
-        public static Item GetDemoItem2()
-        {
-            return new Item() { ID = 2, Name = "DemoItem" };
-        }
-        public static Item GetDemoItem3()
-        {
-            return new Item() { ID = 3, Name = "DemoItem" };
+            return new Item() { ID = id, Name = "DemoItem" };
         }
 
-        public static Offer GetDemoOffer()
+        public static Offer GetDemoOffer(int id, decimal price)
         {
-            return new Offer() {Heading = "DemoOffer", ID = 1, Price = 20, Store = "Netto"};
+            return new Offer() {Heading = "DemoOffer", ID = id, Price = price, Store = "Netto"};
         }
 
-        public static User GetDemoUser()
+        public static User GetDemoUser(int id)
         {
-            return new User() {ID = 1, Name = "DemoUser"};
+            return new User() {ID = id, Name = "DemoUser"};
         }
 
-        public static Rating GetDemoRating()
+        public static Rating GetDemoRating(int id, int score)
         {
-            return new Rating() {ID = 1, Score = 3};
+            return new Rating() {ID = id, Score = score};
         }
     }
 }

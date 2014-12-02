@@ -18,7 +18,7 @@ namespace ProjectFood.Tests
             //Setup
             var mockData = new TestProjectFoodContext();
             var controller = new ShoppingListsController(mockData);           
-            var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem();
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(1);
             mockData.ShoppingLists.Add(shoppinglist);
             //Compute
             var result = controller.RemoveItem(1,1);
@@ -32,7 +32,7 @@ namespace ProjectFood.Tests
             //Setup
             var mockData = new TestProjectFoodContext();
             var controller = new ShoppingListsController(mockData);
-            var shoppinglist = DemoGetMethods.GetDemoShoppingListThreeItems();
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(3);
             mockData.ShoppingLists.Add(shoppinglist);
             //Compute
             var result = controller.ClearShoppingList(1);
