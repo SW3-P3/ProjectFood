@@ -145,7 +145,6 @@ namespace ProjectFood.Controllers
                         AuthorName = User.Identity.Name,
                         Title = originalRecipe.Title + ", ny version",
                         Ingredients = new List<Item>(originalRecipe.Ingredients),
-                        Tags = originalRecipe.Tags,
                         Minutes = originalRecipe.Minutes,
                         Instructions = originalRecipe.Instructions
                     };

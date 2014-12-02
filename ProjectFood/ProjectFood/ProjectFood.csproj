@@ -178,6 +178,10 @@
     <Compile Include="Migrations\201411271755573_Initial.Designer.cs">
       <DependentUpon>201411271755573_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201412020006123_RemovedUnused.cs" />
+    <Compile Include="Migrations\201412020006123_RemovedUnused.Designer.cs">
+      <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Api\Catalog.cs" />
@@ -201,7 +205,6 @@
     <Compile Include="Models\Api\Session.cs" />
     <Compile Include="Models\Api\Store.cs" />
     <Compile Include="Models\Api\Stores.cs" />
-    <Compile Include="Models\Group.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\IDataBaseContext.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -682,6 +685,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201411271755573_Initial.resx">
       <DependentUpon>201411271755573_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412020006123_RemovedUnused.resx">
+      <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

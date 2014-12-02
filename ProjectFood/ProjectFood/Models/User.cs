@@ -9,7 +9,6 @@ namespace ProjectFood.Models
         public int ID { get; set; }
         public string Username { get; set; }
         public string Name { get; set; }
-        public List<Group> Groups { get; set; }
         public virtual ICollection<ShoppingList> ShoppingLists { get; set; }
         public virtual ShoppingList WatchList { get; set; }
         public virtual ShoppingList RelevantOffers { get; set; }
