@@ -206,9 +206,11 @@ function ShowOffers(json) {
 };
 
 function ChangePage(element) {
-    var gotoPage = $(element).children('#val').html();
-    $(element).parentsUntil('div#pager').children('form').children('input#page').val(gotoPage);
-    $(element).parentsUntil('div#pager').children().submit();
+    if (!$(element).parents().hasClass('disabled')) {
+        var gotoPage = $(element).children('#val').html();
+        $(element).parentsUntil('div#pager').children('form').children('input#page').val(gotoPage);
+        $(element).parentsUntil('div#pager').children().submit();
+    }    
 };
 //END_Offers
 

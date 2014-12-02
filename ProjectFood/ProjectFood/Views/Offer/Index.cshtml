@@ -92,7 +92,7 @@
                         </li>
                         <li id="currentPage" class="disabled">
                             <a href="#">
-                                <span id="val">1</span> ud af <span id="maxPage">@(Model.Count() % 25)</span>
+                                <span id="val">1</span> ud af <span id="maxPage">@((Model.Count() / 25) + (Model.Count() % 25 > 0 ? 1 : 0))</span>
                             </a>
                         </li>
                         <li id="nextPage" class="">
@@ -130,7 +130,7 @@
                             </li>
                             <li id="currentPage" class="disabled">
                                 <a href="#">
-                                    <span id="val">1</span> ud af <span id="maxPage">@(Model.Where(o => o.Store == storename).Count() % 25)</span>
+                                    <span id="val">1</span> ud af <span id="maxPage">@((Model.Where(o => o.Store.Replace("ø", string.Empty).Replace(" ", string.Empty) == storename).Count() / 25) + (Model.Count() % 25 > 0 ? 1 : 0))</span>
                                 </a>
                             </li>
                             <li id="nextPage" class="">
