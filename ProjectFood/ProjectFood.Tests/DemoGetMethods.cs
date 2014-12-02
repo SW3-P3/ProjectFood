@@ -11,7 +11,6 @@ namespace ProjectFood.Tests
 {
     class DemoGetMethods
     {
-
         public static ShoppingList GetDemoShoppingListWithItem(int amount)
         {
             var demoList = new ShoppingList() {ID = 1, Title = "DemoShopList"};
@@ -47,5 +46,6 @@ namespace ProjectFood.Tests
         {
             return new Rating() {ID = id, Score = score};
         }
+
     }
 }
