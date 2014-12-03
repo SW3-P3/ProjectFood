@@ -32,7 +32,6 @@ namespace ProjectFood.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 ViewBag.Selected = "New";
-                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
 
                 if (sort.IsNullOrWhiteSpace() || sort.Equals("New"))
                 {
