@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Core.Metadata.Edm;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Net;
 using ProjectFood.Models;
 using ProjectFood.Controllers;
 

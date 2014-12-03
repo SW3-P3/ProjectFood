@@ -12,6 +12,7 @@ namespace ProjectFood.Tests
             this.Items = new TestItemDbSet();
             this.Offers = new TestOfferDbSet();
             this.ShoppingList_Item = new TestShoppingListItemDbSet();
+            this.Recipes = new TestRecipesDbSet();
             this.Recipe_Ingredient = new TestRecipeIngredientDbSet();
             this.Users = new TestUserDbSet();
             this.Preferences = new TestPreferenceDbSet();
@@ -24,6 +25,8 @@ namespace ProjectFood.Tests
         }
 
         public void MarkAsModified(ShoppingList item) { }
+
+        public void MarkAsModified(Recipe item) { }
         public void Dispose() { }
 
         public DbSet<ShoppingList> ShoppingLists { get; set; }

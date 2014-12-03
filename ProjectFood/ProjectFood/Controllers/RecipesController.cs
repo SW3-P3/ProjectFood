@@ -16,7 +16,15 @@ namespace ProjectFood.Controllers
 {
     public class RecipesController : Controller
     {
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
+
+        public RecipesController() { }
+
+        public RecipesController(IDataBaseContext context)
+        {
+            _db = context;
+        }
+
 
         // GET: Recipes
         public ActionResult Index(string sort)
@@ -186,7 +194,7 @@ namespace ProjectFood.Controllers
 
             if (ModelState.IsValid)
             {
-                _db.Entry(recipe).State = EntityState.Modified;
+                _db.MarkAsModified(recipe);
                 _db.SaveChanges();
                 if(_db.Recipes.FirstOrDefault(r => r.ID == recipe.ID).Title == null) {
                     return View(recipe);
@@ -288,6 +296,8 @@ namespace ProjectFood.Controllers
 
         public ActionResult RemoveIngredient(int id, int ingredientId)
         {
+            var test = _db.Recipes.Include(r => r.Ingredients);
+
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
 
             //Find the item to be deleted, and remove it from the shopping list

@@ -67,17 +67,17 @@ namespace ProjectFood.Tests
         {
             var demoRecipe = new Recipe() { ID = 1, Title = "DemoRecipe" };
 
-            for (int i = 0, IngID = 0; i < amount; i++, IngID++)
+            for (int i = 0; i < amount; i++)
             {
-                demoRecipe.Ingredients.Add(GetDemoItem(IngID));
+                demoRecipe.Ingredients.Add(GetDemoItem(i));
             }
 
             return demoRecipe;
         }
 
-        public static Recipe_Ingredient GetDemoingredient(int IngID, int RecID)
+        public static Recipe_Ingredient GetDemoingredient(int IngID, int RecID, Recipe recipe)
         {
-            return new Recipe_Ingredient() {IngredientID = IngID, RecipeID = RecID, Ingredient = GetDemoItem(1)};
+            return new Recipe_Ingredient() {IngredientID = IngID, RecipeID = RecID, Ingredient = GetDemoItem(1, "jens"), Recipe = recipe};
         }
 #endregion 
     }
