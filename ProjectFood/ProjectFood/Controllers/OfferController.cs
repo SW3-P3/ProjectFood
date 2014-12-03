@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
+using System.Net.Mail;
 using System.Web.Mvc;
-using System.Web.Routing;
+using System.Web.Script.Serialization;
 using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
-using System.Data.Entity;
-using System.Net.Mail;
-using System.Diagnostics;
-using RestSharp.Extensions;
-using System.Web.Script.Serialization;
 
 namespace ProjectFood.Controllers
 {
@@ -121,13 +117,6 @@ namespace ProjectFood.Controllers
                 offersResult = client.Execute<List<ApiOffer>>(nextOffersRequest).Data;
                 listofApiOffers.AddRange(offersResult);
             }
-
-            /*
-            foreach( var a in _db.Offers)
-            {
-                _db.Offers.Remove(a);
-            }
-             */
 
             foreach(var o in listofApiOffers) {
                 _db.Offers.Add(new Offer {
@@ -245,8 +234,9 @@ namespace ProjectFood.Controllers
                         if (output.Count > 0)
                         {
                             SendEmailToUser(output, user);
+                            user.LastSentNotification = DateTime.Now;
+
                         }
-                        user.LastSentNotification = DateTime.Now;
                     }
                 }
             }
@@ -275,7 +265,7 @@ namespace ProjectFood.Controllers
 
                 //message.To.Add(new MailAddress(user.Username));
 
-                message.Subject = string.Format("ProjectFood har tilbud på dine {0} overvågede varer!", offers.Count());
+                message.Subject = string.Format("ProjectFood har {0} tilbud på dine overvågede varer!", offers.Count());
 
                 var body = string.Empty;
 
