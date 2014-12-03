@@ -4,38 +4,40 @@
     ViewBag.Title = "Opskrifter";
 }
 
-<div class="page-header">
+<div class="page-header nopadding-xs">
     <div class="row">
-        <div class="col-md-6">
-            <h1><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter&nbsp;&nbsp;&nbsp;&nbsp;
+        <div class="col-md-9">
+            <div class="container-fluid nopadding">
+                <h1>
+                    <span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter&nbsp;&nbsp;&nbsp;&nbsp;
+                   
+                </h1>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="container-fluid nopadding">
+                <div class="row">&nbsp;</div>
                 @if (User.Identity.IsAuthenticated)
                 {
-                        <a href="@Url.Action("Create")" class="btn btn-success">Tilføj ny opskrift</a>
-                } 
-            </h1>
-            @{
-                List<SelectListItem> listItems = new List<SelectListItem>();
-                listItems.Add(new SelectListItem {Text = "Dato (Nyeste først)", Selected = true, Value = "New"});
-                listItems.Add(new SelectListItem {Text = "Dato (Ældste først)", Selected = ViewBag.Selected.Equals("Old"), Value = "Old"});
-                listItems.Add(new SelectListItem { Text = "Anbefalinger", Selected = ViewBag.Selected.Equals("Recommend"), Value = "Recommend" });
-                listItems.Add(new SelectListItem { Text = "Bedømmelse (Faldende)", Selected = ViewBag.Selected.Equals("High"), Value = "High" });
-                <label for="Selection">Soter Opskrifter</label>
-                @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "window.location.href = '/Recipes/Index?sort=' + this.value;" })
-            }
+                    <a href="@Url.Action("Create")" class="btn btn-success btn-block">Tilføj ny opskrift</a>
+                }   
+            </div>
         </div>
     </div>
+</div>
 
-</div> 
-
-<p>
-    @if (!User.Identity.IsAuthenticated)
-    {
-        <h3>Ved at logge ind, kan du selv tilføje opskrifter. Som bruger kan du også få anbefalet opskifter ud fra dine præferencer og bedømmelser. </h3>
-        @Html.ActionLink("Opret en bruger nu!", "Create", null, new { @class = "btn btn-success btn-block" })
-
+<div class="container-fluid">
+    @{
+        List<SelectListItem> listItems = new List<SelectListItem>();
+        listItems.Add(new SelectListItem { Text = "Dato (Nyeste først)", Selected = true, Value = "New" });
+        listItems.Add(new SelectListItem { Text = "Dato (Ældste først)", Selected = ViewBag.Selected.Equals("Old"), Value = "Old" });
+        listItems.Add(new SelectListItem { Text = "Anbefalinger", Selected = ViewBag.Selected.Equals("Recommend"), Value = "Recommend" });
+        listItems.Add(new SelectListItem { Text = "Bedømmelse (Faldende)", Selected = ViewBag.Selected.Equals("High"), Value = "High" });
+        <label for="Selection">Soter Opskrifter</label>
+        @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "window.location.href = '/Recipes/Index?sort=' + this.value;" })
     }
-    <hr />
-</p>
+</div>
+<div class="row">&nbsp;</div>
 <div class="row">
     @{int i = 1; 
         foreach (var recipe in Model)
