@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,7 +31,7 @@ namespace ProjectFood.Tests
             controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
             controller.ControllerContext = controllerContext.Object;
 
-            _user.Preferences.Add(DemoGetMethods.GetDemoPref(1,true,"Føtex"));
+            _user.Preferences.Add(DemoGetMethods.GetDemoPref(1,true,"Kvickly"));
             _user.Preferences.Add(DemoGetMethods.GetDemoPref(2,false,"Fisk"));
             _user.Preferences.Add(DemoGetMethods.GetDemoPref(3,false,"Kyling"));
         }
@@ -73,20 +74,47 @@ namespace ProjectFood.Tests
 
         }
 
-        [TestCase("DemoUser", "Fisk", false)]
+        [TestCase("DemoUser", "Kål", false)]
         [TestCase("DemoUser", "Nødder", false)]
         [TestCase("DemoUser", "Lam", false)]
         [TestCase("DemoUser", "Bilka", true)]
         [TestCase("DemoUser", "Føtex", true)]
         [TestCase("DemoUser", "Netto", true)]
-        public void AddPreference(string username, string pref, bool store)
+        public void AddPreference_DiferentPreferences_ShouldHaveANewPreference(string username, string pref, bool store)
         {
             Assert.AreEqual(3, _user.Preferences.Count());
+            Assert.IsFalse(_user.Preferences.Exists(x => x.Value == pref));
 
             controller.AddPreference(username, pref, store);
 
             Assert.AreNotEqual(_user.Preferences.Count(), 3);
             Assert.AreEqual(_user.Preferences.Count(), 4);
+            Assert.IsTrue(_user.Preferences.Exists(x=> x.Value == pref));
+        }
+
+        [TestCase("DemoUser", 1)]
+        [TestCase("DemoUser", 2)]
+        [TestCase("DemoUser", 3)]
+        public void RemovePreference_AllThreePreferencesOnUser_ShouldBeGone(string username, int preferenceID)
+        {
+            Assert.AreEqual(3,_user.Preferences.Count());
+            Assert.IsTrue(_user.Preferences.Exists(x => x.ID == preferenceID));
+
+            controller.RemovePreference(username, preferenceID);
+
+            Assert.AreNotEqual(3,_user.Preferences);
+            Assert.IsFalse(_user.Preferences.Exists(x=> x.ID == preferenceID));
+        }
+
+        [TestCase("Bilka")]
+        public void EditeStore_DifferentStringsForStores_PreferenceAdded(string storename)
+        {
+            Assert.AreEqual(_user.Preferences.Count(), 3);
+
+            controller.EditStore(storename);
+
+            Assert.AreEqual(_user.Preferences.Count(), 4);
+
         }
     }
 }
