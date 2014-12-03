@@ -50,6 +50,16 @@ namespace ProjectFood.Tests
             return new Rating() {ID = id, Score = score};
         }
 
+        public static ShoppingList_Item GetDemoShoppingListItemRelation(ShoppingList shoppinglist, int shopID, int itemid)
+        {
+            return new ShoppingList_Item()
+            {
+                Item = shoppinglist.Items.FirstOrDefault(i => i.ID == itemid),
+                ShoppingList = shoppinglist,
+                ItemID = itemid,
+                ShoppingListID = shopID
+            };
+        }
 
 #region RecipeController
 

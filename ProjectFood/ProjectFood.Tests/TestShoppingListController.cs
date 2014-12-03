@@ -69,7 +69,7 @@ namespace ProjectFood.Tests
             var controller = new ShoppingListsController(mockData);
             var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(2);
             mockData.ShoppingLists.Add(shoppinglist);
-            mockData.ShoppingList_Item.Add(new ShoppingList_Item(){ Item = shoppinglist.Items.First(), ShoppingList = shoppinglist, ItemID = 1, ShoppingListID = 1});
+            mockData.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(shoppinglist, 1, 1));
             //Compute
             var result = controller.MoveItemToBought(1, 1);
             var resultitem = (mockData.ShoppingList_Item.FirstOrDefault(i => i.ItemID == shoppinglist.Items.First().ID && i.ShoppingListID == shoppinglist.ID));
@@ -77,7 +77,7 @@ namespace ProjectFood.Tests
             Assert.IsNotNull(result);  
             Assert.IsNotNull(resultitem);
             Assert.IsTrue(resultitem.Bought);
-        }
+        } //new ShoppingList_Item(){ Item = shoppinglist.Items.First(), ShoppingList = shoppinglist, ItemID = 1, ShoppingListID = 1}
 
         [TestMethod]
         public void GetOffersForItem_ShouldGetOffer()
@@ -91,15 +91,39 @@ namespace ProjectFood.Tests
             mockData.ShoppingLists.Add(shoppinglist);
             mockData.Offers.Add(offer);
             mockData.Offers.Add(offerExact);
-            //Compute
             var item = shoppinglist.Items.FirstOrDefault(i => i.Name == "DemoOfferItem");
             mockData.Items.Add(item);
+            //Compute
             var result = ShoppingListsController.GetOffersForItem(mockData, item);
             //Assert
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 2);
             Assert.IsTrue(result.First(i => i.ID == 1).Price == 20);
             Assert.IsTrue(result.First(i => i.ID == 2).Price == 20);
+        }
+
+        [TestMethod]
+        public void EditAmount_ShouldEditAmount()
+        {
+            //Setup
+            var mockData = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockData);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(2);
+            mockData.ShoppingLists.Add(shoppinglist);
+            mockData.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(shoppinglist, 1, 1));
+            mockData.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(shoppinglist, 1, 2));
+            mockData.ShoppingList_Item.FirstOrDefault(i => i.ItemID == 1).Amount = 12;
+            mockData.ShoppingList_Item.FirstOrDefault(i => i.ItemID == 2).Amount = 10;
+            //Compute
+            var result = controller.EditAmount(1, 1, 15, "");
+            var resultitem = mockData.ShoppingList_Item.FirstOrDefault(i => i.ItemID == 1);
+            var resultunchanged = mockData.ShoppingList_Item.FirstOrDefault(i => i.ItemID == 2);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(resultitem);
+            Assert.IsNotNull(resultunchanged);
+            Assert.IsTrue(resultitem.Amount == 15);
+            Assert.IsTrue(resultunchanged.Amount == 10);
         }
     }
 }
