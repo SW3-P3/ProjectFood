@@ -111,7 +111,7 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions,Tags")] Recipe recipe)
+        public ActionResult Create([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions")] Recipe recipe)
         {
             _db.Recipes.Add(recipe);
             _db.SaveChanges();
@@ -180,7 +180,7 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions,Tags")] Recipe recipe, bool done)
+        public ActionResult Edit([Bind(Include = "ID,Title,OriginalAuthorName,AuthorName,Minutes,Instructions")] Recipe recipe, bool done)
         {
 
             if (ModelState.IsValid)
