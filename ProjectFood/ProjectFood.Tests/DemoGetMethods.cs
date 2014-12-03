@@ -42,7 +42,7 @@ namespace ProjectFood.Tests
 
         public static User GetDemoUser(int id)
         {
-            return new User() {ID = id, Name = "DemoUser"};
+            return new User() {ID = id, Name = "DemoUser", Username = "DemoUser"};
         }
 
         public static Rating GetDemoRating(int id, int score)
