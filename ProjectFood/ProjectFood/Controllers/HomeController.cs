@@ -42,6 +42,7 @@ namespace ProjectFood.Controllers
                 ViewBag.WatchList = user.WatchList;
                 ViewBag.ShoppingLists = user.ShoppingLists;
             }
+
             return View();
         }
 
