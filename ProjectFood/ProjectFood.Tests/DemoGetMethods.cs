@@ -50,6 +50,11 @@ namespace ProjectFood.Tests
             return new Rating() {ID = id, Score = score};
         }
 
+        public static Pref GetDemoPref(int id, bool store, string name )
+        {
+            return new Pref(){ID = id, Store = store, Value = name };
+        }
+
         public static ShoppingList_Item GetDemoShoppingListItemRelation(ShoppingList shoppinglist, int shopID, int itemid)
         {
             return new ShoppingList_Item()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,6 +29,10 @@ namespace ProjectFood.Tests
             principal.SetupGet(x => x.Identity.Name).Returns(_user.Name);
             controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
             controller.ControllerContext = controllerContext.Object;
+
+            _user.Preferences.Add(DemoGetMethods.GetDemoPref(1,true,"Føtex"));
+            _user.Preferences.Add(DemoGetMethods.GetDemoPref(2,false,"Fisk"));
+            _user.Preferences.Add(DemoGetMethods.GetDemoPref(3,false,"Kyling"));
         }
 
         private User _user = new User();
@@ -56,6 +61,32 @@ namespace ProjectFood.Tests
             controller.EditName(_user.Username, name);
 
             return _user.Name;
+        }
+
+        [Test]
+        public void EditPreferencesView_NoInputIsNeeded_ShouldReturnViewResult()
+        {
+            var result = controller.EditPreferences();
+
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+
+        }
+
+        [TestCase("DemoUser", "Fisk", false)]
+        [TestCase("DemoUser", "Nødder", false)]
+        [TestCase("DemoUser", "Lam", false)]
+        [TestCase("DemoUser", "Bilka", true)]
+        [TestCase("DemoUser", "Føtex", true)]
+        [TestCase("DemoUser", "Netto", true)]
+        public void AddPreference(string username, string pref, bool store)
+        {
+            Assert.AreEqual(3, _user.Preferences.Count());
+
+            controller.AddPreference(username, pref, store);
+
+            Assert.AreNotEqual(_user.Preferences.Count(), 3);
+            Assert.AreEqual(_user.Preferences.Count(), 4);
         }
     }
 }
