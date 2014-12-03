@@ -14,7 +14,7 @@ function ToggleBoolByID(store) {
         $('span#storeName_' + store).removeClass('text-muted').removeClass('text-strikethrough');
     }
 
-    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp; Gemt&hellip;' });
+    MakeSnackbar("Gemt&hellip;", "glyphicon-ok");
 };
 
 function ToggleBoolRememberMe() {
@@ -37,7 +37,7 @@ function ToggleBoughtStatus(element) {
 };
 
 function ShoppingListShare(message) {
-    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;' + message + '&hellip;' });
+    MakeSnackbar("&nbsp;&nbsp;" + message + "&hellip;", "glyphicon-ok");
 };
 
 function ShareStatus(json) {
@@ -71,7 +71,7 @@ function UpdateStarsAndAvg(json) {
 
     DrawStars(json.rating);
 
-    $.snackbar({ content: '<span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp; Vurdering givet&hellip;' });
+    MakeSnackbar("Vurdering givet&hellip;", "glyphicon-star");
 };
 
 function DrawStars(rating) {
@@ -97,11 +97,12 @@ function ChangeToCheckRecipe(json) {
         .removeClass('glyphicon-plus')
         .addClass('glyphicon-ok');
 
-    $.snackbar({ content: '<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Vare tilføjet til ' + json.shoppingListTitle });
+    MakeSnackbar("Vare tilføjet til " + json.shoppingListTitle, "glyphicon-ok")
 };
 
 function GetSelectedList() {
     $('input#shoppingListId').val($('#Selection').val());
+    MakeSnackbar("Indkøbsliste valgt&hellip;");
 };
 
 function AddAllTheItems(numItems) {
@@ -217,12 +218,23 @@ function ChangePage(element) {
 //WatchList
 function GetSelectedListWL() {
     $('input#SelectedList').val($('#Selection').val());
-
-    $.snackbar({ content: "Indkøbsliste valgt", style: "snackbar" });
+    MakeSnackbar("Indkøbsliste valgt");
 };
 
 function ChangeButton(json) {
     $('#AddButton_' + json.offerID).removeClass('btn-primary').addClass('btn-success');
     $('#AddButton_' + json.offerID).children().removeClass('glyphicon-plus').addClass('glyphicon-ok');
+    MakeSnackbar("Tilføjet til indkøbsliste&hellip;", "glyphicon-ok");
 };
 //END_WatchList
+
+function MakeSnackbar(text, glyphicon) {
+    if (typeof glyphicon !== "undefined") {
+        var glyphiconContainer = $('<div>');
+        var span = $('<span>').addClass('glyphicon').addClass(glyphicon);
+        glyphiconContainer.append(span);
+        $.snackbar({ content: glyphiconContainer.html() + "&nbsp;&nbsp;" + text });
+    } else {
+        $.snackbar({ content: text });
+    }
+};
