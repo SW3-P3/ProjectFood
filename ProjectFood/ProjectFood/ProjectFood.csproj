@@ -182,9 +182,13 @@
     <Compile Include="Migrations\201412020006123_RemovedUnused.Designer.cs">
       <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201412020035571_AddedDateTimeForLastSentToUser.cs" />
-    <Compile Include="Migrations\201412020035571_AddedDateTimeForLastSentToUser.Designer.cs">
-      <DependentUpon>201412020035571_AddedDateTimeForLastSentToUser.cs</DependentUpon>
+    <Compile Include="Migrations\201412030103036_LastSentNotification.cs" />
+    <Compile Include="Migrations\201412030103036_LastSentNotification.Designer.cs">
+      <DependentUpon>201412030103036_LastSentNotification.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412030118296_OffersSentTo.cs" />
+    <Compile Include="Migrations\201412030118296_OffersSentTo.Designer.cs">
+      <DependentUpon>201412030118296_OffersSentTo.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -601,6 +605,8 @@
     <Content Include="Scripts\globalize\cultures\globalize.culture.zu.js" />
     <Content Include="Scripts\globalize\cultures\globalize.cultures.js" />
     <Content Include="Scripts\globalize\globalize.js" />
+    <Content Include="Scripts\jquery.json2html.js" />
+    <Content Include="Scripts\json2html.js" />
     <Content Include="Scripts\sass.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -693,8 +699,11 @@
     <EmbeddedResource Include="Migrations\201412020006123_RemovedUnused.resx">
       <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412020035571_AddedDateTimeForLastSentToUser.resx">
-      <DependentUpon>201412020035571_AddedDateTimeForLastSentToUser.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201412030103036_LastSentNotification.resx">
+      <DependentUpon>201412030103036_LastSentNotification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412030118296_OffersSentTo.resx">
+      <DependentUpon>201412030118296_OffersSentTo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

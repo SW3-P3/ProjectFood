@@ -52,7 +52,7 @@ namespace ProjectFood.Models
 
             foreach (var o in Offers)
             {
-                bool flag = !(o.End < DateTime.Now);
+                bool flag = true;//!(o.End < DateTime.Now);
 
                 foreach (var item in blacklist)
                 {
@@ -82,7 +82,16 @@ namespace ProjectFood.Models
                     x.MapLeftKey("UserId");
                     x.MapRightKey("ShoppingListId");
                 });
-        }
 
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.SentOffers)
+                .WithMany(x => x.SentToUsers)
+                .Map(x =>
+                {
+                    x.ToTable("OfferSentTo");
+                    x.MapLeftKey("UserId");
+                    x.MapRightKey("OfferId");
+                });
+        }
     }
 }

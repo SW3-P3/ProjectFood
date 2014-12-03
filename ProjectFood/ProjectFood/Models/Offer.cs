@@ -18,10 +18,11 @@ namespace ProjectFood.Models
         public DateTime End { get; set; }
         public decimal Price { get; set; }
         public string Unit { get; set; }
-
+        public List<User> SentToUsers { get; set; } 
         public Offer()
         {
             GenericItems = new List<Item>();
+            SentToUsers = new List<User>();
         }
     }
 

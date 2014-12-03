@@ -1,4 +1,4 @@
-﻿$(function() {
+﻿$(function () {
     $('[data-toggle="tooltip"]').tooltip()
 });
 
@@ -52,7 +52,7 @@ function ShareStatus(json) {
 function EditAmount(itemName, itemID, amount, unit) {
     $('#modalTitle').html('Sæt ny mængde for ' + itemName);
     $('input#itemID').val(itemID);
-    $('input#amount').val(amount);
+    $('input#amount').val(parseFloat(amount.replace(",", ".")).toString());
     $('input#unit').val(unit);
 
     $('#EditModal').modal('show');
@@ -147,20 +147,70 @@ function ChangeToCheckOffer(json) {
 };
 
 function ShowOffers(json) {
-    var offers = JSON.parse(json.jsonOffers);
-    $('#modalTitle').html('Tilbud på ' + json.itemName);
-    var offerTable = "<table class='table table-hover table-condensed'>";
-    for (var i = 0; i < offers.length; i++) {
-        offerTable += "<tr id='" +
-            offers[i].ID + "' ><td>" +
-            offers[i].Heading + "</td><td class='col-md-1'>" +
-            offers[i].Unit + "</td><td class='col-md-1'>" +
-            offers[i].Price + " kr.</td><td class='col-md-1'>" +
-            offers[i].Store + "</td></tr>";
+    var jsonOffers = JSON.parse(json.jsonOffers);
+    var store = (json.store).replace("ø", "");
+    var table = $('<table>', { 'class': 'table table-striped' });
+    var table_head = $('<thead>').html("<tr>"
+                    + "<th class='col-md-1 text-center'>Tilføj</th>"
+                    + "<th class='col-md-7'>Navn</th>"
+                    + "<th class='col-md-1'>Pris</th>"
+                    + "<th class='col-md-1'>Mængde</th>"
+                    + "<th class='col-md-1'>Udløber</th>"
+                    + "<th class='col-md-1" +
+                    (store == "all" ? "" : " hidden") + 
+                    "'>Butik</th></tr>")
+    table.append(table_head);
+    $.each(jsonOffers, function (index, offer) {
+        var table_row = $('<tr>');
+        var all = store == "all" ? "All_" : "_";
+        var add_button = $('<button>', { id: 'AddOffer' + all + offer.ID, 'class': 'btn btn-info btn-xs btn-block' })
+            .html("<span class='glyphicon glyphicon-plus'></span>");
+        add_button.click(function () {
+            $('input#offerID').val(offer.ID).parents().submit();
+        })
+        var table_add = $('<td>').append(add_button);
+        var table_heading = $('<td>', { html: offer.Heading});
+        var table_price = $('<td>', { html: offer.Price + " kr." });
+        var table_unit = $('<td>', { html: offer.Unit });
+        var table_end = $('<td>', { html: (new Date(parseInt(offer.End.substr(6))).toLocaleDateString('da-DK')) });
+        var table_store = $('<td>', { html: offer.Store, 'class': store == "all" ? "" : "hidden"});
+        table_row.append(table_add).append(table_heading).append(table_price).append(table_unit).append(table_end).append(table_store);
+        table.append(table_row);
+    })
+
+    $('div#' + store).children('#offerTable').html(table);
+
+    //page magic
+    var pager = $('div#' + store).children('#pages').children('nav').children('ul');
+    var curr = pager.children('li#currentPage');
+    var currVal = curr.children().children('span#val').html();
+    if (currVal != json.page) {
+        var prev = pager.children('li#previousPage');
+        var next = pager.children('li#nextPage');
+ 
+        if (json.page > 1) {
+            prev.removeClass('disabled');
+        } else {
+            prev.addClass('disabled');
+        }
+        if (json.page == curr.children().children('span#maxPage').html()) {
+            next.addClass('disabled');
+        } else {
+            next.removeClass('disabled');
+        }
+
+        prev.children().children('#val').html(json.page - 1);
+        next.children().children('#val').html(json.page + 1);
+        curr.children().children('#val').html(json.page);
     }
-    offerTable += "</table>";
-    $('#modalBody').html(offerTable);
-    $('#offerModal').modal('show');
+};
+
+function ChangePage(element) {
+    if (!$(element).parents().hasClass('disabled')) {
+        var gotoPage = $(element).children('#val').html();
+        $(element).parentsUntil('div#pager').children('form').children('input#page').val(gotoPage);
+        $(element).parentsUntil('div#pager').children().submit();
+    }    
 };
 //END_Offers
 

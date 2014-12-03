@@ -353,11 +353,13 @@ namespace ProjectFood.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditAmount(int shoppingListID, int itemID, double? amount, string unit)
+        public ActionResult EditAmount(int shoppingListID, int itemID, string amount, string unit)
         {
             var tmpItemRel = _db.ShoppingList_Item.SingleOrDefault(r => r.ShoppingListID == shoppingListID && r.ItemID == itemID);
 
-            tmpItemRel.Amount = amount ?? 0;
+            double parsedAmount;
+            bool parseRes = double.TryParse(amount.Replace(".", ","), out parsedAmount);
+            tmpItemRel.Amount = parseRes ? parsedAmount : 0;
             if(unit.Trim() != string.Empty) {
                 tmpItemRel.Unit = unit.Trim();
             }
