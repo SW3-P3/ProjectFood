@@ -52,7 +52,7 @@ namespace ProjectFood.Models
 
             foreach (var o in Offers)
             {
-                bool flag = !(o.End < DateTime.Now);
+                bool flag = true;//!(o.End < DateTime.Now);
 
                 foreach (var item in blacklist)
                 {

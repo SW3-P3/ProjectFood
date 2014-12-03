@@ -11,6 +11,7 @@ using RestSharp;
 using System.Data.Entity;
 using System.Net.Mail;
 using System.Diagnostics;
+using System.Web.Script.Serialization;
 
 
 namespace ProjectFood.Controllers
@@ -23,24 +24,23 @@ namespace ProjectFood.Controllers
         // GET: Offer
         public ActionResult Index(int? shoppingListID)
         {
-            if (User.Identity.IsAuthenticated)
-            {
+            if(User.Identity.IsAuthenticated) {
                 var tmpUser = _db.Users
                     .Include(s => s.ShoppingLists)
                     .First(u => u.Username == User.Identity.Name);
                 if(tmpUser.ShoppingLists.Count > 0) {
-                
-                int tmpShoppingListID = shoppingListID == null ? tmpUser.ShoppingLists.First().ID : (int)shoppingListID;
-                ViewBag.SelectedShoppingListID = tmpShoppingListID;
-                
-                ViewBag.ShoppingLists = tmpUser.ShoppingLists.ToList();
-                //ViewBag.OffersOnListByID = new List<int> {1, 2 };
-                Stopwatch stopwatch = Stopwatch.StartNew();
-                ViewBag.OffersOnListByID = _db.ShoppingList_Item
-                    .Where(s => s.ShoppingListID == tmpShoppingListID && s.selectedOffer != null)
-                    .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID).ToArray();
-                stopwatch.Stop();
-                Debug.WriteLine("OffersOnListByID " + stopwatch.ElapsedMilliseconds);
+
+                    int tmpShoppingListID = shoppingListID == null ? tmpUser.ShoppingLists.First().ID : (int)shoppingListID;
+                    ViewBag.SelectedShoppingListID = tmpShoppingListID;
+
+                    ViewBag.ShoppingLists = tmpUser.ShoppingLists.ToList();
+                    //ViewBag.OffersOnListByID = new List<int> {1, 2 };
+                    Stopwatch stopwatch = Stopwatch.StartNew();
+                    ViewBag.OffersOnListByID = _db.ShoppingList_Item
+                        .Where(s => s.ShoppingListID == tmpShoppingListID && s.selectedOffer != null)
+                        .Select<ShoppingList_Item, int>(o => o.selectedOffer.ID).ToArray();
+                    stopwatch.Stop();
+                    Debug.WriteLine("OffersOnListByID " + stopwatch.ElapsedMilliseconds);
                 }
                 Stopwatch stopwatch2 = Stopwatch.StartNew();
                 ViewBag.Stores = _db
@@ -56,7 +56,7 @@ namespace ProjectFood.Controllers
 
                 NotifyWatchers(_db.Offers.ToList());
 
-                return View(_db.OffersFiltered().ToList());            
+                return View(_db.OffersFiltered().ToList());
             }
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
         }
@@ -65,13 +65,10 @@ namespace ProjectFood.Controllers
         {
             string apikey, secret;
             /* Write Apikey and Secret to global variables */
-            try
-            {
+            try {
                 apikey = System.IO.File.ReadAllText(@"C:\apikey.secret");
                 secret = System.IO.File.ReadAllText(@"C:\secret.secret");
-            }
-            catch (IOException ex)
-            {
+            } catch(IOException ex) {
                 Console.WriteLine("File not found. " + ex);
                 throw;
             }
@@ -93,7 +90,7 @@ namespace ProjectFood.Controllers
             sessionobj.Secret = secret;
             sessionobj.Apikey = apikey;
             sessionobj.Signature = Models.Api.Session.Sha256(sessionobj.Secret + sessionobj.Token);
-            
+
             /* Copy the sessionobj to a globalSession */
             Global.Session = sessionobj;
 
@@ -111,8 +108,7 @@ namespace ProjectFood.Controllers
             //TODO: This should be converted to an Async method for each store if we need a speed-up
             List<ApiOffer> offersResult = client.Execute<List<ApiOffer>>(offersRequest).Data;
             List<ApiOffer> listofApiOffers = offersResult;
-            while (offersResult.Count == 100)
-            {
+            while(offersResult.Count == 100) {
                 var nextOffersRequest = new RestRequest("v2/offers", Method.GET);
                 nextOffersRequest.AddParameter("r_lat", Global.Latitude);
                 nextOffersRequest.AddParameter("r_lng", Global.Longitude);
@@ -126,15 +122,12 @@ namespace ProjectFood.Controllers
                 listofApiOffers.AddRange(offersResult);
             }
 
-            foreach( var a in _db.Offers)
-            {
+            foreach(var a in _db.Offers) {
                 _db.Offers.Remove(a);
             }
 
-            foreach (var o in listofApiOffers)
-            {
-                _db.Offers.Add(new Offer
-                {
+            foreach(var o in listofApiOffers) {
+                _db.Offers.Add(new Offer {
                     Heading = o.heading,
                     Begin = o.run_from,
                     End = o.run_till,
@@ -156,17 +149,22 @@ namespace ProjectFood.Controllers
         {
             var tmpOffer = _db.Offers.Find(offerId);
 
-            var tmpItem = new Item {Name = tmpOffer.Heading};
+            var tmpItem = new Item { Name = tmpOffer.Heading };
             tmpItem.Offers.Add(tmpOffer);
 
             var shoppingList = _db.ShoppingLists.First(l => l.ID == shoppingListId);
 
-            var shoppingListItem = new ShoppingList_Item { 
-                Item = tmpItem, 
-                ShoppingList = shoppingList, 
-                Amount = 0, 
-                Unit = tmpOffer.Unit,
-                selectedOffer = tmpOffer};
+            double num;
+            bool res = double.TryParse(tmpOffer.Unit.Split(' ').First(), out num);
+
+
+            var shoppingListItem = new ShoppingList_Item {
+                Item = tmpItem,
+                ShoppingList = shoppingList,
+                Amount = res ? num : 0,
+                Unit = tmpOffer.Unit.Split(' ').Last(),
+                selectedOffer = tmpOffer
+            };
 
             _db.ShoppingList_Item.Add(shoppingListItem);
 
@@ -174,8 +172,7 @@ namespace ProjectFood.Controllers
 
             _db.SaveChanges();
 
-            return Json(new
-            {
+            return Json(new {
                 Message = "Hajtroels",
                 OfferId = offerId,
             }, JsonRequestBehavior.AllowGet);
@@ -183,16 +180,13 @@ namespace ProjectFood.Controllers
 
         public ActionResult Search(string id)
         {
-            if(id != null) 
-            {
+            if(id != null) {
                 ViewBag.Offers = GetOffersForItem(id);
                 ViewBag.SearchTerm = id;
-            }
-            else
-            {
+            } else {
                 ViewBag.Offers = new List<Offer>();
             }
-            
+
             ViewBag.ShoppingLists = _db.Users
                 .Include(s => s.ShoppingLists)
                 .First(u => u.Username == User.Identity.Name)
@@ -218,15 +212,13 @@ namespace ProjectFood.Controllers
         {
             var users = _db.Users.Include(u => u.RelevantOffers.Items).Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0).ToArray();
 
-            foreach (var user in users)
-            {
+            foreach(var user in users) {
                 List<Offer> relevantOffers = new List<Offer>();
-                foreach (var item in user.WatchList.Items)
-                {
+                foreach(var item in user.WatchList.Items) {
                     relevantOffers.AddRange(GetOffersForItem(item));
-                    
+
                 }
-                
+
                 //do stuff
             }
         }
@@ -240,9 +232,31 @@ namespace ProjectFood.Controllers
 
         private Item OfferToItem(Offer offer)
         {
-
-
             return new Item { Name = offer.Heading };
+        }
+
+        [HttpPost]
+        public ActionResult GetOffers(int page, string storename)
+        {
+            int PerPage = 25;
+            IQueryable<Offer> offers;
+            if(storename == "all") {
+                offers = _db.OffersFiltered().AsQueryable()
+                    .OrderBy(o => o.Heading)
+                    .Skip((page - 1) * PerPage)
+                    .Take(PerPage);
+            } else {
+                offers = _db.OffersFiltered().AsQueryable()
+                    .Where(o => o.Store.Replace("ø", string.Empty).Replace(" ", string.Empty) == storename).OrderBy(o => o.Heading)
+                    .Skip((page - 1) * PerPage)
+                    .Take(PerPage);
+            }
+            
+
+            var jsonSerialiser = new JavaScriptSerializer();
+            var jsonOffers = jsonSerialiser.Serialize(offers);
+
+            return Json(new { page = page, store = storename.Replace(" ", string.Empty), jsonOffers }, JsonRequestBehavior.DenyGet);
         }
     }
 }
