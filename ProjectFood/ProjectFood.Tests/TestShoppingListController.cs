@@ -80,18 +80,18 @@ namespace ProjectFood.Tests
         }
 
         [TestMethod]
-        public void GetOffersForItem()
+        public void GetOffersForItem_ShouldGetOffer()
         {
             //Setup
             var mockData = new TestProjectFoodContext();
-            var controller = new ShoppingListsController(mockData);
             var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(1);
             shoppinglist.Items.Add(DemoGetMethods.GetDemoItem(2, "DemoOfferItem"));
-            var offer = DemoGetMethods.GetDemoOffer("DemoOffer", 1, 20);
+            var offer = DemoGetMethods.GetDemoOffer("DemoOfferItem", 1, 20);
             mockData.ShoppingLists.Add(shoppinglist);
             mockData.Offers.Add(offer);
             //Compute
             var item = shoppinglist.Items.FirstOrDefault(i => i.Name == "DemoOfferItem");
+            mockData.Items.Add(item);
             var result = ShoppingListsController.GetOffersForItem(mockData, item);
             //Assert
             Assert.IsNotNull(result);

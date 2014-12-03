@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -348,7 +349,8 @@ namespace ProjectFood.Controllers
         public static List<Offer> GetOffersForItem(IDataBaseContext db, Item item)
         {
             return db.Offers 
-                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()) ||
+                            String.Equals(x.Heading, item.Name, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
         }
 
