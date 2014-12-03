@@ -15,7 +15,7 @@ namespace ProjectFood.Tests
         {
             var demoList = new ShoppingList() {ID = 1, Title = "DemoShopList"};
             
-            for (int i = 0, setid = 0; i < amount; i++, setid++)
+            for (int i = 0, setid = 1; i < amount; i++, setid++)
             {                
                 demoList.Items.Add(GetDemoItem(setid));
             }
@@ -31,9 +31,13 @@ namespace ProjectFood.Tests
             return new Item() { ID = id, Name = "DemoItem" };
         }
 
-        public static Offer GetDemoOffer(int id, decimal price)
+        public static Item GetDemoItem(int id, string name)
         {
-            return new Offer() {Heading = "DemoOffer", ID = id, Price = price, Store = "Netto"};
+            return new Item(){ID = id, Name = name};
+        }
+        public static Offer GetDemoOffer(string heading, int id, decimal price)
+        {
+            return new Offer() {Heading = heading, ID = id, Price = price, Store = "Netto"};
         }
 
         public static User GetDemoUser(int id)

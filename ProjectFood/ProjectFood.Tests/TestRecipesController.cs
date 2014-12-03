@@ -70,7 +70,7 @@ namespace ProjectFood.Tests
             //Compute
             // var result = controller.AddIngredient()
             //Assert
-            Assert.IsNotNull(result);
+            //Assert.IsNotNull(result);
             Assert.AreEqual(6, mockData.Recipes.First().Ingredients.Count);
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using ProjectFood.Models;
@@ -50,14 +51,15 @@ namespace ProjectFood.Tests
             var controller = new ShoppingListsController(mockData);
             var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
             mockData.ShoppingLists.Add(shoppinglist);
+            mockData.Items.Add(new Item(){Name = "DemoItem", ID = 1});
             //Compute
-            var result = controller.AddItem(1, "DemoName", null, "", null, 1);
+            var result = controller.AddItem(1, "DemoItem", null, "", null, 1);
             var resultitem = mockData.ShoppingLists.First().Items.First();
             //Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(1, mockData.ShoppingLists.First().Items.Count);
-            Assert.AreEqual(resultitem.Name, "DemoName");
-            Assert.AreEqual(resultitem.ID, 0);
+            Assert.AreEqual(resultitem.Name, "DemoItem");
+            Assert.AreEqual(resultitem.ID, 1);
         }
         [TestMethod]
         public void MoveItemToBought_ShouldBeMoved()
@@ -75,6 +77,26 @@ namespace ProjectFood.Tests
             Assert.IsNotNull(result);  
             Assert.IsNotNull(resultitem);
             Assert.IsTrue(resultitem.Bought);
+        }
+
+        [TestMethod]
+        public void GetOffersForItem()
+        {
+            //Setup
+            var mockData = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockData);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(1);
+            shoppinglist.Items.Add(DemoGetMethods.GetDemoItem(2, "DemoOfferItem"));
+            var offer = DemoGetMethods.GetDemoOffer("DemoOffer", 1, 20);
+            mockData.ShoppingLists.Add(shoppinglist);
+            mockData.Offers.Add(offer);
+            //Compute
+            var item = shoppinglist.Items.FirstOrDefault(i => i.Name == "DemoOfferItem");
+            var result = ShoppingListsController.GetOffersForItem(mockData, item);
+            //Assert
+            Assert.IsNotNull(result);
+           // Assert.IsTrue(result.Count == 1);
+            Assert.IsTrue(result.First().Price == 20);
         }
     }
 }
