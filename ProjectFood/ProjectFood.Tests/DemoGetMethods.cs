@@ -65,7 +65,7 @@ namespace ProjectFood.Tests
 
         public static Recipe GetDemoRecipeWithItem(int amount, int recipeID)
         {
-            var demoRecipe = new Recipe() { ID = 1, Title = "DemoRecipe", AuthorName = "DemoUser" };
+            var demoRecipe = new Recipe() { ID = 1, Title = "DemoRecipe" };
 
             for (int i = 0; i < amount; i++)
             {
