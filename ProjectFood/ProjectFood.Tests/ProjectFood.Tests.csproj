@@ -123,7 +123,8 @@
     <Compile Include="TestShoppingListItemDbSet.cs" />
     <Compile Include="TestOfferDbSet.cs" />
     <Compile Include="TestItemDbSet.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="TestRecipeDBSet.cs" />
+    <Compile Include="TestUserController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
