@@ -27,7 +27,7 @@ namespace ProjectFood.Controllers
                 ViewBag.Selected = "New";
                 Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
 
-                if (searchString == null)
+                if (string.IsNullOrEmpty(searchString))
                 {
                     #region NoSearch
 
@@ -69,7 +69,6 @@ namespace ProjectFood.Controllers
                 }
                 else
                 #region Search
-
                 {
                    var recipes =  SearchRecipe(searchString);
                     if (sort.IsNullOrWhiteSpace() || sort.Equals("New"))
