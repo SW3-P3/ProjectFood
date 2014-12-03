@@ -41,6 +41,8 @@ namespace ProjectFood.Controllers
                 }
                 ViewBag.WatchList = user.WatchList;
                 ViewBag.ShoppingLists = user.ShoppingLists;
+                var recipescontroller = new RecipesController();
+                ViewBag.Recipes = recipescontroller.RecommendRecipes(user);
             }
             return View();
         }

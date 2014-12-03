@@ -401,7 +401,7 @@ namespace ProjectFood.Controllers
             });
         }
 
-        private IEnumerable<Recipe> RecommendRecipes(User user)
+        public IEnumerable<Recipe> RecommendRecipes(User user)
         {
             // Get all recipies rated by the user
             var recipiesRatedByUser = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings.Select(y => y.User.ID).Contains(user.ID));

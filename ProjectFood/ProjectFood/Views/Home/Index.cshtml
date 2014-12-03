@@ -76,8 +76,64 @@
             <div class="panel panel-primary">
                 <div class="panel-heading lead">Anbefalede opskrifter</div>
                 <div class="panel-body">
+                    @{
+                        int i = 1;
+                        if (((IEnumerable<ProjectFood.Models.Recipe>) ViewBag.Recipes).Any())
+                        {
+                            foreach (var recipe in (IEnumerable<ProjectFood.Models.Recipe>) ViewBag.Recipes)
+                            {
+                                <div class="col-md-4">
+                                    <div class="panel panel-default"
+                                         style="cursor: pointer;"
+                                         onmouseover=" $(this).removeClass('panel-default').addClass('panel-info'); "
+                                         onmouseout=" $(this).addClass('panel-default').removeClass('panel-info'); "
+                                         onclick=" window.location = '@Url.Action("details", "Recipes", new {id = recipe.ID})' ">
+                                        <div class="panel-heading">
+                                            <h3>@recipe.Title</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                                            <h4>
+                                                <span class="glyphicon glyphicon-star"></span>
+                                                @{
+                                                    if (recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0)
+                                                    {
+                                                        <span>Ingen vuderinger givet</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        var rat = recipe.Ratings.Select(x => x.Score);
 
-                    <p>Morten og Trøls</p>
+                                                        @rat.Average()
+                                                        ;
+                                                    }
+                                                }
+                                            </h4>
+                                            <table class="table-condensed">
+                                                @foreach (var ingredient in recipe.Ingredients.Take(3))
+                                                {
+                                                    <tr>
+                                                        <td>@ingredient.Name</td>
+                                                    </tr>
+                                                }
+                                                @if (recipe.Ingredients.Count() > 3)
+                                                {
+                                                    <tr>
+                                                        <td>&hellip;</td>
+                                                    </tr>
+                                                }
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                if (i%3 == 0)
+                                {
+                                    <div class="row"></div>
+                                }
+                                i++;
+                            }
+                        }
+                    }
 
                 </div>
             </div>
