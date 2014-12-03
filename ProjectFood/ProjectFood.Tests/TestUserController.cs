@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using ProjectFood.Controllers;
 using ProjectFood.Models;
+using ProjectFood.Models.Api;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace ProjectFood.Tests
@@ -77,9 +78,6 @@ namespace ProjectFood.Tests
         [TestCase("DemoUser", "Kål", false)]
         [TestCase("DemoUser", "Nødder", false)]
         [TestCase("DemoUser", "Lam", false)]
-        [TestCase("DemoUser", "Bilka", true)]
-        [TestCase("DemoUser", "Føtex", true)]
-        [TestCase("DemoUser", "Netto", true)]
         public void AddPreference_DiferentPreferences_ShouldHaveANewPreference(string username, string pref, bool store)
         {
             Assert.AreEqual(3, _user.Preferences.Count());
@@ -107,13 +105,33 @@ namespace ProjectFood.Tests
         }
 
         [TestCase("Bilka")]
-        public void EditeStore_DifferentStringsForStores_PreferenceAdded(string storename)
+        [TestCase("Føtex")]
+        [TestCase("Netto")]
+        public void EditStore_DifferentNewStores_PreferenceAdded(string storename)
         {
             Assert.AreEqual(_user.Preferences.Count(), 3);
+            Assert.IsFalse(_user.Preferences.Exists(x => x.Value == storename));
 
             controller.EditStore(storename);
 
+            Assert.AreNotEqual(_user.Preferences.Count(), 3);
             Assert.AreEqual(_user.Preferences.Count(), 4);
+            Assert.IsTrue(_user.Preferences.Exists(x => x.Value == storename));
+
+        }
+
+
+        [TestCase("Kvickly")]
+        public void EditStore_DifferentAlreadyThereStrings_PreferenceRemovd(string storename)
+        {
+            Assert.AreEqual(_user.Preferences.Count(), 3);
+            Assert.IsTrue(_user.Preferences.Exists(x => x.Value == storename));
+
+            controller.EditStore(storename);
+
+            Assert.AreNotEqual(_user.Preferences.Count(), 3);
+            Assert.AreEqual(_user.Preferences.Count(), 2);
+            Assert.IsFalse(_user.Preferences.Exists(x => x.Value == storename));
 
         }
     }
