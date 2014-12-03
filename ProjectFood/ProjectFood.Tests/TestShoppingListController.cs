@@ -86,17 +86,20 @@ namespace ProjectFood.Tests
             var mockData = new TestProjectFoodContext();
             var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(1);
             shoppinglist.Items.Add(DemoGetMethods.GetDemoItem(2, "DemoOfferItem"));
-            var offer = DemoGetMethods.GetDemoOffer("DemoOfferItem", 1, 20);
+            var offer = DemoGetMethods.GetDemoOffer("DemoOfferItem Bacon", 1, 20);
+            var offerExact = DemoGetMethods.GetDemoOffer("DemoOfferItem", 2, 20);
             mockData.ShoppingLists.Add(shoppinglist);
             mockData.Offers.Add(offer);
+            mockData.Offers.Add(offerExact);
             //Compute
             var item = shoppinglist.Items.FirstOrDefault(i => i.Name == "DemoOfferItem");
             mockData.Items.Add(item);
             var result = ShoppingListsController.GetOffersForItem(mockData, item);
             //Assert
             Assert.IsNotNull(result);
-           // Assert.IsTrue(result.Count == 1);
-            Assert.IsTrue(result.First().Price == 20);
+            Assert.IsTrue(result.Count == 2);
+            Assert.IsTrue(result.First(i => i.ID == 1).Price == 20);
+            Assert.IsTrue(result.First(i => i.ID == 2).Price == 20);
         }
     }
 }
