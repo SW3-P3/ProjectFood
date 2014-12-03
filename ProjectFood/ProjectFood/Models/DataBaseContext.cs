@@ -82,7 +82,16 @@ namespace ProjectFood.Models
                     x.MapLeftKey("UserId");
                     x.MapRightKey("ShoppingListId");
                 });
-        }
 
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.SentOffers)
+                .WithMany(x => x.SentToUsers)
+                .Map(x =>
+                {
+                    x.ToTable("OfferSentTo");
+                    x.MapLeftKey("UserId");
+                    x.MapRightKey("OfferId");
+                });
+        }
     }
 }
