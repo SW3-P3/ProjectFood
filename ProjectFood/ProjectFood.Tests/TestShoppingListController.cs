@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Web.Mvc;
+using System.Web.UI;
 using Moq;
 using System.Web.UI.WebControls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -52,9 +53,8 @@ namespace ProjectFood.Tests
             //Compute
             controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
             controller.ControllerContext = controllerContext.Object;
-            //Assert
             var result = controller.Details(1);
-
+            //Assert            
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
@@ -136,6 +136,182 @@ namespace ProjectFood.Tests
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectResult));
             Assert.IsNull(resultlist);
+        }
+
+        [TestMethod]
+        public void Edit_ShouldEdit()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var user = DemoGetMethods.GetDemoUser(1);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            var controllerContext = new Mock<ControllerContext>();
+            var principal = new Moq.Mock<IPrincipal>();
+            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
+            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
+            user.ShoppingLists.Add(shoppinglist);
+            mockdata.ShoppingLists.Add(shoppinglist);
+            mockdata.Users.Add(user);
+            //Compute
+            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
+            controller.ControllerContext = controllerContext.Object;
+            var result = controller.Edit(1);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+        [TestMethod]
+        public void Edit_ShouldNotEditNoList()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var user = DemoGetMethods.GetDemoUser(1);
+            var controllerContext = new Mock<ControllerContext>();
+            var principal = new Moq.Mock<IPrincipal>();
+            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
+            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
+            mockdata.Users.Add(user);
+            //Compute
+            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
+            controller.ControllerContext = controllerContext.Object;
+            var result = controller.Edit(1);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
+        }
+        [TestMethod]
+        public void Edit_ShouldNotEditNoAuthentication()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var user = DemoGetMethods.GetDemoUser(1);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            var controllerContext = new Mock<ControllerContext>();
+            var principal = new Moq.Mock<IPrincipal>();
+            principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
+            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
+            user.ShoppingLists.Add(shoppinglist);
+            mockdata.ShoppingLists.Add(shoppinglist);
+            mockdata.Users.Add(user);
+            //Compute
+            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
+            controller.ControllerContext = controllerContext.Object;
+            var result = controller.Edit(1);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+        }
+
+        [TestMethod]
+        public void AREdit_ShouldEdit()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var user = DemoGetMethods.GetDemoUser(1);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            var controllerContext = new Mock<ControllerContext>();
+            var principal = new Moq.Mock<IPrincipal>();
+            principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
+            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
+            user.ShoppingLists.Add(shoppinglist);
+            mockdata.ShoppingLists.Add(shoppinglist);
+            mockdata.Users.Add(user);
+            //Compute
+            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
+            controller.ControllerContext = controllerContext.Object;
+            var result = controller.Edit(shoppinglist);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+        }
+        [TestMethod]
+        public void AREdit_ShouldNotEdit()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var user = DemoGetMethods.GetDemoUser(1);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            var controllerContext = new Mock<ControllerContext>();
+            var principal = new Moq.Mock<IPrincipal>();
+            principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
+            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
+            user.ShoppingLists.Add(shoppinglist);
+            mockdata.ShoppingLists.Add(shoppinglist);
+            mockdata.Users.Add(user);
+            //Compute
+            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
+            controller.ControllerContext = controllerContext.Object;
+            controller.ModelState.Add("testError", new ModelState());
+            controller.ModelState.AddModelError("testError", "test");
+            var result = controller.Edit(shoppinglist);            
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod]
+        public void Delete_ShouldReturnView()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            mockdata.ShoppingLists.Add(shoppinglist);
+            //Compute
+            var result = controller.Delete(1);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+        [TestMethod]
+        public void Delete_ShouldRedirect()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            mockdata.ShoppingLists.Add(shoppinglist);
+            //Compute
+            var result = controller.Delete(null);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+        }
+        [TestMethod]
+        public void Delete_Should404()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            mockdata.ShoppingLists.Add(shoppinglist);
+            //Compute
+            var result = controller.Delete(3);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
+        }
+
+        [TestMethod]
+        public void DeleteConfirmed_ShouldDelete()
+        {
+            //Setup
+            var mockdata = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockdata);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            mockdata.ShoppingLists.Add(shoppinglist);
+            //Compute
+            Assert.IsTrue(mockdata.ShoppingLists.Count() == 1);
+            var result = controller.DeleteConfirmed(1);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            Assert.IsTrue(!mockdata.ShoppingLists.Any());
         }
         [TestMethod]
         public void RemoveItem_ShouldBeGone()
