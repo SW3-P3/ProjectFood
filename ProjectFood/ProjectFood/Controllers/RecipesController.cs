@@ -453,10 +453,13 @@ namespace ProjectFood.Controllers
             });
         }
 
-        private IEnumerable<Recipe> RecommendRecipes(User user)
+        public IEnumerable<Recipe> RecommendRecipes(User user)
         {
             // Get all recipies rated by the user
             var recipiesRatedByUser = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings.Select(y => y.User.ID).Contains(user.ID));
+
+            if (!recipiesRatedByUser.Any())
+                return _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients);
 
             // Pair the ingrdients with the rating given
             // If two ingredients are the same, take the avg of both ratings.
@@ -464,7 +467,7 @@ namespace ProjectFood.Controllers
 
             foreach (var recipie in recipiesRatedByUser.ToList())
             {
-                var score = recipie.Ratings.FirstOrDefault(x => x.User == user).Score;
+                var score = recipie.Ratings.FirstOrDefault(x => x.User.Username == user.Username).Score;
                 foreach (var ingredient in recipie.Ingredients)
                 {
                     // If the element is already rated, add the new rating to the list of ratings
