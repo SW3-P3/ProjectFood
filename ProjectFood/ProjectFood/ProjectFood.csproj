@@ -175,25 +175,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411271755573_Initial.cs" />
-    <Compile Include="Migrations\201411271755573_Initial.Designer.cs">
-      <DependentUpon>201411271755573_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201412020006123_RemovedUnused.cs" />
-    <Compile Include="Migrations\201412020006123_RemovedUnused.Designer.cs">
-      <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201412030103036_LastSentNotification.cs" />
-    <Compile Include="Migrations\201412030103036_LastSentNotification.Designer.cs">
-      <DependentUpon>201412030103036_LastSentNotification.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201412030118296_OffersSentTo.cs" />
-    <Compile Include="Migrations\201412030118296_OffersSentTo.Designer.cs">
-      <DependentUpon>201412030118296_OffersSentTo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201412040022587_eTilbudsavisIDonOffer.cs" />
-    <Compile Include="Migrations\201412040022587_eTilbudsavisIDonOffer.Designer.cs">
-      <DependentUpon>201412040022587_eTilbudsavisIDonOffer.cs</DependentUpon>
+    <Compile Include="Migrations\201412040151122_Initial.cs" />
+    <Compile Include="Migrations\201412040151122_Initial.Designer.cs">
+      <DependentUpon>201412040151122_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -699,20 +683,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411271755573_Initial.resx">
-      <DependentUpon>201411271755573_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412020006123_RemovedUnused.resx">
-      <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412030103036_LastSentNotification.resx">
-      <DependentUpon>201412030103036_LastSentNotification.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412030118296_OffersSentTo.resx">
-      <DependentUpon>201412030118296_OffersSentTo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412040022587_eTilbudsavisIDonOffer.resx">
-      <DependentUpon>201412040022587_eTilbudsavisIDonOffer.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201412040151122_Initial.resx">
+      <DependentUpon>201412040151122_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
