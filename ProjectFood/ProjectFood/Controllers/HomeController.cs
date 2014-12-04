@@ -26,7 +26,6 @@ namespace ProjectFood.Controllers
                 if (user == null)
                 {
                     FormsAuthentication.SignOut();
-                    Roles.DeleteCookie();
                     Session.Clear();
                     return View();
                 }
@@ -42,6 +41,7 @@ namespace ProjectFood.Controllers
                 ViewBag.WatchList = user.WatchList;
                 ViewBag.ShoppingLists = user.ShoppingLists;
             }
+
             return View();
         }
 

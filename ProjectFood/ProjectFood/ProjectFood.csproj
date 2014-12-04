@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +30,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +39,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -48,16 +51,14 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -99,6 +100,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -165,6 +167,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminPanelController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OfferController.cs" />
@@ -174,21 +177,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411271755573_Initial.cs" />
-    <Compile Include="Migrations\201411271755573_Initial.Designer.cs">
-      <DependentUpon>201411271755573_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201412020006123_RemovedUnused.cs" />
-    <Compile Include="Migrations\201412020006123_RemovedUnused.Designer.cs">
-      <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201412030103036_LastSentNotification.cs" />
-    <Compile Include="Migrations\201412030103036_LastSentNotification.Designer.cs">
-      <DependentUpon>201412030103036_LastSentNotification.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201412030118296_OffersSentTo.cs" />
-    <Compile Include="Migrations\201412030118296_OffersSentTo.Designer.cs">
-      <DependentUpon>201412030118296_OffersSentTo.cs</DependentUpon>
+    <Compile Include="Migrations\201412040952468_Initial-derp.cs" />
+    <Compile Include="Migrations\201412040952468_Initial-derp.Designer.cs">
+      <DependentUpon>201412040952468_Initial-derp.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -605,8 +596,6 @@
     <Content Include="Scripts\globalize\cultures\globalize.culture.zu.js" />
     <Content Include="Scripts\globalize\cultures\globalize.cultures.js" />
     <Content Include="Scripts\globalize\globalize.js" />
-    <Content Include="Scripts\jquery.json2html.js" />
-    <Content Include="Scripts\json2html.js" />
     <Content Include="Scripts\sass.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -681,6 +670,7 @@
     <Content Include="Views\User\EditPreferences.cshtml" />
     <Content Include="Views\Offer\Search.cshtml" />
     <Content Include="Views\ShoppingLists\WatchList.cshtml" />
+    <Content Include="Views\AdminPanel\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -693,17 +683,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411271755573_Initial.resx">
-      <DependentUpon>201411271755573_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412020006123_RemovedUnused.resx">
-      <DependentUpon>201412020006123_RemovedUnused.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412030103036_LastSentNotification.resx">
-      <DependentUpon>201412030103036_LastSentNotification.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412030118296_OffersSentTo.resx">
-      <DependentUpon>201412030118296_OffersSentTo.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201412040952468_Initial-derp.resx">
+      <DependentUpon>201412040952468_Initial-derp.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

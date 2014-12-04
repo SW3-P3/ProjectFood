@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml;
 using Antlr.Runtime;
 using Microsoft.Ajax.Utilities;
 using ProjectFood.Models;
@@ -19,35 +20,86 @@ namespace ProjectFood.Controllers
         private readonly DataBaseContext _db = new DataBaseContext();
 
         // GET: Recipes
-        public ActionResult Index(string sort)
+        public ActionResult Index(string sort, string searchString)
         {
             if (User.Identity.IsAuthenticated)
             {
                 ViewBag.Selected = "New";
-                Session["ScreenName"] = _db.Users.First(u => u.Username == User.Identity.Name).Name;
 
-                if (sort.IsNullOrWhiteSpace() || sort.Equals("New"))
+                if (string.IsNullOrEmpty(searchString))
                 {
-                    var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
-                    rec.Reverse();
-                    return View(rec);
-                }
+                    #region NoSearch
 
-                if (sort.Equals("Old")) {
-                    ViewBag.Selected = "Old";
-                    return View(_db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList());
-                } else if (sort.Equals("Recommend")) {
-                    var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
-                    ViewBag.Selected = "Recommend";
-                    return View(sortedRecipes.ToList());
-                } else if (sort.Equals("High")) {
-                    ViewBag.Selected = "High";
-                    return View(_db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings).OrderByDescending(x => x.Ratings.Select(y => y.Score).Average()));
-                } else {
-                    var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
-                    rec.Reverse();
-                    return View(rec);
-                }                
+                    if (sort.IsNullOrWhiteSpace() || sort.Equals("New"))
+                    {
+                        var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
+                        rec.Reverse();
+                        return View(rec);
+                    }
+
+                    if (sort.Equals("Old"))
+                    {
+                        ViewBag.Selected = "Old";
+                        return View(_db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList());
+                    }
+                    else if (sort.Equals("Recommend"))
+                    {
+                        var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
+                        ViewBag.Selected = "Recommend";
+                        return View(sortedRecipes.ToList());
+                    }
+                    else if (sort.Equals("High"))
+                    {
+                        ViewBag.Selected = "High";
+                        return
+                            View(
+                                _db.Recipes.Include(x => x.Ingredients)
+                                    .Include(x => x.Ratings)
+                                    .OrderByDescending(x => x.Ratings.Select(y => y.Score).Average()));
+                    }
+                    else
+                    {
+                        var rec = _db.Recipes.Include(r => r.Ingredients).Include(x => x.Ratings).ToList();
+                        rec.Reverse();
+                        return View(rec);
+                    }
+                    #endregion
+
+                }
+                else
+                #region Search
+                {
+                   var recipes =  SearchRecipe(searchString);
+                    if (sort.IsNullOrWhiteSpace() || sort.Equals("New"))
+                    {
+                        recipes.Reverse();
+                        return View(recipes);
+                    }
+
+                    if (sort.Equals("Old"))
+                    {
+                        ViewBag.Selected = "Old";
+                        return View(recipes);
+                    }
+                    else if (sort.Equals("Recommend"))
+                    {
+                        var sortedRecipes = RecommendRecipes(_db.Users.First(u => u.Username == User.Identity.Name));
+                        ViewBag.Selected = "Recommend";
+                        return View(sortedRecipes.ToList());
+                    }
+                    else if (sort.Equals("High"))
+                    {
+                        ViewBag.Selected = "High";
+                        return
+                            View(recipes.OrderByDescending(x => x.Ratings.Select(y => y.Score).Average()));
+                    }
+                    else
+                    {
+                        recipes.Reverse();
+                        return View(recipes);
+                    }
+                }
+                #endregion
             }
 
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
@@ -456,6 +508,13 @@ namespace ProjectFood.Controllers
             // Sort the recipies descending
             // return itz
             return recipiesRated.OrderByDescending(x => x.Item2).Select(x => x.Item1);
+        }
+
+        public List<Recipe> SearchRecipe(string searchstring)
+        {
+            return _db.Recipes.Include(r => r.Ingredients)
+                    .Include(x => x.Ratings)
+                    .Where(x => x.Title.ToLower().Contains(searchstring.ToLower())).ToList();
         }
     }
 }

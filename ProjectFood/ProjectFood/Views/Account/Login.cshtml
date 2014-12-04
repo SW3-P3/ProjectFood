@@ -15,25 +15,31 @@
             {
                 @Html.AntiForgeryToken()
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group form-group-lg">
-        <div class="col-md-offset-3 col-md-6">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-        </div>
-    </div>
                 <div class="form-group form-group-lg">
                     <div class="col-md-offset-3 col-md-6">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Kodeord" })
+                        <div class="input-group">
+                            <div class="input-group-addon"><span style="font-family: 'Segoe UI Emoji';" class="lead">&#64;</span></div>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group form-group-lg">
+                    <div class="col-md-offset-3 col-md-6">
+                        <div class="input-group">
+                            <div class="input-group-addon"><span style="font-family: 'Segoe UI Emoji';" class="lead">&#128273;</span></div>
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Kodeord" })
+                        </div>
                         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-offset-4 col-md-5">         
-                            <div class="lead" onclick="ToggleBoolRememberMe()">
-                                <input type="hidden" name="RememberMe" id="RememberMe" value="false" />
+                    <div class="col-md-offset-4 col-md-5">
+                        <div class="lead" onclick="ToggleBoolRememberMe()">
+                            <input type="hidden" name="RememberMe" id="RememberMe" value="false" />
                             <span id="check" class="glyphicon glyphicon-unchecked"></span>&nbsp;&nbsp;
-                                Husk mig!
-                            </div>
+                            Husk mig!
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -42,23 +48,23 @@
                     </div>
                 </div>
                 @*<p>
-        @Html.ActionLink("Opret ny bruger", "Register")
-    </p>
-     Enable this once you have account confirmation enabled for password reset functionality
-        <p>
-            @Html.ActionLink("Forgot your password?", "ForgotPassword")
-        </p>*@
+                        @Html.ActionLink("Opret ny bruger", "Register")
+                    </p>
+                     Enable this once you have account confirmation enabled for password reset functionality
+                        <p>
+                            @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                        </p>*@
             }
         </section>
     </div>
     @*<div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>*@
+            <section id="socialLoginForm">
+                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+            </section>
+        </div>*@
 </div>
 
 @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
-    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }
