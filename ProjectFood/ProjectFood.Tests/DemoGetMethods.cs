@@ -13,17 +13,17 @@ namespace ProjectFood.Tests
     {
         public static ShoppingList GetDemoShoppingListWithItem(int amount)
         {
-            var demoList = new ShoppingList() {ID = 1, Title = "DemoShopList"};
-            
+            var demoList = new ShoppingList() { ID = 1, Title = "DemoShopList" };
+
             for (int i = 0, setid = 1; i < amount; i++, setid++)
-            {                
+            {
                 demoList.Items.Add(GetDemoItem(setid));
             }
             return demoList;
         }
         public static ShoppingList GetDemoShoppingListEmpty()
         {
-            return new ShoppingList() {ID = 1, Title = "DemoShopList"};
+            return new ShoppingList() { ID = 1, Title = "DemoShopList" };
         }
 
         public static Item GetDemoItem(int id)
@@ -33,26 +33,26 @@ namespace ProjectFood.Tests
 
         public static Item GetDemoItem(int id, string name)
         {
-            return new Item(){ID = id, Name = name};
+            return new Item() { ID = id, Name = name };
         }
         public static Offer GetDemoOffer(string heading, int id, decimal price)
         {
-            return new Offer() {Heading = heading, ID = id, Price = price, Store = "Netto"};
+            return new Offer() { Heading = heading, ID = id, Price = price, Store = "Netto" };
         }
 
         public static User GetDemoUser(int id)
         {
-            return new User() {ID = id, Name = "DemoUser", Username = "DemoUser"};
+            return new User() { ID = id, Name = "DemoUser", Username = "DemoUser" };
         }
 
         public static Rating GetDemoRating(int id, int score)
         {
-            return new Rating() {ID = id, Score = score};
+            return new Rating() { ID = id, Score = score };
         }
 
-        public static Pref GetDemoPref(int id, bool store, string name )
+        public static Pref GetDemoPref(int id, bool store, string name)
         {
-            return new Pref(){ID = id, Store = store, Value = name };
+            return new Pref() { ID = id, Store = store, Value = name };
         }
 
         public static ShoppingList_Item GetDemoShoppingListItemRelation(ShoppingList shoppinglist, int shopID, int itemid)
@@ -66,9 +66,9 @@ namespace ProjectFood.Tests
             };
         }
 
-#region RecipeController
+        #region RecipeController
 
-        public static Recipe GetDemoRecipeWithItem(int amount, int recipeID)
+        public static Recipe GetDemoRecipeWithItem(int amount)
         {
             var demoRecipe = new Recipe() { ID = 1, Title = "DemoRecipe", AuthorName = "DemoUser" };
 
@@ -80,10 +80,25 @@ namespace ProjectFood.Tests
             return demoRecipe;
         }
 
+        public static Recipe GetDemoRecipeWithItem(int amount, string title, int id)
+        {
+                var demoRecipe = new Recipe() { ID = id, Title = title, AuthorName = "DemoUser" };
+
+                for (int i = 0; i < amount; i++)
+                {
+                    demoRecipe.Ingredients.Add(GetDemoItem(i));
+                }
+                
+                demoRecipe.Ingredients.Add(GetDemoItem(1, "SameItem"));
+
+                return demoRecipe;
+        }
+
         public static Recipe_Ingredient GetDemoingredient(int IngID, int RecID, Recipe recipe)
         {
-            return new Recipe_Ingredient() {IngredientID = IngID, RecipeID = RecID, Ingredient = GetDemoItem(1, "jens"), Recipe = recipe};
+            return new Recipe_Ingredient() { IngredientID = IngID, RecipeID = RecID, Ingredient = GetDemoItem(1, "jens"), Recipe = recipe };
         }
-#endregion 
+
+        #endregion
     }
 }

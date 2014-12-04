@@ -8,7 +8,6 @@ using Moq;
 using NUnit.Framework;
 using ProjectFood.Controllers;
 using ProjectFood.Models;
-using ProjectFood.Models.Api;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace ProjectFood.Tests

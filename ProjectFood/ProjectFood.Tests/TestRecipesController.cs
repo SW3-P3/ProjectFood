@@ -1,235 +1,171 @@
 ﻿using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using NUnit.Framework;
 using ProjectFood.Controllers;
+using ProjectFood.Models;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 
 namespace ProjectFood.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class TestRecipesController
     {
+        #region Setup
 
-        [TestMethod]
+        [SetUp]
+        public void Initialize()
+        {
+            _mockdata = new TestProjectFoodContext();
+            _controller = new RecipesController(_mockdata);
+            _user = DemoGetMethods.GetDemoUser(1);
+            _mockdata.Users.Add(_user);
+            var controllerContext = new Mock<ControllerContext>();
+            var principal = new Moq.Mock<IPrincipal>();
+            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
+            principal.SetupGet(x => x.Identity.Name).Returns(_user.Name);
+            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
+            _controller.ControllerContext = controllerContext.Object;
+
+            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5);
+            _mockdata.Recipes.Add(recipe);
+        }
+
+        private User _user = new User();
+        private RecipesController _controller = new RecipesController();
+        private TestProjectFoodContext _mockdata = new TestProjectFoodContext();
+
+        #endregion
+
+        [Test]
         public void Recipe_DeleteConfirmedRecipe_Test()
         {
-            //Setup
-            var mockData = new TestProjectFoodContext();
-            var controller = new RecipesController(mockData);
-            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5, 1);
-            mockData.Recipes.Add(recipe);
+
             //Compute
-            var result = controller.DeleteConfirmed(1);
+            var result = _controller.DeleteConfirmed(1);
             //Assert
-            Assert.AreEqual(0, mockData.Recipes.Count());
+            Assert.AreEqual(0, _mockdata.Recipes.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void Recipe_RemoveIngredient_Test()
         {
-            //Setup
-            var mockData = new TestProjectFoodContext();
-            var controller = new RecipesController(mockData);
-            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5, 1);
-            mockData.Recipes.Add(recipe);
             //Compute
-            var result = controller.RemoveIngredient(1, 1);
+            var result = _controller.RemoveIngredient(1, 1);
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(4, mockData.Recipes.First().Ingredients.Count);
+            Assert.AreEqual(4, _mockdata.Recipes.First().Ingredients.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void Recipe_AddIngredient_Test()
         {
-            //Setup
-            var mockData = new TestProjectFoodContext();
-            var controller = new RecipesController(mockData);
-            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5, 1);
-            mockData.Recipes.Add(recipe);
             //Compute
-            var result = controller.AddIngredient(1, "test", 10, "kg", 4);
+            var result = _controller.AddIngredient(1, "test", 10, "kg", 4);
             //Assert
-            Assert.AreEqual(6, mockData.Recipes.First().Ingredients.Count);
+            Assert.AreEqual(6, _mockdata.Recipes.First().Ingredients.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void Recipe_Create_Test()
         {
-            //Setup
-            var mockdata = new TestProjectFoodContext();
-            var controller = new RecipesController(mockdata);
-            var user = DemoGetMethods.GetDemoUser(1);
-            mockdata.Users.Add(user);
-            var controllerContext = new Mock<ControllerContext>();
-            var principal = new Moq.Mock<IPrincipal>();
-            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
-            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
-            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
-            controller.ControllerContext = controllerContext.Object;
             //Compute
-            var result = controller.Create();
+            var result = _controller.Create();
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
-        [TestMethod]
+        [Test]
         public void Recipe_Index_Test()
         {
-            //Setup
-            var mockdata = new TestProjectFoodContext();
-            var controller = new RecipesController(mockdata);
-            var user = DemoGetMethods.GetDemoUser(1);
-            mockdata.Users.Add(user);
-            var controllerContext = new Mock<ControllerContext>();
-            var principal = new Moq.Mock<IPrincipal>();
-            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
-            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
-            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
-            controller.ControllerContext = controllerContext.Object;
+
             //Compute
-            var result = controller.Index("Old");
+            var result = _controller.Index("Old");
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
-        [TestMethod]
+        [Test]
         public void Recipe_Details_Test()
         {
-            //Setup
-            var mockdata = new TestProjectFoodContext();
-            var controller = new RecipesController(mockdata);
-            var user = DemoGetMethods.GetDemoUser(1);
-            mockdata.Users.Add(user);
-            var controllerContext = new Mock<ControllerContext>();
-            var principal = new Moq.Mock<IPrincipal>();
-            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
-            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
-
-            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5, 1);
-            mockdata.Recipes.Add(recipe);
             //Compute
-            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
-            controller.ControllerContext = controllerContext.Object;
+            var result = _controller.Details(1);
             //Assert
-            var result = controller.Details(1);
-
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
-        [TestMethod]
+        [Test]
         public void Recipe_Edit_Test()
         {
-            //Setup
-            var mockdata = new TestProjectFoodContext();
-            var controller = new RecipesController(mockdata);
-            var user = DemoGetMethods.GetDemoUser(1);
-            mockdata.Users.Add(user);
-            var controllerContext = new Mock<ControllerContext>();
-            var principal = new Moq.Mock<IPrincipal>();
-            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
-            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
-
-            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5, 1);
-            mockdata.Recipes.Add(recipe);
             //Compute
-            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
-            controller.ControllerContext = controllerContext.Object;
+            var result = _controller.Edit(1, false);
             //Assert
-            var result = controller.Edit(1, false);
-
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
-        [TestMethod]
+        [Test]
         public void Recipe_Ingredients_Test_Test()
         {
-            //Setup
-            var mockdata = new TestProjectFoodContext();
-            var controller = new RecipesController(mockdata);
-            var user = DemoGetMethods.GetDemoUser(1);
-            mockdata.Users.Add(user);
-            var controllerContext = new Mock<ControllerContext>();
-            var principal = new Moq.Mock<IPrincipal>();
-            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
-            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
-
-            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5, 1);
-            mockdata.Recipes.Add(recipe);
-            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
-            controller.ControllerContext = controllerContext.Object;
             //Compute
-            var result = controller.Ingredients(1, 4);
+            var result = _controller.Ingredients(1, 4);
             //Assert
-
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
-        [TestMethod]
+        [Test]
         public void Recipe_AddRating_Test()
         {
-            //Setup
-
-            var mockdata = new TestProjectFoodContext();
-            var controller = new RecipesController(mockdata);
-            var user = DemoGetMethods.GetDemoUser(1);
-            mockdata.Users.Add(user);
-            var controllerContext = new Mock<ControllerContext>();
-            var principal = new Moq.Mock<IPrincipal>();
-            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
-            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
-
-            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
-            controller.ControllerContext = controllerContext.Object;
-
-            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5, 1);
-            mockdata.Recipes.Add(recipe);
             //Compute
-            var result = controller.AddRating(1, 4);
+            var result = _controller.AddRating(1, 4);
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, mockdata.Recipes.First().Ratings.Count);
+            Assert.AreEqual(1, _mockdata.Recipes.First().Ratings.Count);
+            Assert.AreEqual(4, _mockdata.Recipes.First().Ratings.First().Score);
         }
 
+        [Test]
         public void Recipe_AddItemToShoppingList_Test()
         {
             //Setup
-
-            var mockdata = new TestProjectFoodContext();
-            var controller = new RecipesController(mockdata);
-
-            var user = DemoGetMethods.GetDemoUser(1);
-            mockdata.Users.Add(user);
-            var controllerContext = new Mock<ControllerContext>();
-            var principal = new Moq.Mock<IPrincipal>();
-            principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
-            principal.SetupGet(x => x.Identity.Name).Returns(user.Name);
-            controllerContext.SetupGet(x => x.HttpContext.User).Returns(principal.Object);
-            controller.ControllerContext = controllerContext.Object;
-
-            var recipe = DemoGetMethods.GetDemoRecipeWithItem(5, 1);
-            mockdata.Recipes.Add(recipe);
-
             var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
-            mockdata.ShoppingLists.Add(shoppinglist);
+            _mockdata.ShoppingLists.Add(shoppinglist);
 
             //Compute
-            var result = controller.AddItemToShoppingList(1, 1, 100, "gram");
+            var result = _controller.AddItemToShoppingList(1, 1, 100, "gram");
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, mockdata.ShoppingLists.First().Items.Count);
+            Assert.AreEqual(1, _mockdata.ShoppingLists.First().Items.Count);
+        }
+
+        [Test]
+        public void Recipe_RecommendRecipe_Test()
+        {
+
+            // tre recipes, recipe fra TestFixture, og yderlige to fra dette setup.
+            // De to fra dette setup har et items tilfældes, som er forskelligt fra TestFixture recipe.
+            //Setup
+            var recipe2 = DemoGetMethods.GetDemoRecipeWithItem(5, "TestRecipe2", 2);
+            var recipe3 = DemoGetMethods.GetDemoRecipeWithItem(5, "TestRecipe3", 3);
+            _mockdata.Recipes.Add(recipe2);
+            _mockdata.Recipes.Add(recipe3);
+            //Compute
+            _controller.AddRating(1, 1);
+            _controller.AddRating(2, 5);
+            var result = _controller.RecommendRecipes(_user);
+            Assert.AreEqual(recipe2, result.First());
+            Assert.AreEqual(_mockdata.Recipes.First(), result.Last());
         }
     }
 }
