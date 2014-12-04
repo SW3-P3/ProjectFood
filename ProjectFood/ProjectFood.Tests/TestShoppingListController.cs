@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProjectFood.Models;
 using ProjectFood.Controllers;
@@ -118,6 +121,41 @@ namespace ProjectFood.Tests
             Assert.IsNotNull(resultunchanged);
             Assert.IsTrue(resultitem.Amount == 15);
             Assert.IsTrue(resultunchanged.Amount == 10);
+        }
+
+        /*[TestMethod] 
+         public void FindShoppingListFromId_ShouldFindList()
+         {
+             //Setup
+             var mockData = new TestProjectFoodContext();
+             var controller = new ShoppingListsController(mockData);
+             var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+             mockData.ShoppingLists.Add(shoppinglist);
+             //Compute
+             var result = controller.
+         }*/
+
+        [TestMethod]
+        public void ChooseOffer_ShouldChooseOffer()
+        {
+            //Setup
+            var mockData = new TestProjectFoodContext();
+            var controller = new ShoppingListsController(mockData);
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            var item = DemoGetMethods.GetDemoItem(1, "DemoOfferItem");
+            var offer = DemoGetMethods.GetDemoOffer("DemoOfferItem", 1, 20);
+            item.Offers.Add(offer);
+            shoppinglist.Items.Add(item);
+            mockData.ShoppingLists.Add(shoppinglist);
+            mockData.Offers.Add(offer);
+            mockData.Items.Add(item);
+            mockData.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(shoppinglist, 1, 1));
+            //Compute
+            var result = controller.ChooseOffer(1, 1, 1);
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(mockData.ShoppingList_Item.First().selectedOffer == offer);
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
         }
     }
 }
