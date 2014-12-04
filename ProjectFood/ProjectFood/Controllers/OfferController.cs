@@ -118,20 +118,27 @@ namespace ProjectFood.Controllers
                 listofApiOffers.AddRange(offersResult);
             }
 
-            foreach(var o in listofApiOffers) {
-                _db.Offers.Add(new Offer {
+            foreach(var o in listofApiOffers)
+            {
+                var newOffer = new Offer
+                {
+                    eTilbudsavisID = o.id,
                     Heading = o.heading,
                     Begin = o.run_from,
                     End = o.run_till,
                     Store = o.branding.name,
                     Price = o.pricing.price,
                     Unit = o.quantity.unit != null ? o.quantity.size.@from + " " + o.quantity.unit.symbol : " "
-                });
+                };
+
+                // If the offer doesn't already exist in the database add it.
+                if (!_db.Offers.Any(x => x.eTilbudsavisID == newOffer.eTilbudsavisID))
+                {
+                    _db.Offers.Add(newOffer);
+                }
             }
 
             _db.SaveChanges();
-
-            NotifyWatchers(_db.Offers.ToList());
 
             return RedirectToAction("Index");
         }
