@@ -125,6 +125,7 @@
     <Compile Include="TestItemDbSet.cs" />
     <Compile Include="TestRecipeDBSet.cs" />
     <Compile Include="TestUserController.cs" />
+    <Compile Include="TestOfferController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -18,7 +18,15 @@ namespace ProjectFood.Controllers
     public class OfferController : Controller
     {
 
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
+
+        public OfferController() { }
+
+        public OfferController(IDataBaseContext context)
+        {
+            _db = context;
+        }
+
 
         // GET: Offer
         public ActionResult Index(int? shoppingListID)

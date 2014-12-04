@@ -157,7 +157,7 @@ namespace ProjectFood.Tests
 
             _controller.RemovePreference(username, preferenceID);
 
-            Assert.AreNotEqual(3,_user.Preferences);
+            Assert.AreNotEqual(3,_user.Preferences.Count());
             Assert.IsFalse(_user.Preferences.Exists(x=> x.ID == preferenceID));
         }
 
@@ -173,8 +173,8 @@ namespace ProjectFood.Tests
 
             _controller.RemovePreference(username, preferenceID);
 
-            Assert.AreNotEqual(3, _user.Preferences);
-            Assert.IsFalse(_user.Preferences.Exists(x => x.ID == preferenceID));
+            Assert.AreEqual(3, _user.Preferences.Count());
+            Assert.IsTrue(_user.Preferences.Exists(x => x.ID == preferenceID));
         }
 
         [TestCase("Bilka")]
