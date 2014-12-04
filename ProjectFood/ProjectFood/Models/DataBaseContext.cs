@@ -83,6 +83,5 @@ namespace ProjectFood.Models
                     x.MapRightKey("ShoppingListId");
                 });
         }
-
     }
 }
