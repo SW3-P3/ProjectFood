@@ -1,16 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NUnit.Framework;
 using ProjectFood.Controllers;
 using ProjectFood.Models;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace ProjectFood.Tests
+namespace ProjectFood.Tests.Tests
 {
     [TestFixture]
     public class TestUserController

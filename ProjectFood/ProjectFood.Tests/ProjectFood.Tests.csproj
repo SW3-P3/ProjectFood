@@ -108,24 +108,24 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ApiTest.cs" />
     <Compile Include="DemoGetMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestDbSet.cs" />
-    <Compile Include="TestRecipesController.cs" />
-    <Compile Include="TestShoppingListDbSet.cs" />
+    <Compile Include="TestDBsets\RecipeIngredientDbSet.cs" />
+    <Compile Include="TestDBsets\TestDbSet.cs" />
+    <Compile Include="TestDBsets\TestItemDbSet.cs" />
+    <Compile Include="TestDBsets\TestOfferDbSet.cs" />
+    <Compile Include="TestDBsets\TestPreferenceDbSet.cs" />
+    <Compile Include="TestDBsets\TestRatingDbSet.cs" />
+    <Compile Include="TestDBsets\TestRecipeDBSet.cs" />
+    <Compile Include="TestDBsets\TestShoppingListDbSet.cs" />
+    <Compile Include="TestDBsets\TestShoppingListItemDbSet.cs" />
+    <Compile Include="TestDBsets\TestUserDbSet.cs" />
     <Compile Include="TestProjectFoodContext.cs" />
-    <Compile Include="TestRatingDbSet.cs" />
-    <Compile Include="TestShoppingListController.cs" />
-    <Compile Include="TestUserDbSet.cs" />
-    <Compile Include="TestPreferenceDbSet.cs" />
-    <Compile Include="RecipeIngredientDbSet.cs" />
-    <Compile Include="TestShoppingListItemDbSet.cs" />
-    <Compile Include="TestOfferDbSet.cs" />
-    <Compile Include="TestItemDbSet.cs" />
-    <Compile Include="TestRecipeDBSet.cs" />
-    <Compile Include="TestUserController.cs" />
-    <Compile Include="TestOfferController.cs" />
+    <Compile Include="Tests\ApiTest.cs" />
+    <Compile Include="Tests\TestOfferController.cs" />
+    <Compile Include="Tests\TestRecipesController.cs" />
+    <Compile Include="Tests\TestShoppingListController.cs" />
+    <Compile Include="Tests\TestUserController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -142,6 +142,7 @@
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using ProjectFood.Models;
 
-namespace ProjectFood.Tests
+namespace ProjectFood.Tests.TestDBsets
 {
     class TestShoppingListItemDbSet : TestDbSet<ShoppingList_Item>
     {

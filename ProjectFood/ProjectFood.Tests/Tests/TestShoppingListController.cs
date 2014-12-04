@@ -1,15 +1,12 @@
 ﻿using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Web.Mvc;
-using System.Web.UI;
-using Moq;
-using System.Web.UI.WebControls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ProjectFood.Models;
+using Moq;
 using ProjectFood.Controllers;
+using ProjectFood.Models;
 
-namespace ProjectFood.Tests
+namespace ProjectFood.Tests.Tests
 {
     [TestClass]
     public class TestShoppingListsController

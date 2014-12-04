@@ -7,8 +7,7 @@ using ProjectFood.Controllers;
 using ProjectFood.Models;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-
-namespace ProjectFood.Tests
+namespace ProjectFood.Tests.Tests
 {
     [TestFixture]
     public class TestRecipesController
