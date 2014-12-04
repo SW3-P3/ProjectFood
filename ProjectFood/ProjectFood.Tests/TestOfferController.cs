@@ -37,6 +37,8 @@ namespace ProjectFood.Tests
             var list =  _mockdata.ShoppingLists.Add(DemoGetMethods.GetDemoShoppingListWithItem(3));
             _mockdata.Users.First().ShoppingLists.Add(list);
 
+            _mockdata.Items.Add(DemoGetMethods.GetDemoItem(4, "Ost"));
+
         }
 
         #endregion
@@ -49,11 +51,43 @@ namespace ProjectFood.Tests
 
 
         [Test]
-        public void TestMethod1()
+        public void IndexView_UserLoggedIn_ShouldReturnViewResult()
         {
             var result = _controller.Index(_user.ShoppingLists.First().ID);
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 1)]
+        [TestCase(3, 1)]
+        public void AddOfferToShoppingList_Offers_ShouldAddOffer(int offerId, int shoppingListId)
+        {
+            Assert.AreEqual(_user.ShoppingLists.First().Items.Count(), 3);
+
+            _controller.AddOfferToShoppingList(offerId, shoppingListId);
+
+            Assert.AreEqual(_user.ShoppingLists.First().Items.Count(), 4);
+        }
+
+        [TestCase("Ost")]
+        [TestCase("Bacon")]
+        [TestCase("Leverpostej")]
+        public void GetOfferForItem_DifferentStrings_ShouldFindOffers(string id)
+        {
+            var result = _controller.GetOffersForItem(id);
+            
+            Assert.AreEqual(result.Count(), 1 );
+        }
+
+        [Test]
+        public void GetofferForItem_AnItem_ShouldFind()
+        {
+            var result = _controller.GetOffersForItem(_mockdata.Items.First(x=> x.Name == "Ost"));
+
+            Assert.AreEqual(result.Count(), 1);
+
+        }
+
     }
 }
