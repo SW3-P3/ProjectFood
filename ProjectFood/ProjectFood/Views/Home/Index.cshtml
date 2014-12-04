@@ -16,15 +16,18 @@
         <p><a href="http://www.cs.aau.dk" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
     </div>*@
 
-@if(User.Identity.IsAuthenticated) {
+@if (User.Identity.IsAuthenticated)
+{
     <div class="container-fluid nopadding">
-        @if(ViewBag.WatchList != null) {
-            <div class="col-md-4">
+        @if (ViewBag.WatchList != null)
+        {
+            <div class="col-md-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading lead">Tilbud til dig</div>
                     <div class="panel-body">
                         <div class="list-group">
-                            @foreach(var item in ((ProjectFood.Models.ShoppingList)ViewBag.WatchList).Items) {
+                            @foreach (var item in ((ProjectFood.Models.ShoppingList)ViewBag.WatchList).Items)
+                            {
 
                                 <a href="@Url.Action("WatchList", "ShoppingLists", new { itemID = item.ID })" class="list-group-item lead">
                                     @(item.Name.First().ToString().ToUpper() + item.Name.Substring(1))
@@ -41,38 +44,44 @@
                 </div>
             </div>
         }
-        @if(ViewBag.ShoppingLists != null) {
-            <div class="col-md-4">
+        @if (ViewBag.ShoppingLists != null)
+        {
+            <div class="col-md-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading lead">Dine indkøbslister</div>
                     <div class="panel-body">
                         <div class="list-group">
-                            @foreach(var list in (IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.ShoppingLists) {
+                            @foreach (var list in (IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.ShoppingLists)
+                            {
 
-                                <a href="@Url.Action("Details", "ShoppingLists", new { id = list.ID })" class="list-group-item lead">
+                                <a href="@Url.Action("Details", "ShoppingLists", new {id = list.ID})" class="list-group-item lead">
                                     @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(list.Title)
                                     <span class="badge">@list.Items.Count</span>
                                 </a>
                             }
-                            @if(((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.ShoppingLists).Count() == 0) {
-                                <a onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" 
+                            @if (((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.ShoppingLists).Count() == 0)
+                            {
+                                <a onclick=" $('div#createModal').modal('show'); setTimeout(function() { $('input#title').focus() }, 1000); "
                                    class="list-group-item list-group-item-info"
-                                   style="cursor:pointer">
+                                   style="cursor: pointer">
                                     Opret ny indkøbsliste
                                 </a>
                                 @Html.Partial("_CreateShoppingList")
-                            } else {
+                            }
+                            else
+                            {
                                 <a href="@Url.Action("Index", "ShoppingLists")" class="list-group-item list-group-item-info">
                                     Se alle indkøbslister
                                 </a>
                             }
-                            
+
                         </div>
                     </div>
                 </div>
             </div>
         }
-        <div class="col-md-4">
+    </div>
+        <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading lead">Anbefalede opskrifter</div>
                 <div class="panel-body">
@@ -80,7 +89,7 @@
                         int i = 1;
                         if (((IEnumerable<ProjectFood.Models.Recipe>) ViewBag.Recipes).Any())
                         {
-                            foreach (var recipe in (IEnumerable<ProjectFood.Models.Recipe>) ViewBag.Recipes)
+                            foreach (var recipe in ((IEnumerable<ProjectFood.Models.Recipe>) ViewBag.Recipes).Take(3))
                             {
                                 <div class="col-md-4">
                                     <div class="panel panel-default"
@@ -88,7 +97,7 @@
                                          onmouseover=" $(this).removeClass('panel-default').addClass('panel-info'); "
                                          onmouseout=" $(this).addClass('panel-default').removeClass('panel-info'); "
                                          onclick=" window.location = '@Url.Action("details", "Recipes", new {id = recipe.ID})' ">
-                                        <div class="panel-heading">
+                                        <div class="panel panel-heading">
                                             <h3>@recipe.Title</h3>
                                         </div>
                                         <div class="panel-body">
@@ -112,6 +121,9 @@
                                             <table class="table-condensed">
                                                 @foreach (var ingredient in recipe.Ingredients.Take(3))
                                                 {
+                                                    {
+
+                                                    }
                                                     <tr>
                                                         <td>@ingredient.Name</td>
                                                     </tr>
@@ -126,17 +138,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                if (i%3 == 0)
-                                {
-                                    <div class="row"></div>
-                                }
-                                i++;
                             }
                         }
                     }
-
-                </div>
+                </div><a class="list-group-item list-group-item-info" href="@Url.Action("Index", "Recipes")">Se alle opskrifter</a>
             </div>
         </div>
-    </div>
 }
