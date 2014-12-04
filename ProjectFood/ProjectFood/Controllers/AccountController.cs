@@ -19,10 +19,13 @@ namespace ProjectFood.Controllers
     {
         private ApplicationUserManager _userManager;
 
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
 
-        public AccountController()
+        public AccountController() { }
+
+        public AccountController(IDataBaseContext context)
         {
+            _db = context;
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )

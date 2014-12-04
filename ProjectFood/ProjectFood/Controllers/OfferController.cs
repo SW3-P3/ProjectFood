@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Web.Mvc;
 using System.Web.Routing;
 using ProjectFood.Models;
@@ -18,7 +19,15 @@ namespace ProjectFood.Controllers
     public class OfferController : Controller
     {
 
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
+
+        public OfferController() { }
+
+        public OfferController(IDataBaseContext context)
+        {
+            _db = context;
+        }
+
 
         // GET: Offer
         public ActionResult Index(int? shoppingListID)
@@ -207,10 +216,11 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Search/" + id);
         }
 
-        private List<Offer> GetOffersForItem(string str)
+        internal List<Offer> GetOffersForItem(string str)
         {
             return _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username.Equals(User.Identity.Name)))
-                .Where(x => x.Heading.ToLower().Contains(str.ToLower()))
+                .Where(x => x.Heading.ToLower().Contains(str.ToLower() + " ") || x.Heading.ToLower().Contains(" " + str.ToLower()) ||
+                            String.Equals(x.Heading, str, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
         }
 
@@ -224,24 +234,24 @@ namespace ProjectFood.Controllers
                 foreach (var item in user.WatchList.Items)
                 {
                     relevantOffers.AddRange(GetOffersForItem(item));
-                    
+
                 }
                 
                 //do stuff
             }
         }
 
-        private List<Offer> GetOffersForItem(Item item)
+        internal List<Offer> GetOffersForItem(Item item)
         {
             return _db.Offers
-                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") 
+                    || x.Heading.ToLower().Contains(" " + item.Name.ToLower())
+                    || String.Equals(x.Heading, item.Name, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
         }
 
         private Item OfferToItem(Offer offer)
         {
-
-
             return new Item { Name = offer.Heading };
         }
     }

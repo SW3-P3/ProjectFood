@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using ProjectFood.Models;
 
 namespace ProjectFood.Tests
@@ -38,5 +40,48 @@ namespace ProjectFood.Tests
         public DbSet<User> Users { get; private set; }
         public DbSet<Pref> Preferences { get; private set; }
         public DbSet<Rating> Ratings { get; private set; }
+
+        public IEnumerable<Offer> OffersFilteredWithString(params string[] args)
+        {
+            var blacklist = new List<string> { ",", "eller" };
+
+            var fromArgs = new List<string>();
+            foreach (var str in args)
+            {
+                fromArgs.AddRange(str.Split(','));
+            }
+            blacklist.AddRange(fromArgs);
+            // If an empty strings if any was given
+            blacklist.RemoveAll(x => x.Trim().Equals(string.Empty));
+
+            var res = new List<Offer>();
+
+            foreach (var o in Offers)
+            {
+                bool flag = !(o.End < DateTime.Now);
+
+                foreach (var item in blacklist)
+                {
+                    if (o.Heading.ToLower().Contains(item.ToLower()) || o.Store.ToLower().Contains(item.ToLower()))
+                        flag = false;
+                }
+
+                if (flag && o.Unit.Trim() != "")
+                    res.Add(o);
+            }
+            return res;
+        }
+
+        public IEnumerable<Offer> OffersFiltered()
+        {
+            return OffersFilteredWithString();
+        }
+
+        public IEnumerable<Offer> OffersFilteredByUserPrefs(User u)
+        {
+            var prefs = Users.Include(a => a.Preferences).First(x => x.Username == u.Username).Preferences;
+            var storesBlackListed = prefs.Select(x => x.Value).ToArray();
+            return OffersFilteredWithString(storesBlackListed);
+        }
     }
 }

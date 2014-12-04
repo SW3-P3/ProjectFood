@@ -89,14 +89,13 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Title")] ShoppingList shoppingList, string from)
         {
-            if(ModelState.IsValid) {
-                _db.ShoppingLists.Add(shoppingList);
+            if(ModelState.IsValid) {              
                 if (User.Identity.IsAuthenticated)
                 {
+                    _db.ShoppingLists.Add(shoppingList);
                     _db.Users.Include(u => u.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.Add(shoppingList);
-                }
-               
-                _db.SaveChanges();
+                    _db.SaveChanges();
+                }                               
             }
 
             return Redirect(from);
