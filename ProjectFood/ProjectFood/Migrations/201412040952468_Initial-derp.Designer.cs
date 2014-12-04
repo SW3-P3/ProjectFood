@@ -7,13 +7,13 @@ namespace ProjectFood.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.1-30610")]
-    public sealed partial class OffersSentTo : IMigrationMetadata
+    public sealed partial class Initialderp : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(OffersSentTo));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Initialderp));
         
         string IMigrationMetadata.Id
         {
-            get { return "201412030118296_OffersSentTo"; }
+            get { return "201412040952468_Initial-derp"; }
         }
         
         string IMigrationMetadata.Source

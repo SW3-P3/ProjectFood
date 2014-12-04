@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 
 namespace ProjectFood.Models
 {
@@ -9,8 +10,15 @@ namespace ProjectFood.Models
         public string Name { get; set; }
         public ICollection<Offer> Offers { get; set; }
 
+        public ICollection<Recipe> OnRecipies { get; set; }
+
+        public ICollection<ShoppingList> OnShoppinglists { get; set; }
+
+
         public Item()
         {
+            OnRecipies = new List<Recipe>();
+            OnShoppinglists = new List<ShoppingList>();
             Offers = new List<Offer>();
         }
     }

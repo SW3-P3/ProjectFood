@@ -45,12 +45,13 @@ function ShareStatus(json) {
         $('#errorMessage').addClass('hidden');
         ShoppingListShare(json.Message);
     } else {
+        MakeSnackbar(json.Message, "glyphicon-exclamation-sign");
         $('#errorMessage').html(json.Message).removeClass('hidden');
     }
 };
 
 function EditAmount(itemName, itemID, amount, unit) {
-    $('#modalTitle').html('Sæt ny mængde for ' + itemName);
+    $('#editModalTitle').html('Sæt ny mængde for ' + itemName);
     $('input#itemID').val(itemID);
     $('input#amount').val(parseFloat(amount.replace(",", ".")).toString());
     $('input#unit').val(unit);
