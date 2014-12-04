@@ -13,7 +13,6 @@ namespace ProjectFood.Models
         public string AuthorName { get; set; }
         public string Title { get; set; }
         public ICollection<Item> Ingredients { get; set; }
-        public string Tags { get; set; }
         public int Minutes { get; set; }
         public string Instructions { get; set; }
         public ICollection<Rating> Ratings { get; set; }
