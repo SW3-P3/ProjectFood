@@ -26,7 +26,6 @@ namespace ProjectFood.Controllers
                 if (user == null)
                 {
                     FormsAuthentication.SignOut();
-                    Roles.DeleteCookie();
                     Session.Clear();
                     return View();
                 }
