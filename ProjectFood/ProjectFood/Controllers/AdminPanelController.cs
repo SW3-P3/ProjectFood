@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using ProjectFood.Models;
 
 namespace ProjectFood.Controllers
@@ -64,20 +61,46 @@ namespace ProjectFood.Controllers
 
 	    public ActionResult DeleteAllRecipies()
 	    {
-	        DeleteAllRecipieIngredients();
+            DeleteAllRecipiesHelper();
             return RedirectToAction("Index");
 	    }
 
-	    private void DeleteAllRecipieIngredients()
+	    private void DeleteAllRecipiesHelper()
 	    {
-            while (_db.Recipe_Ingredient.Any())
-            {
-                if (_db.Recipe_Ingredient.FirstOrDefault().Ingredient != null)
-                    _db.Items.Remove(_db.Recipe_Ingredient.First().Ingredient);
+	        while (_db.Recipes.Any())
+	        {
+	            var recipe = _db.Recipes.Include(r => r.Ratings).FirstOrDefault();
 
-                _db.Recipe_Ingredient.Remove(_db.Recipe_Ingredient.First());
+	            if (recipe.Ratings.Count > 0)
+	            {
+	                _db.Ratings.RemoveRange(_db.Ratings.Where(r => r.Recipe.ID == recipe.ID));
+	                recipe.Ratings.Clear();
+	            }
+
+	            _db.Recipes.Remove(recipe);
+	            _db.SaveChanges();
+	        }
+	    }
+
+        public ActionResult DeleteAllRecipiesRatings()
+        {
+            DeleteAllRecipiesRatingsHelper();
+            return RedirectToAction("Index");
+        }
+
+        private void DeleteAllRecipiesRatingsHelper()
+        {
+            while (_db.Recipes.Include(x => x.Ratings).ToList().Any(x => x.Ratings.Any()))
+            {
+                var recipe = _db.Recipes.Include(r => r.Ratings).FirstOrDefault(x => x.Ratings.Any());
+
+                if (recipe.Ratings.Count > 0)
+                {
+                    _db.Ratings.RemoveRange(_db.Ratings.Where(r => r.Recipe.ID == recipe.ID));
+                }
+
                 _db.SaveChanges();
             }
-	    }
+        }
 	}
 }

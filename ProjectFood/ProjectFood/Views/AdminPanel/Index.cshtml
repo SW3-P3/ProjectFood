@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "AdminPanel";
 }
 
 <div class="page-header nopadding-xs">
@@ -23,7 +23,9 @@
                 <div class="list-group">
                     <a href="@Url.Action("DeleteAllShoppinglistItems", "AdminPanel")" class="list-group-item list-group-item-info">Ryd alle indkøbslister</a>
                     <a href="@Url.Action("DeleteAllShoppinglists", "AdminPanel")" class="list-group-item list-group-item-info">Slet alle indkøbslister</a>
-
+                    <div style="height: 20px;"></div>
+                    <a href="@Url.Action("DeleteAllRecipies", "AdminPanel")" class="list-group-item list-group-item-info">Slet alle opskrifter</a>
+                    <a href="@Url.Action("DeleteAllRecipiesRatings", "AdminPanel")" class="list-group-item list-group-item-info">Slet vurderingerne fra alle opskrifter</a>
                 </div>
             </div>
         </div>
