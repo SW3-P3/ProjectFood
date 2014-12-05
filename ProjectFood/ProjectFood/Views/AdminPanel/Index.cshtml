@@ -12,7 +12,16 @@
             <div class="panel-body">
                 <div class="list-group">
                     <a href="@Url.Action("LoadNewOffers", "AdminPanel")" class="list-group-item list-group-item-info">Hent nye tilbud</a>
-                    @Html.Partial("_Date")
+                    <div style="height: 20px;"></div>
+                    @using (Html.BeginForm("ChangeTimePeriod", "AdminPanel"))
+                    {
+                        <div>
+                            @Html.TextBox("year", null, new { @class = "form-control", @placeholder = "År", @size = "30" })
+                            @Html.TextBox("month", null, new { @class = "form-control", @placeholder = "Måned", @size = "30" })
+                            @Html.TextBox("day", null, new { @class = "form-control", @placeholder = "Dag", @size = "30" })
+                        </div>
+                        <button type="submit" class="list-group-item list-group-item-info btn-block">Ændre tidspunktet for PF</button>
+                    }
                 </div>
             </div>
         </div>

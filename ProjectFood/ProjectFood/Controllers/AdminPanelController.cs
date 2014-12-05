@@ -25,9 +25,20 @@ namespace ProjectFood.Controllers
 			return RedirectToAction("Index");
 		}
 
-	    public ActionResult ChangeTimePeriod(DateTime? date)
+	    public ActionResult ChangeTimePeriod(int? year, int? month, int? day)
 	    {
-	        var dateResult = date ?? DateTime.Now;
+	        if(year == null || month == null || day == null)
+                return RedirectToAction("Index");
+	        try
+	        {
+                var date = new DateTime((int)year, (int)month, (int)day);
+                GlobalVariables.CurrentSystemTime = date;
+
+	        }
+	        catch (ArgumentOutOfRangeException exception)
+	        {
+                return RedirectToAction("Index");
+            }
 	        return RedirectToAction("Index");
 	    }
         #endregion
