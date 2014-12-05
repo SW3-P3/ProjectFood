@@ -222,6 +222,15 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="App_Data\jsonData\130612615992340892-Output-mod.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App_Data\jsonData\130591843575471216-Output-mod.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App_Data\jsonData\130622164334580743-Output-mod.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\darkly.bootstrap.css" />
     <Content Include="Content\darkly.bootstrap.min.css" />
@@ -244,6 +253,9 @@
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <EmbeddedResource Include="App_Data\jsonData\130597409391886574-Output-mod.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af-ZA.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af.js" />
@@ -676,9 +688,7 @@
     <Content Include="Views\AdminPanel\Index.cshtml" />
     <Content Include="Views\Shared\_Date.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />

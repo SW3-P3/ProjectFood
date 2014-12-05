@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using ProjectFood.Models;
 using ProjectFood.Models.Api;
 using RestSharp;
@@ -22,11 +23,13 @@ namespace ProjectFood.Controllers
         // GET: Offer
         public ActionResult Index(int? shoppingListID)
         {
-            if(User.Identity.IsAuthenticated) {
+            if (User.Identity.IsAuthenticated)
+            {
                 var tmpUser = _db.Users
                     .Include(s => s.ShoppingLists)
                     .First(u => u.Username == User.Identity.Name);
-                if(tmpUser.ShoppingLists.Count > 0) {
+                if (tmpUser.ShoppingLists.Count > 0)
+                {
 
                     int tmpShoppingListID = shoppingListID == null ? tmpUser.ShoppingLists.First().ID : (int)shoppingListID;
                     ViewBag.SelectedShoppingListID = tmpShoppingListID;
@@ -52,19 +55,70 @@ namespace ProjectFood.Controllers
                 ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name)).OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
-                return View(_db.OffersFiltered().ToList());            
+                return View(_db.OffersFiltered().ToList());
             }
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
+        }
+
+        public ActionResult ImportOffersFromFiles()
+        {
+            var path = Server.MapPath("../App_Data/jsonData");
+            var filePaths = Directory.GetFiles(path);
+
+            var apiOfferList = new List<ApiOffer>();
+
+            foreach (var filePath in filePaths)
+            {
+                StreamReader streamReader = new StreamReader(filePath);
+                string text = streamReader.ReadToEnd();
+                apiOfferList.AddRange(JsonConvert.DeserializeObject<List<ApiOffer>>(text));
+            }
+
+            var offerList = apiOfferList.Select(ApiOfferToOffer).ToList();
+
+            var sw = new Stopwatch();
+            sw.Start();
+
+            foreach (var offer in offerList)
+            {
+                if (!_db.Offers.Any(x => x.eTilbudsavisID == offer.eTilbudsavisID))
+                {
+                    _db.Offers.Add(offer);
+                }
+                _db.SaveChanges();
+                Debug.WriteLine(sw.Elapsed + "\t" + _db.Offers.Count());
+            }
+            sw.Stop();
+            Debug.WriteLine(sw.Elapsed);
+
+            return RedirectToAction("Index");
+        }
+
+        private Offer ApiOfferToOffer(ApiOffer o)
+        {
+            return new Offer
+            {
+                eTilbudsavisID = o.id,
+                Heading = o.heading,
+                Begin = o.run_from,
+                End = o.run_till,
+                Store = o.branding.name,
+                Price = o.pricing.price,
+                Unit = o.quantity.unit != null ? o.quantity.size.@from + " " + o.quantity.unit.symbol : " "
+            };
         }
 
         public ActionResult ImportOffers()
         {
             string apikey, secret;
             /* Write Apikey and Secret to global variables */
-            try {
+            try
+            {
                 apikey = System.IO.File.ReadAllText(@"C:\apikey.secret");
                 secret = System.IO.File.ReadAllText(@"C:\secret.secret");
-            } catch(IOException ex) {
+            }
+            catch (IOException ex)
+            {
                 Console.WriteLine("File not found. " + ex);
                 throw;
             }
@@ -104,7 +158,8 @@ namespace ProjectFood.Controllers
             //TODO: This should be converted to an Async method for each store if we need a speed-up
             List<ApiOffer> offersResult = client.Execute<List<ApiOffer>>(offersRequest).Data;
             List<ApiOffer> listofApiOffers = offersResult;
-            while(offersResult.Count == 100) {
+            while (offersResult.Count == 100)
+            {
                 var nextOffersRequest = new RestRequest("v2/offers", Method.GET);
                 nextOffersRequest.AddParameter("r_lat", Global.Latitude);
                 nextOffersRequest.AddParameter("r_lng", Global.Longitude);
@@ -118,7 +173,7 @@ namespace ProjectFood.Controllers
                 listofApiOffers.AddRange(offersResult);
             }
 
-            foreach(var o in listofApiOffers)
+            foreach (var o in listofApiOffers)
             {
                 var newOffer = new Offer
                 {
@@ -157,7 +212,8 @@ namespace ProjectFood.Controllers
             bool res = double.TryParse(tmpOffer.Unit.Split(' ').First(), out num);
 
 
-            var shoppingListItem = new ShoppingList_Item {
+            var shoppingListItem = new ShoppingList_Item
+            {
                 Item = tmpItem,
                 ShoppingList = shoppingList,
                 Amount = res ? num : 0,
@@ -171,7 +227,8 @@ namespace ProjectFood.Controllers
 
             _db.SaveChanges();
 
-            return Json(new {
+            return Json(new
+            {
                 Message = "Hajtroels",
                 OfferId = offerId,
             }, JsonRequestBehavior.AllowGet);
@@ -179,10 +236,13 @@ namespace ProjectFood.Controllers
 
         public ActionResult Search(string id)
         {
-            if(id != null) {
+            if (id != null)
+            {
                 ViewBag.Offers = GetOffersForItem(id);
                 ViewBag.SearchTerm = id;
-            } else {
+            }
+            else
+            {
                 ViewBag.Offers = new List<Offer>();
             }
 
@@ -317,18 +377,21 @@ namespace ProjectFood.Controllers
         {
             int PerPage = 25;
             IQueryable<Offer> offers;
-            if(storename == "all") {
+            if (storename == "all")
+            {
                 offers = _db.OffersFiltered().AsQueryable()
                     .OrderBy(o => o.Heading)
                     .Skip((page - 1) * PerPage)
                     .Take(PerPage);
-            } else {
+            }
+            else
+            {
                 offers = _db.OffersFiltered().AsQueryable()
                     .Where(o => o.Store.Replace("ø", string.Empty).Replace(" ", string.Empty) == storename).OrderBy(o => o.Heading)
                     .Skip((page - 1) * PerPage)
                     .Take(PerPage);
             }
-            
+
 
             var jsonSerialiser = new JavaScriptSerializer();
             var jsonOffers = jsonSerialiser.Serialize(offers);
