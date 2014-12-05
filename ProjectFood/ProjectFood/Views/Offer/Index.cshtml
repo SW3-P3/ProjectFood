@@ -30,36 +30,35 @@
 
 <div class="page-header nopadding-xs">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <h1><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;@ViewBag.Title</h1>
-        </div>
-        <div class="col-md-4">
-            <div class="container-fluid nopadding">
-                @if (ViewBag.ShoppingLists.Count > 0)
-                {
-                    List<SelectListItem> listItems = new List<SelectListItem>();
-
-                    foreach (var list in ViewBag.ShoppingLists)
-                    {
-                        listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
-                    }
-
-
-                    <label for="Selection">Vælg indkøbsliste</label>
-                    @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
-                }
-                else
-                {
-                    <div class="row">&nbsp;</div>
-                    <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
-                        Opret ny indkøbsliste
-                    </div>
-                    @Html.Partial("_CreateShoppingList")
-                }
-            </div>
         </div>
     </div>
 </div>
+
+<div class="container-fluid nopadding">
+    <div class="col-md-4 nopadding">
+        @if (ViewBag.ShoppingLists.Count > 0)
+        {
+            List<SelectListItem> listItems = new List<SelectListItem>();
+
+            foreach (var list in ViewBag.ShoppingLists)
+            {
+                listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
+            }
+            <label for="Selection">Vælg indkøbsliste</label>
+            @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
+        }
+        else
+        {
+            <div class="row">&nbsp;</div>
+            <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
+                Opret ny indkøbsliste
+            </div>
+            @Html.Partial("_CreateShoppingList")
+    }</div>
+</div>
+<div class="row">&nbsp;</div>
 
 <div class="row">
     <ul class="nav nav-tabs">

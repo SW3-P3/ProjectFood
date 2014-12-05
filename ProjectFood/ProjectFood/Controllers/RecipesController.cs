@@ -119,7 +119,7 @@ namespace ProjectFood.Controllers
             {
                 return RedirectToAction("index");
             }
-            ViewBag.Author = _db.Users.First(u => u.Username == recipe.AuthorName);
+            ViewBag.Author = _db.Users.FirstOrDefault(u => u.Username == recipe.AuthorName);
             ViewBag.OriginalAuthor = _db.Users.SingleOrDefault(u => u.Username == recipe.OriginalAuthorName);
             if (recipe.Ingredients.Count > 0)
             {

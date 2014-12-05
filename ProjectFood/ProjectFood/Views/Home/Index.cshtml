@@ -87,7 +87,7 @@
                 <div class="panel-body">
                     @{
                         int i = 1;
-                        if (((IEnumerable<ProjectFood.Models.Recipe>) ViewBag.Recipes).Any())
+                        if (ViewBag.Recipes != null)
                         {
                             foreach (var recipe in ((IEnumerable<ProjectFood.Models.Recipe>) ViewBag.Recipes).Take(3))
                             {
@@ -96,8 +96,9 @@
                                          style="cursor: pointer;"
                                          onmouseover=" $(this).removeClass('panel-default').addClass('panel-info'); "
                                          onmouseout=" $(this).addClass('panel-default').removeClass('panel-info'); "
-                                         onclick=" window.location = '@Url.Action("details", "Recipes", new {id = recipe.ID})' ">
-                                        <div class="panel panel-heading">
+                                         onclick="window.location = '@Url.Action("details", "Recipes", new {id = recipe.ID})'">
+                                        
+                                         <div class="panel panel-heading">
                                             <h3>@recipe.Title</h3>
                                         </div>
                                         <div class="panel-body">
