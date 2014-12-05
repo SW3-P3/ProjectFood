@@ -98,7 +98,9 @@ namespace ProjectFood.Controllers
                 _db.SaveChanges();
             }
 
-            return Redirect(from);
+            string gotoUrl = from == "/ShoppingLists" ? "/ShoppingLists/Details/" + shoppingList.ID : from;
+
+            return Redirect(gotoUrl);
         }
 
         // GET: ShoppingLists/Edit/5
@@ -136,19 +138,6 @@ namespace ProjectFood.Controllers
                 _db.MarkAsModified(shoppingList);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
-            }
-            return View(shoppingList);
-        }
-
-        // GET: ShoppingLists/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if(id == null) {
-                return RedirectToAction("Index");
-            }
-            ShoppingList shoppingList = _db.ShoppingLists.Find(id);
-            if(shoppingList == null) {
-                return HttpNotFound();
             }
             return View(shoppingList);
         }

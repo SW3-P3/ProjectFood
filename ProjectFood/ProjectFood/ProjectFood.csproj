@@ -655,9 +655,9 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Item\Index.cshtml" />
-    <Content Include="Views\ShoppingLists\Delete.cshtml" />
+    <Content Include="Views\ShoppingLists\_Delete.cshtml" />
     <Content Include="Views\ShoppingLists\Details.cshtml" />
-    <Content Include="Views\ShoppingLists\Edit.cshtml" />
+    <Content Include="Views\ShoppingLists\_Edit.cshtml" />
     <Content Include="Views\ShoppingLists\Index.cshtml" />
     <Content Include="Views\Offer\Index.cshtml" />
     <Content Include="Views\Shared\_CreateShoppingList.cshtml" />
