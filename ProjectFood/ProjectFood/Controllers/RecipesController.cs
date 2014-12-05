@@ -317,7 +317,7 @@ namespace ProjectFood.Controllers
             Item knownItem = null;
             if (_db.Items.Any())
             {
-                knownItem = _db.Items.SingleOrDefault(i => i.Name.CompareTo(name) == 0);
+                knownItem = _db.Items.FirstOrDefault(i => i.Name.CompareTo(name) == 0);
             }
 
             var tmpIngredient = knownItem ?? new Item { Name = name };
