@@ -204,6 +204,7 @@
     <Compile Include="Models\Api\Session.cs" />
     <Compile Include="Models\Api\Store.cs" />
     <Compile Include="Models\Api\Stores.cs" />
+    <Compile Include="Models\GlobalVariables.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\IDataBaseContext.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -224,6 +225,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\darkly.bootstrap.css" />
     <Content Include="Content\darkly.bootstrap.min.css" />
+    <Content Include="Content\datepicker.css" />
     <Content Include="Content\flatly.bootstrap.css" />
     <Content Include="Content\flatly.bootstrap.min.css" />
     <Content Include="Content\snackbar.theme.css" />
@@ -239,6 +241,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -671,6 +674,7 @@
     <Content Include="Views\Offer\Search.cshtml" />
     <Content Include="Views\ShoppingLists\WatchList.cshtml" />
     <Content Include="Views\AdminPanel\Index.cshtml" />
+    <Content Include="Views\Shared\_Date.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

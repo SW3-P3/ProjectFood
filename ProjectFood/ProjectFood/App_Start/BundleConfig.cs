@@ -28,9 +28,11 @@ namespace ProjectFood
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/flatly.bootstrap.css",
                       "~/Content/snackbar*",
+                      "~/Content/datepicker.css",
                       "~/Content/site.css"));
             
             bundles.Add(new ScriptBundle("~/bundles/homemade").Include(
+                      "~/Scripts/bootstrap-datepicker.js",
                       "~/Scripts/sass.js"));
 
             // Set EnableOptimizations to false for debugging. For more information,

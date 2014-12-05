@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using ProjectFood.Models
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -34,7 +35,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - SW3-P3 Group DS304E14</p>
+            <p>&copy; @DateTime.Now.Year - SW3-P3 Group DS304E14 | Systemtid: @GlobalVariables.CurrentSystemTime</p>
         </footer>
     </div>
 

@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
@@ -16,15 +17,22 @@ namespace ProjectFood.Controllers
 		{
 			return View();
 		}
-
-		public ActionResult LoadNewOffers()
+        #region Offers
+        public ActionResult LoadNewOffers()
 		{
 			var offerControler = new OfferController();
 			offerControler.ImportOffers();
 			return RedirectToAction("Index");
 		}
 
-		public ActionResult DeleteAllShoppinglistItems()
+	    public ActionResult ChangeTimePeriod(DateTime? date)
+	    {
+	        var dateResult = date ?? DateTime.Now;
+	        return RedirectToAction("Index");
+	    }
+        #endregion
+        #region ShoppingList
+        public ActionResult DeleteAllShoppinglistItems()
 		{
 			DeleteAllShoppinglistItemsHelper();
 			return RedirectToAction("Index");
@@ -58,14 +66,15 @@ namespace ProjectFood.Controllers
 				_db.SaveChanges();
 			}
 		}
-
-	    public ActionResult DeleteAllRecipies()
+        #endregion 
+        #region Recipes
+        public ActionResult DeleteAllRecipes()
 	    {
-            DeleteAllRecipiesHelper();
+            DeleteAllRecipesHelper();
             return RedirectToAction("Index");
 	    }
 
-	    private void DeleteAllRecipiesHelper()
+	    private void DeleteAllRecipesHelper()
 	    {
 	        while (_db.Recipes.Any())
 	        {
@@ -82,13 +91,13 @@ namespace ProjectFood.Controllers
 	        }
 	    }
 
-        public ActionResult DeleteAllRecipiesRatings()
+        public ActionResult DeleteAllRecipesRatings()
         {
-            DeleteAllRecipiesRatingsHelper();
+            DeleteAllRecipesRatingsHelper();
             return RedirectToAction("Index");
         }
 
-        private void DeleteAllRecipiesRatingsHelper()
+        private void DeleteAllRecipesRatingsHelper()
         {
             while (_db.Recipes.Include(x => x.Ratings).ToList().Any(x => x.Ratings.Any()))
             {
@@ -102,5 +111,6 @@ namespace ProjectFood.Controllers
                 _db.SaveChanges();
             }
         }
-	}
+        #endregion
+    }
 }

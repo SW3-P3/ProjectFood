@@ -12,6 +12,7 @@
             <div class="panel-body">
                 <div class="list-group">
                     <a href="@Url.Action("LoadNewOffers", "AdminPanel")" class="list-group-item list-group-item-info">Hent nye tilbud</a>
+                    @Html.Partial("_Date")
                 </div>
             </div>
         </div>
@@ -32,3 +33,9 @@
     </div>
 
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $('.datepicker').datepicker(); //Initialise any date pickers
+    </script>
+}
