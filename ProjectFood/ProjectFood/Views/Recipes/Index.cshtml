@@ -29,26 +29,23 @@
 
 <div class="container-fluid nopadding">
     @using (Html.BeginForm("Index", "Recipes", FormMethod.Get))
-    {
-        <div class="col-md-3 nopadding-sides-xs" style="padding-left:0px;">
-            @*<label>Søg efter opskrifter</label>*@
-            <div class="form-inline">
-                <div class="input-group">
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </div>
-                    @Html.TextBox("searchString", null, new { @class = "form-control", @placeholder = "Indtast Opskriftnavn ex. Lasagne", @size = "30" })
+{
+    <div class="col-md-4 nopadding-sides-xs" style="padding-left:0px;">
+        @*<label>Søg efter opskrifter</label>*@
+        <div class="form-inline">
+            <div class="input-group">
+                @Html.TextBox("searchString", null, new { @class = "form-control", @placeholder = "Indtast Opskriftnavn ex. Lasagne", @size = "30" })
 
-                    <div class="input-group-btn">
-                        <button type="submit" class="btn btn-primary">Søg</button>
-                    </div>
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Søg</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-md-3 col-md-offset-6 nopadding-sides-xs" style="padding-right:0px;">
+            <div class="col-md-3 col-md-offset-5 nopadding-sides-xs" style="padding-right:0px;">
             @{
-        List<SelectListItem> listItems = new List<SelectListItem>();
+    List<SelectListItem> listItems = new List<SelectListItem>();
         listItems.Add(new SelectListItem { Text = "Dato (Nyeste først)", Selected = true, Value = "New" });
         listItems.Add(new SelectListItem { Text = "Dato (Ældste først)", Selected = ViewBag.Selected.Equals("Old"), Value = "Old" });
         listItems.Add(new SelectListItem { Text = "Anbefalinger", Selected = ViewBag.Selected.Equals("Recommend"), Value = "Recommend" });
