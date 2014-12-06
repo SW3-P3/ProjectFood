@@ -241,6 +241,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <EmbeddedResource Include="Content\bad-words.dat" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af-ZA.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af.js" />
@@ -671,7 +672,6 @@
     <Content Include="Views\Offer\Search.cshtml" />
     <Content Include="Views\ShoppingLists\WatchList.cshtml" />
     <Content Include="Views\AdminPanel\Index.cshtml" />
-    <Content Include="Views\Manage\AddName.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

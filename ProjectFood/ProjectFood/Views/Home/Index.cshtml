@@ -3,21 +3,18 @@
     ViewBag.Title = "Home Page";
 }
 
-@*<div class="page-header nopadding-xs">
+<div class="jumbotron hidden-xs">
     <h1>Velkommen til ProjectFood</h1>
-</div>*@
-<div class="jumbotron">
-    <h2>ProjectFood</h2>
-    <p class="lead">ProjectFood er <b>din digitale indkøbsassistent.</b> Med dette program kan du få hjælp til alt relateret til indkøb og madlavning. </br>Du kan:
-    <ul>
+    <p>ProjectFood er <b>din digitale indkøbsassistent.</b> Med dette program kan du få hjælp til alt relateret til indkøb og madlavning.<br />Du kan:
+    <ul class="lead">
         <li><a href="@Url.Action("Index", "ShoppingLists")">Oprette og dele indkøbslister</a></li>
         <li><a href="@Url.Action("Index", "Offer")">Se tilbud og tilføje disse til dine indkøbslister</a></li>
         <li><a href="@Url.Action("WatchList", "ShoppingLists")">Tilføje varer du gerne vil overvåge tilbud på</a></li>
         <li><a href="@Url.Action("Index", "Recipes")">Se og tilføje opskriter</a></li>
     </ul>
-    <h5>ProjectFood er et 3. semester projekt udført af en gruppe software-studerende på Aalborg Universitet</h5>
-    @*<p><a href="http://www.cs.aau.dk" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>*@
+    <p>ProjectFood er et 3. semester projekt udført af en gruppe software-studerende på Aalborg Universitet</p>
 </div>
+<div class="row visible-xs">&nbsp;</div>
 
 @if (User.Identity.IsAuthenticated)
 {
