@@ -671,6 +671,7 @@
     <Content Include="Views\Offer\Search.cshtml" />
     <Content Include="Views\ShoppingLists\WatchList.cshtml" />
     <Content Include="Views\AdminPanel\Index.cshtml" />
+    <Content Include="Views\Manage\AddName.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -24,14 +24,21 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Index", "Home");
         }
         [ValidateAntiForgeryToken]
-        public ActionResult EditName(string username, string name)
+        public ActionResult EditName(string username, string name, bool returnToPrefs)
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
             {
                 _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
-            return RedirectToAction("EditPreferences");
+            if (returnToPrefs)
+            {
+                return RedirectToAction("EditPreferences");
+            }
+            else
+            {
+                return RedirectToRoute("Index", "Home");
+            }
         }
 
         public ActionResult EditPreferences()

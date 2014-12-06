@@ -177,7 +177,9 @@ namespace ProjectFood.Controllers
 
                     _db.SaveChanges();
 
-                    return RedirectToAction("Index", "Home");
+                    //RedirectToAction("EditName" "User", user, name, returnToPrefs);
+                
+                    return RedirectToRoute("AddName", "Manage");
                 }
                 AddErrors(result);
             }
