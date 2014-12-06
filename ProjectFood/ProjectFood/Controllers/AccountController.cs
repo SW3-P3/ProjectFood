@@ -179,7 +179,7 @@ namespace ProjectFood.Controllers
 
                     //RedirectToAction("EditName" "User", user, name, returnToPrefs);
                 
-                    return RedirectToRoute("AddName", "Manage");
+                    return RedirectToAction("AddName", "Manage");
                 }
                 AddErrors(result);
             }
