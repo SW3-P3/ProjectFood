@@ -68,7 +68,7 @@ namespace ProjectFood.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
-
+        
         [Required]
         [StringLength(100, ErrorMessage = "{0}et skal være {2} tegn langt.", MinimumLength = 6)]
         [DataType(DataType.Password)]

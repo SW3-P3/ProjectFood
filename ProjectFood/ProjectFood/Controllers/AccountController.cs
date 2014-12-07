@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ProjectFood.Models;
 using System.Net;
+using System.Reflection;
+using System.IO;
 
 namespace ProjectFood.Controllers
 {
@@ -156,10 +158,22 @@ namespace ProjectFood.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string name)
         {
             if (ModelState.IsValid)
             {
+                var assembly = Assembly.GetExecutingAssembly();
+                var resourceName = "ProjectFood.Content.bad-words.dat";
+
+
+                using(Stream stream = assembly.GetManifestResourceStream(resourceName))
+                using(StreamReader reader = new StreamReader(stream)) {
+                    if(reader.ReadToEnd().Contains(name.Trim())) {
+                        ViewBag.BadWord = name.Trim();
+                        return View(model);
+                    }
+                }
+                
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -171,10 +185,10 @@ namespace ProjectFood.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
+                    
                     var list = new ShoppingList();
                     list.Title = "Min Indkøbsliste";
-                    var tmpUser = new User() {Username = model.Email};
+                    var tmpUser = new User() {Username = model.Email, Name = name.Trim()};
                     _db.Users.Add(tmpUser);
                     tmpUser.ShoppingLists.Add(list);
 

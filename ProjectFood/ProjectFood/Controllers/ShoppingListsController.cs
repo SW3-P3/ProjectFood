@@ -98,7 +98,9 @@ namespace ProjectFood.Controllers
                 }                               
             }
 
-            return Redirect(from);
+            string gotoUrl = from == "/ShoppingLists" ? "/ShoppingLists/Details/" + shoppingList.ID : from;
+
+            return Redirect(gotoUrl);
         }
 
         // GET: ShoppingLists/Edit/5
@@ -136,19 +138,6 @@ namespace ProjectFood.Controllers
                 _db.MarkAsModified(shoppingList);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
-            }
-            return View(shoppingList);
-        }
-
-        // GET: ShoppingLists/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if(id == null) {
-                return RedirectToAction("Index");
-            }
-            ShoppingList shoppingList = _db.ShoppingLists.Find(id);
-            if(shoppingList == null) {
-                return HttpNotFound();
             }
             return View(shoppingList);
         }
@@ -277,7 +266,7 @@ namespace ProjectFood.Controllers
             ShoppingList shoppingList = findShoppingListFromID(id);
 
             //Find the item to be deleted, and remove it from the shopping list
-            var rmItem = shoppingList.Items.ToList().Find(x => x.ID == itemID);
+            var rmItem = shoppingList.Items.First(x => x.ID == itemID);
             shoppingList.Items.Remove(rmItem);
 
             //Find the item in the ShoppingList_Item table
@@ -297,31 +286,19 @@ namespace ProjectFood.Controllers
         {
             ShoppingList shoppingList = findShoppingListFromID(id);
 
-            shoppingList.Items.Clear();
+            if(User.Identity.IsAuthenticated) {
+                var user = _db.Users.Include(u => u.ShoppingLists).FirstOrDefault(u => u.Username == User.Identity.Name);
 
-            _db.SaveChanges();
+                if(user != null && user.ShoppingLists.FirstOrDefault(s => s.ID == id) != null) {
+                    shoppingList.Items.Clear();
+                    var itemRels = _db.ShoppingList_Item.Where(x => x.ShoppingListID == id);
+                    _db.ShoppingList_Item.RemoveRange(itemRels);
+
+                    _db.SaveChanges();  
+                }
+            }
 
             return shoppingList.Title == "watchList" ? RedirectToAction("WatchList") : RedirectToAction("Details/" + id);
-        }
-
-        [HttpPost]
-        public ActionResult MoveItemToBought(int id, int itemID)
-        {
-            var tmpBought = _db.ShoppingList_Item.First(i => i.ItemID == itemID && i.ShoppingListID == id);
-
-            if(tmpBought != null) {
-                tmpBought.Bought = true;
-                _db.SaveChanges();
-                return Json(new {
-                    Message = "Hajtroels",
-                    itemID = itemID,
-                }, JsonRequestBehavior.AllowGet);
-            }
-            return Json(new {
-                Message = "DID TWERK",
-                itemID = itemID,
-            }, JsonRequestBehavior.AllowGet);
-            
         }
 
         [HttpPost]
@@ -349,16 +326,17 @@ namespace ProjectFood.Controllers
         {
             return db.Offers 
                 .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()) ||
-                            String.Equals(x.Heading, item.Name, StringComparison.CurrentCultureIgnoreCase))
-                .ToList();
+                            String.Equals(x.Heading.ToLower(), item.Name.ToLower())).ToList();
         }
 
         [HttpPost]
-        public ActionResult EditAmount(int shoppingListID, int itemID, double? amount, string unit)
+        public ActionResult EditAmount(int shoppingListID, int itemID, string amount, string unit)
         {
             var tmpItemRel = _db.ShoppingList_Item.SingleOrDefault(r => r.ShoppingListID == shoppingListID && r.ItemID == itemID);
 
-            tmpItemRel.Amount = amount ?? 0;
+            double parsedAmount;
+            bool parseRes = double.TryParse(amount.Replace(".", ","), out parsedAmount);
+            tmpItemRel.Amount = parseRes ? parsedAmount : 0;
             if(unit.Trim() != string.Empty) {
                 tmpItemRel.Unit = unit.Trim();
             }
@@ -370,19 +348,6 @@ namespace ProjectFood.Controllers
                 ItemId = itemID,
             }, JsonRequestBehavior.AllowGet);
         }
-
-        //private List<Offer> GetOffersForItem(Item item)
-        //{
-        //    var item = _db.Items.Find(id);
-        //    var offers = _db.Offers
-        //        .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
-        //        .ToList();
-
-        //    var jsonSerialiser = new JavaScriptSerializer();
-        //    var jsonOffers = jsonSerialiser.Serialize(offers);
-
-        //    return Json(new { itemName = item.Name ,jsonOffers }, JsonRequestBehavior.DenyGet);
-        //}
 
         //Find relevant shoppingList and include the items
         private ShoppingList findShoppingListFromID(int? id)
@@ -413,7 +378,7 @@ namespace ProjectFood.Controllers
         }
 
         private bool isOfferSelectedOnItem(int id, Item item){
-            return _db.ShoppingList_Item.Single(x => x.ItemID == item.ID && x.ShoppingListID == id).selectedOffer != null;
+            return (_db.ShoppingList_Item.Single(x => x.ItemID == item.ID && x.ShoppingListID == id).selectedOffer != null);
         }
         
     }

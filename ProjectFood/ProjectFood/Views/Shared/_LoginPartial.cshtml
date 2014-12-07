@@ -5,14 +5,13 @@
         @Html.AntiForgeryToken()
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a href="@Url.Action("EditPreferences", "User")"
-                   title="Brugerindstillinger">
-                    <span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Brugerindstillinger
+                <a href="@Url.Action("EditPreferences", "User")">
+                    <span class="glyphicon glyphicon-cog"></span><span class="hidden-sm">&nbsp;&nbsp;Brugerindstillinger</span>
                 </a>
             </li>
             <li>
                 <a href="javascript:document.getElementById('logoutForm').submit()">
-                    <span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Log af
+                    <span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm">&nbsp;&nbsp;Log af</span>
                 </a>
             </li>
         </ul>
@@ -23,12 +22,12 @@ else
     <ul class="nav navbar-nav navbar-right">
         <li>
             <a id="registerLink" href="@Url.Action("Register", "Account")">
-                <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Opret Bruger
+                <span class="glyphicon glyphicon-user"></span><span class="hidden-sm">&nbsp;&nbsp;Opret Bruger</span>
             </a>
         </li>
         <li>
             <a id="loginLink" href="@Url.Action("Login", "Account")">
-                <span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Log ind
+                <span class="glyphicon glyphicon-log-in"></span><span class="hidden-sm">&nbsp;&nbsp;Log ind</span>
             </a>
         </li>
     </ul>

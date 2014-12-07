@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<div class="page-header nopadding-xs">
+    <h1>AdminPanel</h1>
+</div>
+<div class="container-fluid nopadding">
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading lead">Tilbud</div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="@Url.Action("LoadNewOffers", "AdminPanel")" class="list-group-item list-group-item-info">Hent nye tilbud</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading lead">Database</div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="@Url.Action("DeleteAllShoppinglistItems", "AdminPanel")" class="list-group-item list-group-item-info">Ryd alle indkøbslister</a>
+                    <a href="@Url.Action("DeleteAllShoppinglists", "AdminPanel")" class="list-group-item list-group-item-info">Slet alle indkøbslister</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

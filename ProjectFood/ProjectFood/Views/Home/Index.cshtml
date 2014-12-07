@@ -4,70 +4,131 @@
 }
 
 <div class="jumbotron">
-    <h1>ProjectFood</h1>
-    <p class="lead">ProjectFood er et 3. semester projekt udført af en gruppe software-studerende på Aalborg Universitet</p>
-    <p>Status med projektet:</p>
-    <div class="progress progress-striped active">
-        <div class="progress-bar" style="width: 67%"></div>
-    </div>
-    <p><a href="http://www.cs.aau.dk" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h1>Velkommen til ProjectFood</h1>
+    <p>ProjectFood er <b>din digitale indkøbsassistent.</b> Med dette program kan du få hjælp til alt relateret til indkøb og madlavning.<br />Du kan:
+    <ul class="lead">
+        <li><a href="@Url.Action("Index", "ShoppingLists")">Oprette og dele indkøbslister</a></li>
+        <li><a href="@Url.Action("Index", "Offer")">Se tilbud og tilføje disse til dine indkøbslister</a></li>
+        <li><a href="@Url.Action("WatchList", "ShoppingLists")">Tilføje varer du gerne vil overvåge tilbud på</a></li>
+        <li><a href="@Url.Action("Index", "Recipes")">Se og tilføje opskriter</a></li>
+    </ul>
+    <p>ProjectFood er et 3. semester projekt udført af en gruppe software-studerende på Aalborg Universitet</p>
 </div>
+<div class="row visible-xs">&nbsp;</div>
 
 @if(User.Identity.IsAuthenticated) {
     <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-info">
-                <div class="panel-heading lead">Tilbud til dig</div>
-                <div class="panel-body">
-
-                    @if(ViewBag.WatchList != null) {
-                        <div class="list-group">
-                            @foreach(var item in ((ProjectFood.Models.ShoppingList)ViewBag.WatchList).Items) {
-
-                                <a href="@Url.Action("WatchList", "ShoppingLists", new { itemID = item.ID })" class="list-group-item">
-                                    @(item.Name.First().ToString().ToUpper() + item.Name.Substring(1))
-                                    <span class="badge">@item.Offers.Count</span>
-                                </a>
-                            }
-                        </div>
-
-                    }
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-info">
-                <div class="panel-heading lead">Dine indkøbslister</div>
-                <div class="panel-body">
-
-                    @if(ViewBag.ShoppingLists != null) {
+        @if(ViewBag.ShoppingLists != null) {
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading lead">Dine indkøbslister</div>
+                    <div class="panel-body">
                         <div class="list-group">
                             @foreach(var list in (IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.ShoppingLists) {
 
-                                <a href="@Url.Action("Details", "ShoppingLists", new { id = list.ID })" class="list-group-item lead">
+                                <a href="@Url.Action("Details", "ShoppingLists", new {id = list.ID})" class="list-group-item lead">
                                     @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(list.Title)
                                     <span class="badge">@list.Items.Count</span>
                                 </a>
                             }
-                            <a href="@Url.Action("Index", "ShoppingLists")" class="list-group-item list-group-item-info">
-                                Se alle indkøbslister
-                            </a>
+                            @if(((IEnumerable<ProjectFood.Models.ShoppingList>)ViewBag.ShoppingLists).Count() == 0) {
+                                <a onclick=" $('div#createModal').modal('show'); setTimeout(function() { $('input#title').focus() }, 1000); "
+                                   class="list-group-item list-group-item-info"
+                                   style="cursor: pointer">
+                                    Opret ny indkøbsliste
+                                </a>
+                                @Html.Partial("_CreateShoppingList")
+                            } else {
+                                <a href="@Url.Action("Index", "ShoppingLists")" class="list-group-item list-group-item-info">
+                                    Se alle indkøbslister
+                                </a>
+                            }
+
                         </div>
-
-                    }
-
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-info">
+        }
+        @if(ViewBag.WatchList != null) {
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading lead">Tilbud til dig</div>
+                    <div class="panel-body">
+                        <div class="list-group">
+                            @foreach(var item in ((ProjectFood.Models.ShoppingList)ViewBag.WatchList).Items) {
+
+                                <a href="@Url.Action("WatchList", "ShoppingLists", new { itemID = item.ID })" class="list-group-item lead">
+                                    @(item.Name.First().ToString().ToUpper() + item.Name.Substring(1))
+                                    <span class="badge">@item.Offers.Count</span>
+                                </a>
+                            }
+                            <a href="@Url.Action("WatchList", "ShoppingLists")" class="list-group-item list-group-item-info">
+                                @(((ProjectFood.Models.ShoppingList)ViewBag.WatchList).Items.Count == 0 ?
+                                    "Tilføj varer til din overvågningsliste" :
+                                    "Rediger overvågningsliste")
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
                 <div class="panel-heading lead">Anbefalede opskrifter</div>
                 <div class="panel-body">
+                    @{
+        int i = 1;
+        if(ViewBag.Recipes != null) {
+            foreach(var recipe in ((IEnumerable<ProjectFood.Models.Recipe>)ViewBag.Recipes).Take(3)) {
+                <div class="col-md-4">
+                    <div class="panel panel-default"
+                         style="cursor: pointer;"
+                         onmouseover=" $(this).removeClass('panel-default').addClass('panel-info'); "
+                         onmouseout=" $(this).addClass('panel-default').removeClass('panel-info'); "
+                         onclick="window.location = '@Url.Action("details", "Recipes", new {id = recipe.ID})'">
 
-                    <p>Morten og Trøls</p>
+                        <div class="panel panel-heading">
+                            <h3>@recipe.Title</h3>
+                        </div>
+                        <div class="panel-body">
+                            <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                            <h4>
+                                <span class="glyphicon glyphicon-star"></span>
+                                @{
+                if(recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0) {
+                    <span>Ingen vuderinger givet</span>
+                } else {
+                    var rat = recipe.Ratings.Select(x => x.Score);
 
+                    @rat.Average()
+                    ;
+                }
+                                }
+                            </h4>
+                            <table class="table-condensed">
+                                @foreach(var ingredient in recipe.Ingredients.Take(3)) {
+                                    {
+
+                                    }
+                                    <tr>
+                                        <td>@ingredient.Name</td>
+                                    </tr>
+                                }
+                                @if(recipe.Ingredients.Count() > 3) {
+                                    <tr>
+                                        <td>&hellip;</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
                 </div>
+            }
+        }
+                    }
+                </div><a class="list-group-item list-group-item-info" href="@Url.Action("Index", "Recipes")">Se alle opskrifter</a>
             </div>
         </div>
     </div>

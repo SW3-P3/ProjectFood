@@ -52,12 +52,12 @@ namespace ProjectFood.Models
             blacklist.AddRange(fromArgs);
             // If an empty strings if any was given
             blacklist.RemoveAll(x => x.Trim().Equals(string.Empty));
-            
+
             var res = new List<Offer>();
 
             foreach (var o in Offers)
             {
-                bool flag = !(o.End < DateTime.Now);
+                bool flag = true;//!(o.End < DateTime.Now);
 
                 foreach (var item in blacklist)
                 {
@@ -87,7 +87,26 @@ namespace ProjectFood.Models
                     x.MapLeftKey("UserId");
                     x.MapRightKey("ShoppingListId");
                 });
-        }
 
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.SentOffers)
+                .WithMany(x => x.SentToUsers)
+                .Map(x =>
+                {
+                    x.ToTable("OfferSentTo");
+                    x.MapLeftKey("UserId");
+                    x.MapRightKey("OfferId");
+                });
+
+            modelBuilder.Entity<Item>()
+                .HasMany(x => x.OnRecipies)
+                .WithMany(x => x.Ingredients)
+                .Map(x =>
+                {
+                    x.ToTable("Recipie_Item");
+                    x.MapLeftKey("RecipieId");
+                    x.MapRightKey("ItemId");
+                });
+        }
     }
 }

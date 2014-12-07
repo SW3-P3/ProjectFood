@@ -38,9 +38,18 @@ namespace ProjectFood.Controllers
                 _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
-            return RedirectToAction("EditPreferences");
+                return RedirectToAction("EditPreferences");
         }
-
+        [ValidateAntiForgeryToken]
+        public ActionResult AddAName(string username, string name)
+        {
+            if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
+            {
+                _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
+                _db.SaveChanges();
+            }
+            return RedirectToAction("Index", "Home");
+        }
         public ActionResult EditPreferences()
         {
             if (User.Identity.IsAuthenticated)

@@ -1,92 +1,185 @@
-﻿@model IEnumerable<ProjectFood.Models.Recipe>
+﻿@using ProjectFood.Models
+@model IEnumerable<ProjectFood.Models.Recipe>
 
 @{
     ViewBag.Title = "Opskrifter";
 }
 
-<div class="page-header">
-    <div class="row">
-        <div class="col-md-6">
-            <h1><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter&nbsp;&nbsp;&nbsp;&nbsp;
-                @if (User.Identity.IsAuthenticated)
-                {
-                        <a href="@Url.Action("Create")" class="btn btn-success">Tilføj ny opskrift</a>
-                } 
+<div class="page-header nopadding-xs">
+    <div class="container-fluid nopadding">
+        <div class="col-md-9 nopadding">
+            <h1>
+                <span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter&nbsp;&nbsp;&nbsp;&nbsp;
             </h1>
-            @{
-                List<SelectListItem> listItems = new List<SelectListItem>();
-                listItems.Add(new SelectListItem {Text = "Dato (Nyeste først)", Selected = true, Value = "New"});
-                listItems.Add(new SelectListItem {Text = "Dato (Ældste først)", Selected = ViewBag.Selected.Equals("Old"), Value = "Old"});
-                listItems.Add(new SelectListItem { Text = "Anbefalinger", Selected = ViewBag.Selected.Equals("Recommend"), Value = "Recommend" });
-                listItems.Add(new SelectListItem { Text = "Bedømmelse (Faldende)", Selected = ViewBag.Selected.Equals("High"), Value = "High" });
-                <label for="Selection">Soter Opskrifter</label>
-                @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "window.location.href = '/Recipes/Index?sort=' + this.value;" })
+        </div>
+        <div class="col-md-3 nopadding">
+            <div class="row hidden-xs">&nbsp;</div>
+            @if(User.Identity.IsAuthenticated) {
+                <a href="@Url.Action("Create")" class="btn btn-success btn-block">Tilføj ny opskrift</a>
             }
         </div>
     </div>
-
-</div> 
-
-<p>
-    @if (!User.Identity.IsAuthenticated)
-    {
-        <h3>Ved at logge ind, kan du selv tilføje opskrifter. Som bruger kan du også få anbefalet opskifter ud fra dine præferencer og bedømmelser. </h3>
-        @Html.ActionLink("Opret en bruger nu!", "Create", null, new { @class = "btn btn-success btn-block" })
-
-    }
-    <hr />
-</p>
-<div class="row">
-    @{int i = 1; 
-        foreach (var recipe in Model)
-        {
-            <div class="col-md-4">
-                <div class="panel panel-default"
-                     style="cursor: pointer;" 
-                     onmouseover="$(this).removeClass('panel-default').addClass('panel-info');" 
-                     onmouseout="$(this).addClass('panel-default').removeClass('panel-info');" 
-                     onclick="window.location = '@Url.Action("details", new { id = recipe.ID })'">
-                    <div class="panel-heading"><h3>@recipe.Title</h3></div>
-                    <div class="panel-body">
-                        <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
-                        <h4><span class="glyphicon glyphicon-star"></span>
-                        @{
-            if (recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0)
-                        {
-                            <span>Ingen vuderinger givet</span>
-                        }
-                        else
-                        {
-                            var rat = recipe.Ratings.Select(x => x.Score);
-                            
-                            @rat.Average();
-                        }
-                        }
-                        </h4>
-                        <table class="table-condensed">
-                            @foreach (var ingredient in recipe.Ingredients.Take(3))
-                            {
-                                <tr>
-                                    <td>@ingredient.Name</td>
-                                </tr>
-                            }
-                            @if (recipe.Ingredients.Count() > 3)
-                            {
-                                <tr>
-                                    <td>&hellip;</td>
-                                </tr>
-                            }
-                        </table>
-                    </div>
-                    <div class="panel-footer.hidden"><p class="hidden">@Html.DisplayFor(modelItem => recipe.Tags)</p></div>
+</div>
+<div class="container-fluid nopadding">
+    @using(Html.BeginForm("Index", "Recipes", FormMethod.Get)) {
+        <div class="col-md-4 col-xs-6 nopadding-sides-xs" style="padding-left:0px;">
+            <label class="sr-only" for="searchString">Søg på opskrifter</label>
+            <div class="input-group">
+                @Html.TextBox("searchString", null, new { @class = "form-control", @placeholder = "Indtast Opskriftnavn ex. Lasagne" })
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
                 </div>
             </div>
-            if (i % 3 == 0)
-            {
-                <div class="row"></div>
+        </div>
+
+        <div class="col-md-3 col-md-offset-5 col-xs-6 nopadding-sides-xs" style="padding-right:0px; padding-left:0px;">
+            @{
+        List<SelectListItem> listItems = new List<SelectListItem>();
+        listItems.Add(new SelectListItem { Text = "Dato (Nyeste først)", Selected = true, Value = "New" });
+        listItems.Add(new SelectListItem { Text = "Dato (Ældste først)", Selected = ViewBag.Selected.Equals("Old"), Value = "Old" });
+        listItems.Add(new SelectListItem { Text = "Anbefalinger", Selected = ViewBag.Selected.Equals("Recommend"), Value = "Recommend" });
+        listItems.Add(new SelectListItem { Text = "Bedømmelse (Faldende)", Selected = ViewBag.Selected.Equals("High"), Value = "High" });
+        <label class="sr-only" for="Selection">Sorter Opskrifter</label>
+                <div class="input-group">
+                    <div class="input-group-addon ">
+                        <span class="glyphicon glyphicon-sort-by-attributes"></span>
+                    </div>
+                    @Html.DropDownList("sort", listItems, new { @id = "Selection", @class = "form-control", @onchange = "this.form.submit()" })
+                </div>
             }
-            i++;
-        }
+        </div>
     }
 </div>
-@*End*@
+<div class="row">&nbsp;</div>
+<div class="row">
+
+    @{int i = 1;
+    foreach(var recipe in Model) {
+        <div class="col-md-4">
+            <div class="panel panel-default"
+                 style="cursor: pointer;"
+                 onmouseover=" $(this).removeClass('panel-default').addClass('panel-info'); "
+                 onmouseout=" $(this).addClass('panel-default').removeClass('panel-info'); "
+                 onclick="window.location='@Url.Action("details", new {id = recipe.ID})'">
+                <div class=" panel-heading"><h3>@recipe.Title</h3></div>
+                <div class="panel-body">
+                    <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                    <h4>
+                        <span class="glyphicon glyphicon-star"></span>
+                        @{
+        if(recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0) {
+            <span>Ingen vuderinger givet</span>
+        } else {
+            var rat = recipe.Ratings.Select(x => x.Score);
+
+            @rat.Average()
+            ;
+        }
+                        }
+                    </h4>
+                    <table class="table-condensed">
+                        @foreach(var ingredient in recipe.Ingredients.Take(3)) {
+                            <tr>
+                                <td>@ingredient.Name</td>
+                            </tr>
+                        }
+                        @if(recipe.Ingredients.Count() > 3) {
+                            <tr>
+                                <td>&hellip;</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+        if(i % 3 == 0) {
+            <div class="row"></div>
+        }
+        i++;
+    }
+    }
+
+</div>
+
+<!--Super secret feature... disabled for now-->
+<div class="hidden">
+    <div id="carousel-recipe" class="carousel slide nopadding" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            @{
+                int j = 0;
+                foreach(var recipe in Model) {
+                    <li data-target="#carousel-recipe" data-slide-to="@j" class="@(j == 0 ? "active" : "")"></li>
+                    j++;
+                }
+            }
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+            @{
+                int k = 0;
+                foreach(var recipe in Model) {
+                    <div class="item @(k == 0 ? "active" : "")">
+                        <div class="panel panel-default"
+                             onclick="window.location='@Url.Action("details", new {id = recipe.ID})'">
+                            <div class="panel-heading"><h3>@recipe.Title</h3></div>
+                            <div class="panel-body">
+                                <h4><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Html.DisplayFor(modelItem => recipe.Minutes) Minutter</h4>
+                                <h4>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    @if(recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0) {
+                                        <span>Ingen vuderinger givet</span>
+                                    } else {
+                                        var rat = recipe.Ratings.Select(x => x.Score);
+                                        @rat.Average().ToString("0.##")
+                                    }
+                                </h4>
+                                <table class="table-condensed">
+                                    @foreach(var ingredient in recipe.Ingredients.Take(3)) {
+                                        <tr>
+                                            <td class="text-nowrap">@ingredient.Name</td>
+                                        </tr>
+                                    }
+                                    @if(recipe.Ingredients.Count() > 3) {
+                                        <tr>
+                                            <td>&hellip;</td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">&nbsp;</div>
+                        <div class="carousel-caption nopadding">
+                            <p>
+                                @(k + 1) ud af @Model.Count()
+                            </p>
+                        </div>
+                    </div>
+                    k++;
+                }
+            }
+        </div>
+
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-recipe" role="button" data-slide="prev" style="background-image:none;">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-recipe" role="button" data-slide="next" style="background-image:none;">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" href="#carousel-recipe" role="button" data-slide="prev" style="background-image:none;">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="btn btn-primary" href="#carousel-recipe" role="button" data-slide="next" style="background-image:none;">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
