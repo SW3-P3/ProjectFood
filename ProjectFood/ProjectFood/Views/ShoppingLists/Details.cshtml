@@ -169,11 +169,22 @@
                                 <td>@offer.End.ToString("ddd d- M")</td>
                                 <td>@offer.Store</td>
                                 <td>
-                                    <a href="@Url.Action("ChooseOffer",
-                                         new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID })"
-                                       class="btn btn-success btn-xs btn-block">
-                                        Vælg
-                                    </a>
+                                    @if (itemRel.selectedOffer != null && itemRel.selectedOffer.ID == offer.ID)
+                                    {
+                                        <a href="@Url.Action("ChooseOffer",
+                                                     new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID})"
+                                           class="btn btn-success btn-xs btn-block">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("ChooseOffer",
+                                                     new {shoppingListId = Model.ID, itemId = item.ID, offerId = offer.ID})"
+                                           class="btn btn-info btn-xs btn-block">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </a>
+                                    }
                                 </td>
                             </tr>
                         }
