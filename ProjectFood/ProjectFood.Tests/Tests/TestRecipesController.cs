@@ -64,6 +64,7 @@ namespace ProjectFood.Tests.Tests
             //Compute
             var result = _controller.AddIngredient(1, "test", 10, "kg", 4);
             //Assert
+            Assert.IsNotNull(result);
             Assert.AreEqual(6, _mockdata.Recipes.First().Ingredients.Count);
         }
 
@@ -152,8 +153,8 @@ namespace ProjectFood.Tests.Tests
         public void Recipe_RecommendRecipe_Test()
         {
 
-            // tre recipes, recipe fra TestFixture, og yderlige to fra dette setup.
-            // De to fra dette setup har et items tilfældes, som er forskelligt fra TestFixture recipe.
+            //Three recipes, recipe from Initialize(), and another two from this setup
+            //The recipes from this setupd has two items in common, which is different than from the Initialize()
             //Setup
             var recipe2 = DemoGetMethods.GetDemoRecipeWithItem(5, "TestRecipe2", 2);
             var recipe3 = DemoGetMethods.GetDemoRecipeWithItem(5, "TestRecipe3", 3);
