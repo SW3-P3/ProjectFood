@@ -60,53 +60,7 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
         }
 
-        public ActionResult ImportOffersFromFiles()
-        {
-            var path = Server.MapPath("../App_Data/jsonData");
-            var filePaths = Directory.GetFiles(path);
-
-            var apiOfferList = new List<ApiOffer>();
-
-            foreach (var filePath in filePaths)
-            {
-                StreamReader streamReader = new StreamReader(filePath);
-                string text = streamReader.ReadToEnd();
-                apiOfferList.AddRange(JsonConvert.DeserializeObject<List<ApiOffer>>(text));
-            }
-
-            var offerList = apiOfferList.Select(ApiOfferToOffer).ToList();
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            foreach (var offer in offerList)
-            {
-                if (!_db.Offers.Any(x => x.eTilbudsavisID == offer.eTilbudsavisID))
-                {
-                    _db.Offers.Add(offer);
-                }
-                _db.SaveChanges();
-                Debug.WriteLine(sw.Elapsed + "\t" + _db.Offers.Count());
-            }
-            sw.Stop();
-            Debug.WriteLine(sw.Elapsed);
-
-            return RedirectToAction("Index");
-        }
-
-        private Offer ApiOfferToOffer(ApiOffer o)
-        {
-            return new Offer
-            {
-                eTilbudsavisID = o.id,
-                Heading = o.heading,
-                Begin = o.run_from,
-                End = o.run_till,
-                Store = o.branding.name,
-                Price = o.pricing.price,
-                Unit = o.quantity.unit != null ? o.quantity.size.@from + " " + o.quantity.unit.symbol : " "
-            };
-        }
+        
 
         public ActionResult ImportOffers()
         {
