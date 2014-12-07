@@ -11,9 +11,9 @@ namespace ProjectFood.Tests
 {
     class DemoGetMethods
     {
-        public static ShoppingList GetDemoShoppingListWithItem(int amount)
+        public static ShoppingList GetDemoShoppingListWithItem(int amount, int id)
         {
-            var demoList = new ShoppingList() { ID = 1, Title = "DemoShopList" };
+            var demoList = new ShoppingList() { ID = id, Title = "DemoShopList" };
 
             for (int i = 0, setid = 1; i < amount; i++, setid++)
             {

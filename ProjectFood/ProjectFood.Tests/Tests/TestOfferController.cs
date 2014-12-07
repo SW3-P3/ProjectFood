@@ -32,7 +32,7 @@ namespace ProjectFood.Tests.Tests
             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Bacon", 2, 11.00M));
             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Ost", 3, 13.00M));
 
-            var list =  _mockdata.ShoppingLists.Add(DemoGetMethods.GetDemoShoppingListWithItem(3));
+            var list =  _mockdata.ShoppingLists.Add(DemoGetMethods.GetDemoShoppingListWithItem(3, 1));
             _mockdata.Users.First().ShoppingLists.Add(list);
 
             _mockdata.Items.Add(DemoGetMethods.GetDemoItem(4, "Ost"));
