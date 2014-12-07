@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -88,14 +89,13 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Title")] ShoppingList shoppingList, string from)
         {
-            if(ModelState.IsValid) {
-                _db.ShoppingLists.Add(shoppingList);
+            if(ModelState.IsValid) {              
                 if (User.Identity.IsAuthenticated)
                 {
+                    _db.ShoppingLists.Add(shoppingList);
                     _db.Users.Include(u => u.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.Add(shoppingList);
-                }
-               
-                _db.SaveChanges();
+                    _db.SaveChanges();
+                }                               
             }
 
             string gotoUrl = from == "/ShoppingLists" ? "/ShoppingLists/Details/" + shoppingList.ID : from;
@@ -325,8 +325,8 @@ namespace ProjectFood.Controllers
         public static List<Offer> GetOffersForItem(IDataBaseContext db, Item item)
         {
             return db.Offers 
-                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
-                .ToList();
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()) ||
+                            String.Equals(x.Heading.ToLower(), item.Name.ToLower())).ToList();
         }
 
         [HttpPost]

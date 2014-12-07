@@ -11,7 +11,14 @@ namespace ProjectFood.Controllers
 {
     public class UserController : Controller
     {
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
+
+        public UserController() { }
+
+        public UserController(IDataBaseContext context)
+        {
+            _db = context;
+        }
 
         // GET: User
         public ActionResult Index()

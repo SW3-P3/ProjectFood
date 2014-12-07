@@ -35,6 +35,11 @@ namespace ProjectFood.Models
             Entry(item).State = EntityState.Modified;
         }
 
+        public void MarkAsModified(Recipe item)
+        {
+            Entry(item).State = EntityState.Modified;
+        }
+
         public IEnumerable<Offer> OffersFilteredWithString(params string[] args)
         {
             var blacklist = new List<string> { ",", "eller" };
