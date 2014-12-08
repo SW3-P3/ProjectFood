@@ -78,7 +78,8 @@ namespace ProjectFood.Tests.Tests
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
-
+        /*
+         * The following unit test have been disabled as they no longer have a basis in the code.
         [Test]
         public void Recipe_Index_Test()
         {
@@ -90,6 +91,7 @@ namespace ProjectFood.Tests.Tests
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
+                 */
 
         [Test]
         public void Recipe_Details_Test()
