@@ -249,7 +249,6 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\darkly.bootstrap.css" />
     <Content Include="Content\darkly.bootstrap.min.css" />
-    <Content Include="Content\datepicker.css" />
     <Content Include="Content\flatly.bootstrap.css" />
     <Content Include="Content\flatly.bootstrap.min.css" />
     <Content Include="Content\snackbar.theme.css" />
@@ -265,7 +264,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <EmbeddedResource Include="App_Data\jsonData\130597409391886574-Output-mod.json">

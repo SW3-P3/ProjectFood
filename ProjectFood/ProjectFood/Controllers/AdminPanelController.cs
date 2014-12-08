@@ -21,7 +21,7 @@ namespace ProjectFood.Controllers
         public ActionResult Index()
         {
             #region Dropdown
-            var datapointdates = GetJsonFileNames().Select(item => DateTime.FromFileTime(long.Parse(item.Substring(61, 18)))).ToList();
+            var datapointdates = GetJsonFileNames().Select(item => DateTime.FromFileTime(long.Parse(item.Substring(item.LastIndexOf('\\') + 1, 18)))).ToList();
             datapointdates.Add(DateTime.Now);
             ViewBag.DateTimes = datapointdates.Any() ? datapointdates : new List<DateTime>();
             #endregion
