@@ -148,8 +148,18 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+           
             ShoppingList shoppingList = _db.ShoppingLists.Find(id);
-            _db.ShoppingLists.Remove(shoppingList);
+            if (shoppingList.Users.Count == 1)
+            {
+                _db.ShoppingLists.Remove(shoppingList);
+            }
+            else
+            {
+                _db.Users.Include(x => x.ShoppingLists)
+                    .First(u => u.Username == User.Identity.Name)
+                    .ShoppingLists.Remove(shoppingList);
+            }
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -293,8 +303,11 @@ namespace ProjectFood.Controllers
                 if(user != null && user.ShoppingLists.FirstOrDefault(s => s.ID == id) != null) {
                     shoppingList.Items.Clear();
                     var itemRels = _db.ShoppingList_Item.Where(x => x.ShoppingListID == id);
-                    _db.ShoppingList_Item.RemoveRange(itemRels);
+                    foreach (var shoppingListItem in itemRels)
+                    {
+                        _db.ShoppingList_Item.Remove(shoppingListItem);
 
+                    }
                     _db.SaveChanges();  
                 }
             }

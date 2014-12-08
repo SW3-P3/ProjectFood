@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Owin;
 using Owin;
 using ProjectFood.Models;
@@ -10,6 +11,8 @@ namespace ProjectFood
     {
         public void Configuration(IAppBuilder app)
         {
+            var now = DateTime.Now;
+            GlobalVariables.CurrentSystemTime = now;
             ConfigureAuth(app);
         }
     }
