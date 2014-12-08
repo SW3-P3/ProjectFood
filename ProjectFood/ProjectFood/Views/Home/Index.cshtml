@@ -94,7 +94,7 @@
                             <ol class="carousel-indicators">
                                 @{
         int j = 0;
-        foreach (var recipe in ((IEnumerable<ProjectFood.Models.Recipe>)ViewBag.Recipes))
+        foreach (var recipe in  ((IEnumerable<ProjectFood.Models.Recipe>)ViewBag.Recipes))
         {
             <li data-target="#carousel-recipe" data-slide-to="@j" class="@(j == 0 ? "active" : "")"></li>
             j++;
