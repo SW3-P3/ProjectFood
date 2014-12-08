@@ -93,9 +93,10 @@
                 </td>
                 <td class="col-md-2 col-xs-1 text-center">
 
-                    <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
+                    <div onclick="$('#shoppingListTitle_delete').html('@list.Title'); $('#shoppingListID_delete').val('@list.ID'); $('#deleteShoppingListModal').modal('show');"
+                         class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>
-                    </a>
+                    </div>
                 </td>
             </tr>
         }

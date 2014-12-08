@@ -147,8 +147,18 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+           
             ShoppingList shoppingList = _db.ShoppingLists.Find(id);
-            _db.ShoppingLists.Remove(shoppingList);
+            if (shoppingList.Users.Count == 1)
+            {
+                _db.ShoppingLists.Remove(shoppingList);
+            }
+            else
+            {
+                _db.Users.Include(x => x.ShoppingLists)
+                    .First(u => u.Username == User.Identity.Name)
+                    .ShoppingLists.Remove(shoppingList);
+            }
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
