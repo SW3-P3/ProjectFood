@@ -11,20 +11,22 @@
             <h1>
                 <span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Opskrifter&nbsp;&nbsp;&nbsp;&nbsp;
             </h1>
-            <p class="lead text-muted">
+            <p class="hidden-xs lead text-muted">
                 Her kan du finde opskrifter lagt op af ProjectFoods brugere. Du kan selv tilføje opskrifter, samt sortere og søge i opskrifterne.
             </p>
         </div>
         <div class="col-md-3 nopadding">
             <div class="row hidden-xs">&nbsp;</div>
-            @if(User.Identity.IsAuthenticated) {
+            @if (User.Identity.IsAuthenticated)
+            {
                 <a href="@Url.Action("Create")" class="btn btn-success btn-block">Tilføj ny opskrift</a>
             }
         </div>
     </div>
 </div>
 <div class="container-fluid nopadding">
-    @using(Html.BeginForm("Index", "Recipes", FormMethod.Get)) {
+    @using (Html.BeginForm("Index", "Recipes", FormMethod.Get))
+    {
         <div class="col-md-4 col-xs-6 nopadding-sides-xs" style="padding-left:0px;">
             <label class="sr-only" for="searchString">Søg på opskrifter</label>
             <div class="input-group">
@@ -35,7 +37,7 @@
             </div>
         </div>
 
-        <div class="col-md-3 col-md-offset-5 col-xs-6 nopadding-sides-xs" style="padding-right:0px; padding-left:0px;">
+        <div class="col-md-4 col-xs-6 nopadding-sides-xs" style="padding-right:0px; padding-left:0px;">
             @{
         List<SelectListItem> listItems = new List<SelectListItem>();
         listItems.Add(new SelectListItem { Text = "Dato (Nyeste først)", Selected = true, Value = "New" });
@@ -44,10 +46,10 @@
         listItems.Add(new SelectListItem { Text = "Bedømmelse (Faldende)", Selected = ViewBag.Selected.Equals("High"), Value = "High" });
         <label class="sr-only" for="Selection">Sorter Opskrifter</label>
                 <div class="input-group">
-                    <div class="input-group-addon ">
-                        <span class="glyphicon glyphicon-sort-by-attributes"></span>
-                    </div>
                     @Html.DropDownList("sort", listItems, new { @id = "Selection", @class = "form-control", @onchange = "this.form.submit()" })
+                    <div class="input-group-btn">
+                        <div class="btn btn-primary" onclick="$(this).parents().submit()"><span class="glyphicon glyphicon-sort-by-attributes"></span></div>
+                    </div>
                 </div>
             }
         </div>
@@ -57,7 +59,8 @@
 <div class="row">
 
     @{int i = 1;
-    foreach(var recipe in Model) {
+    foreach (var recipe in Model)
+    {
         <div class="col-md-4">
             <div class="panel panel-default"
                  style="cursor: pointer;"
@@ -70,9 +73,12 @@
                     <h4>
                         <span class="glyphicon glyphicon-star"></span>
                         @{
-        if(recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0) {
+        if (recipe.Ratings.Select(x => x.Score).Count() == null || recipe.Ratings.Select(x => x.Score).Count() == 0)
+        {
             <span>Ingen vuderinger givet</span>
-        } else {
+        }
+        else
+        {
             var rat = recipe.Ratings.Select(x => x.Score);
 
             @rat.Average()
@@ -81,12 +87,14 @@
                         }
                     </h4>
                     <table class="table-condensed">
-                        @foreach(var ingredient in recipe.Ingredients.Take(3)) {
+                        @foreach (var ingredient in recipe.Ingredients.Take(3))
+                        {
                             <tr>
                                 <td>@ingredient.Name</td>
                             </tr>
                         }
-                        @if(recipe.Ingredients.Count() > 3) {
+                        @if (recipe.Ingredients.Count() > 3)
+                        {
                             <tr>
                                 <td>&hellip;</td>
                             </tr>
@@ -95,7 +103,8 @@
                 </div>
             </div>
         </div>
-        if(i % 3 == 0) {
+        if (i % 3 == 0)
+        {
             <div class="row"></div>
         }
         i++;
