@@ -30,9 +30,10 @@
     <div class="col-md-4 hidden-xs">
         <div class="form-group">
             <div class="input-group">
-                @using(Ajax.BeginForm("ShareList", new { id = Model.ID },
-                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShareStatus" })) {
-                    <label for="email"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;Del din indkøbsliste</label>
+                @using (Ajax.BeginForm("ShareList", new { id = Model.ID },
+                new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShareStatus" }))
+                {
+                    <h3><label for="email"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;Del din indkøbsliste</label></h3>
                     <p id="errorMessage" class="text-danger hidden"></p>
                     <div class="input-group">
                         <div class="input-group-addon"><span style="font-family: 'Segoe UI Emoji';">&#64;</span></div>
@@ -79,13 +80,13 @@
         <table class="table table-striped table-hover table-responsive">
             <tr>
                 <th class="col-md-1 text-center">Fjern</th>
-                <th>Varenavn</th>
                 <th class="col-md-1">Mængde</th>
+                <th>Varenavn</th>
                 <th class="col-md-1">Pris</th>
                 <th class="col-md-1 hidden-xs">Begynder</th>
                 <th class="col-md-1 hidden-xs">Udløber</th>
                 <th class="col-md-1 hidden-xs">Butik</th>
-                <th class="col-md-1 hidden-xs text-center">Tilbud</th>
+                <th class="col-md-1 hidden-xs text-center">Se tilbud</th>
             </tr>
             @foreach(var item in Model.Items) {
                 <tr>
@@ -101,6 +102,16 @@
                 ProjectFood.Models.ShoppingList_Item itemRel = tmpitemRel ?? new ShoppingList_Item() { };
                 string itemBought = itemRel.Bought ? "text-strikethrough text-muted" : "";
                 string itemTitle = itemRel.selectedOffer == null ? item.Name : itemRel.selectedOffer.Heading;
+
+                <td style="cursor:pointer;"
+                    onclick="EditAmount('@item.Name', '@itemRel.ItemID', '@itemRel.Amount', '@itemRel.Unit')"
+                    onmouseover="$(this).children().children().removeClass('text-hide')"
+                    onmouseout="$(this).children().children().addClass('text-hide')">
+                    <span>
+                        @Html.Raw(itemRel.Amount == 0 ? "&nbsp;" : Html.Encode(itemRel.Amount.ToString() + " " + itemRel.Unit))
+                        <span class="text-hide text-muted glyphicon glyphicon-pencil"></span>
+                    </span>
+                </td>
 
                 <td class="@itemBought"
                     style="cursor:pointer;"
@@ -125,16 +136,6 @@
                         <span id="hintText">marker som ikke købt</span>
                     </span>
                 </td>
-
-                        <td style="cursor:pointer;"
-                            onclick="EditAmount('@item.Name', '@itemRel.ItemID', '@itemRel.Amount', '@itemRel.Unit')"
-                            onmouseover="$(this).children().children().removeClass('text-hide')"
-                            onmouseout="$(this).children().children().addClass('text-hide')">
-                            <span>
-                                @Html.Raw(itemRel.Amount == 0 ? "&nbsp;" : Html.Encode(itemRel.Amount.ToString() + " " + itemRel.Unit))
-                                <span class="text-hide text-muted glyphicon glyphicon-pencil"></span>
-                            </span>
-                        </td>
                 if(itemRel.selectedOffer != null) {
                     <td class="col-md-1">@itemRel.selectedOffer.Price</td>
                         <td class="hidden-xs col-md-1">@itemRel.selectedOffer.Begin.ToString("ddd d. MM")</td>
@@ -162,8 +163,8 @@
                             tmp += 1;
                             <tr style="display: none" id="ShowOfferAll_@item.ID">
                                 <td>@*Should be Empty*@</td>
-                                <td>@offer.Heading</td>
                                 <td>@offer.Unit</td>
+                                <td>@offer.Heading</td>
                                 <td>@offer.Price</td>
                                 <td>@offer.Begin.ToString("ddd d- M")</td>
                                 <td>@offer.End.ToString("ddd d- M")</td>
