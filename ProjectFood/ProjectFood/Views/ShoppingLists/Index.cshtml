@@ -5,15 +5,15 @@
     ViewBag.Title = "Indkøbslister";
 }
 <div class="page-header nopadding-xs">
-    <div class="row">
-        <div class="col-md-9 col-xs-12">
+    <div class="container-fluid nopadding">
+        <div class="col-md-9 col-xs-12 nopadding">
             <h1><span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;Indkøbslister</h1>
             <p class="hidden-xs lead text-muted">
                 Her kan du lave indkøbslister, tilføje varer til listerne, samt finde tilbud for de indtastede varer.
                 Du kan desuden dele indkøbslisten med andre brugere ved at dele den med deres e-mail.
             </p>
         </div>
-        <div class="col-md-3 col-xs-12">
+        <div class="col-md-3 col-xs-12 nopadding">
             <div class="row hidden-xs">&nbsp;</div>
             <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 500);" class="btn btn-success btn-lg btn-block">
                 Opret ny indkøbsliste
@@ -91,11 +91,18 @@
                 <td class="col-md-2 hidden-xs">
                     @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
                 </td>
+                <td class="col-md-1 col-xs-1 text-center">
+                    <div onclick="$('#shoppingListTitle_edit').html('@list.Title'); $('#shoppingListID_edit').val('@list.ID'); $('#editShoppingListModal').modal('show');"
+                         class="btn btn-info">
+                        <span class="glyphicon glyphicon-pencil"></span> Rediger titel
+                    </div>
+                </td>
                 <td class="col-md-2 col-xs-1 text-center">
 
-                    <a href="@Url.Action("Delete", new { id = list.ID })" class="btn btn-danger">
+                    <div onclick="$('#shoppingListTitle_delete').html('@list.Title'); $('#shoppingListID_delete').val('@list.ID'); $('#deleteShoppingListModal').modal('show');"
+                         class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>
-                    </a>
+                    </div>
                 </td>
             </tr>
         }

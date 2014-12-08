@@ -25,8 +25,8 @@ namespace ProjectFood.Controllers
                 // The browser has the cookie of an user not in the db, log them out (this is untested)
                 if (user == null)
                 {
-                    FormsAuthentication.SignOut();
                     Session.Clear();
+                    Response.Cookies.Remove(".AspNet.ApplicationCookie");
                     return View();
                 }
 

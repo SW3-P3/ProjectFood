@@ -5,8 +5,12 @@
 }
 
 <div class="page-header">
-    <h1>Brugerindstillinger for 
-    @(Model.Name ?? User.Identity.Name)
+    <h1>
+        Brugerindstillinger
+        <span class="hidden-xs">
+            for
+            @(Model.Name ?? User.Identity.Name)
+        </span>
     </h1>
 </div>
 <hr />
@@ -15,7 +19,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-default">
-            <div class="panel-heading"><h4>Dit navn</h4></div>
+            <div class="panel-heading"><h4>Vist navn</h4></div>
             <div class="panel-body">
                 @using (Html.BeginForm("EditName", "User", new { username = User.Identity.Name }, FormMethod.Post, new { }))
                 {
@@ -31,7 +35,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 hidden-xs">
         <div class="panel panel-default">
             <div class="panel-heading"><h4>Sikkerhed</h4></div>
             <div class="panel-body">
@@ -41,44 +45,44 @@
     </div>
 </div>
 <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Her kan du vælge hvilke butikker du ønsker at se tilbud fra.</h4>
-                </div>
-                <div class="panel-body">
-                    @foreach (var store in (List<string>)ViewBag.Store)
-                    {
-                        string storename = store.Replace(" ", string.Empty);
-                        string onSuccess = "ToggleBoolByID('" + storename + "')";
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Her kan du vælge hvilke butikker du ønsker at se tilbud fra.</h4>
+            </div>
+            <div class="panel-body">
+                @foreach (var store in (List<string>)ViewBag.Store)
+                {
+                    string storename = store.Replace(" ", string.Empty);
+                    string onSuccess = "ToggleBoolByID('" + storename + "')";
 
-                        <div class="col-md-4 form-group">
-                            @using (Ajax.BeginForm(
+                    <div class="col-md-4 form-group">
+                        @using (Ajax.BeginForm(
         "EditStore",
         new { storename = store },
         new AjaxOptions { HttpMethod = "POST", OnSuccess = onSuccess }))
-                            {
-                                <span class="h5" onclick="$(this).parent().submit()">
-                                    @{
-                                bool storeBlackListed = Model.Preferences.Any(x => x.Store == true && x.Value == store);
-                                string valueReversed = storeBlackListed ? "false" : "true";
-                                string glyphicon = storeBlackListed ? "glyphicon-unchecked" : "glyphicon-check";
-                                string textClass = storeBlackListed ? "text-muted text-strikethrough" : "";
+                        {
+                            <span class="h5" onclick="$(this).parent().submit()">
+                                @{
+                            bool storeBlackListed = Model.Preferences.Any(x => x.Store == true && x.Value == store);
+                            string valueReversed = storeBlackListed ? "false" : "true";
+                            string glyphicon = storeBlackListed ? "glyphicon-unchecked" : "glyphicon-check";
+                            string textClass = storeBlackListed ? "text-muted text-strikethrough" : "";
 
-                                <span>
-                                    <input type="hidden" name="StoreCheck" id="storeCheck_@storename" value="@valueReversed" />
-                                    <span id="check_@storename" class="glyphicon @glyphicon"></span>
-                                </span>
-                                        <span class="@textClass" id="storeName_@storename">@store.Trim()</span>
-                                    }
+                            <span>
+                                <input type="hidden" name="StoreCheck" id="storeCheck_@storename" value="@valueReversed" />
+                                <span id="check_@storename" class="glyphicon @glyphicon"></span>
+                            </span>
+                                    <span class="@textClass" id="storeName_@storename">@store.Trim()</span>
+                                }
 
-                                </span>
-                            }
-                        </div>
-                    }
-                </div>
+                            </span>
+                        }
+                    </div>
+                }
             </div>
         </div>
+    </div>
     <div class=" col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -124,7 +128,7 @@
 
 
 
-    @section Scripts {                      @*  Don't question the JavaScript-Gods!!!                             *@
-    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
-    }
+@section Scripts {                      @*  Don't question the JavaScript-Gods!!!                             *@
+@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+}

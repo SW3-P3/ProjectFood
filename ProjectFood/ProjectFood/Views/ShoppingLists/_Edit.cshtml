@@ -11,9 +11,10 @@
                 <div class="modal-body">
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     <input id="shoppingListID_edit" name="id" value="" type="hidden" />
+                    <input type="hidden" name="from" value="@Request.Url.PathAndQuery" />
                     <div class="form-group form-group-lg">
                         <label class="hidden" for="title">Ny titel</label>
-                        <input name="title" type="text" min="1" class="form-control" placeholder="Ny titel" pattern=".{2,}" required/>
+                        <input name="title" type="text" min="1" class="form-control" placeholder="Ny titel" pattern=".{2,}" required />
                     </div>
                 </div>
                 <div class="modal-footer">
