@@ -4,12 +4,11 @@
     ViewBag.Title = "Log ind";
 }
 
-<div class="page-header">
-    <h1>@ViewBag.Title</h1>
+<div class="page-header nopadding-xs">
+    <h1><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp; @ViewBag.Title</h1>
 </div>
-<hr />
-<div class="row">
-    <div>
+
+<div class="container-fluid nopadding">
         <section id="loginForm">
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
@@ -34,7 +33,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-offset-4 col-md-5">
+                    <div class="col-md-offset-4 col-md-5 col-xs-offset-1">
                         <div class="lead" onclick="ToggleBoolRememberMe()">
                             <input type="hidden" name="RememberMe" id="RememberMe" value="false" />
                             <span id="check" class="glyphicon glyphicon-unchecked"></span>&nbsp;&nbsp;
@@ -47,21 +46,8 @@
                         <input type="submit" value="Log ind" class="btn btn-success btn-lg btn-block" />
                     </div>
                 </div>
-                @*<p>
-                        @Html.ActionLink("Opret ny bruger", "Register")
-                    </p>
-                     Enable this once you have account confirmation enabled for password reset functionality
-                        <p>
-                            @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                        </p>*@
             }
         </section>
-    </div>
-    @*<div class="col-md-4">
-            <section id="socialLoginForm">
-                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-            </section>
-        </div>*@
 </div>
 
 @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@

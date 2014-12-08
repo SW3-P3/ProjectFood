@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -88,17 +89,18 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Title")] ShoppingList shoppingList, string from)
         {
-            if(ModelState.IsValid) {
-                _db.ShoppingLists.Add(shoppingList);
+            if(ModelState.IsValid) {              
                 if (User.Identity.IsAuthenticated)
                 {
+                    _db.ShoppingLists.Add(shoppingList);
                     _db.Users.Include(u => u.ShoppingLists).First(u => u.Username == User.Identity.Name).ShoppingLists.Add(shoppingList);
-                }
-               
-                _db.SaveChanges();
+                    _db.SaveChanges();
+                }                               
             }
 
-            return Redirect(from);
+            string gotoUrl = from == "/ShoppingLists" ? "/ShoppingLists/Details/" + shoppingList.ID : from;
+
+            return Redirect(gotoUrl);
         }
 
         // GET: ShoppingLists/Edit/5
@@ -136,19 +138,6 @@ namespace ProjectFood.Controllers
                 _db.MarkAsModified(shoppingList);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
-            }
-            return View(shoppingList);
-        }
-
-        // GET: ShoppingLists/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if(id == null) {
-                return RedirectToAction("Index");
-            }
-            ShoppingList shoppingList = _db.ShoppingLists.Find(id);
-            if(shoppingList == null) {
-                return HttpNotFound();
             }
             return View(shoppingList);
         }
@@ -303,8 +292,11 @@ namespace ProjectFood.Controllers
                 if(user != null && user.ShoppingLists.FirstOrDefault(s => s.ID == id) != null) {
                     shoppingList.Items.Clear();
                     var itemRels = _db.ShoppingList_Item.Where(x => x.ShoppingListID == id);
-                    _db.ShoppingList_Item.RemoveRange(itemRels);
+                    foreach (var shoppingListItem in itemRels)
+                    {
+                        _db.ShoppingList_Item.Remove(shoppingListItem);
 
+                    }
                     _db.SaveChanges();  
                 }
             }
@@ -336,8 +328,8 @@ namespace ProjectFood.Controllers
         public static List<Offer> GetOffersForItem(IDataBaseContext db, Item item)
         {
             return db.Offers 
-                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
-                .ToList();
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()) ||
+                            String.Equals(x.Heading.ToLower(), item.Name.ToLower())).ToList();
         }
 
         [HttpPost]

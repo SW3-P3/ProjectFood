@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using RestSharp;
 using ProjectFood.Models.Api;
+using RestSharp;
 
-
-namespace ProjectFood.Tests
+namespace ProjectFood.Tests.Tests
 {
     [TestFixture]
     public class ApiTest

@@ -223,7 +223,7 @@ function GetSelectedListWL() {
 };
 
 function ChangeButton(json) {
-    $('#AddButton_' + json.offerID).removeClass('btn-primary').addClass('btn-success');
+    $('#AddButton_' + json.offerID).removeClass('btn-info').addClass('btn-success');
     $('#AddButton_' + json.offerID).children().removeClass('glyphicon-plus').addClass('glyphicon-ok');
     MakeSnackbar("Tilføjet til indkøbsliste&hellip;", "glyphicon-ok");
 };

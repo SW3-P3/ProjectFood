@@ -11,7 +11,14 @@ namespace ProjectFood.Controllers
 {
     public class UserController : Controller
     {
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
+
+        public UserController() { }
+
+        public UserController(IDataBaseContext context)
+        {
+            _db = context;
+        }
 
         // GET: User
         public ActionResult Index()
@@ -31,9 +38,18 @@ namespace ProjectFood.Controllers
                 _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
-            return RedirectToAction("EditPreferences");
+                return RedirectToAction("EditPreferences");
         }
-
+        [ValidateAntiForgeryToken]
+        public ActionResult AddAName(string username, string name)
+        {
+            if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
+            {
+                _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
+                _db.SaveChanges();
+            }
+            return RedirectToAction("Index", "Home");
+        }
         public ActionResult EditPreferences()
         {
             if (User.Identity.IsAuthenticated)

@@ -42,3 +42,11 @@ textarea {
        padding-right: 0 !important;
    }
 }
+
+.errormessage {
+    position: fixed;
+    width: inherit;
+    height: 300px;
+    z-index: 9999;
+
+}

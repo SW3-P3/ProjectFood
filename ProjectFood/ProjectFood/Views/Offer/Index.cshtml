@@ -18,67 +18,76 @@
     };
 </script>
 
-@using (Ajax.BeginForm(
+@using(Ajax.BeginForm(
     "AddOfferToShoppingList",
     "Offer",
     new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" },
-    new { @class = "hidden", @id = "AddOffer" }))
-{
+    new { @class = "hidden", @id = "AddOffer" })) {
     <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
     <input type="hidden" id="offerID" name="offerId" value="" />
 }
 
 <div class="page-header nopadding-xs">
-    <div class="row">
-        <div class="col-md-8">
-            <h1><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;@ViewBag.Title</h1>
-        </div>
-        <div class="col-md-4">
-            <div class="container-fluid nopadding">
-                @if (ViewBag.ShoppingLists.Count > 0)
-                {
-                    List<SelectListItem> listItems = new List<SelectListItem>();
-
-                    foreach (var list in ViewBag.ShoppingLists)
-                    {
-                        listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
-                    }
-
-
-                    <label for="Selection">Vælg indkøbsliste</label>
-                    @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
-                }
-                else
-                {
-                    <div class="row">&nbsp;</div>
-                    <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
-                        Opret ny indkøbsliste
-                    </div>
-                    @Html.Partial("_CreateShoppingList")
-                }
-            </div>
-        </div>
-    </div>
+    <h1><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;@ViewBag.Title</h1>
+    <p class="lead text-muted">Her kan du se aktuelle tilbud, fra diverse butikker sorteret efter dine indstillinger. 
+                               Du kan tilføje varerne til din valgte indkøbsliste, samt se forskellige informationer om tilbudet.</p>
 </div>
 
-<div class="row">
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#all" data-toggle="tab">Alle tilbud</a></li>
-        @foreach (var store in ViewBag.Stores)
-        {
-            <li><a href="#@store.Replace(" ", String.Empty).Replace("ø", string.Empty)" data-toggle="tab">@store</a></li>
+<div class="container-fluid nopadding">
+    <div class="col-md-4 nopadding">
+        @if(ViewBag.ShoppingLists.Count > 0) {
+            List<SelectListItem> listItems = new List<SelectListItem>();
+
+            foreach(var list in ViewBag.ShoppingLists) {
+                listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
+            }
+            <label for="Selection">Vælg indkøbsliste</label>
+            @Html.DropDownList("shoppingListID", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
+        } else {
+            <div class="row">&nbsp;</div>
+            <div onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 1000);" class="btn btn-primary btn-block">
+                Opret ny indkøbsliste
+            </div>
+            @Html.Partial("_CreateShoppingList")
         }
-    </ul>
+    </div>
+</div>
+<div class="row">&nbsp;</div>
+
+<div class="row">
+    <div class="hidden-xs">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#all" data-toggle="tab">Alle tilbud</a></li>
+            @foreach(var store in ViewBag.Stores) {
+                <li><a href="#@store.Replace(" ", String.Empty).Replace("ø", string.Empty)" data-toggle="tab">@store</a></li>
+            }
+        </ul>
+    </div>
+    <div class="container-fluid nopadding-sides-xs visible-xs">
+        <div class="col-xs-12 dropdown">
+            <button class="btn btn-primary btn-block" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                Vis tilbud fra&hellip;
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">
+                <li class="active"><a href="#all" data-toggle="tab">Alle tilbud</a></li>
+                @foreach(var store in ViewBag.Stores) {
+                    <li><a href="#@store.Replace(" ", String.Empty).Replace("ø", string.Empty)" data-toggle="tab">@store</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+    
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade active in" id="all">
+            <h4 class="visible-xs" style="padding-left:10px;">Alle&hellip;</h4>
             <div id="offerTable"></div>
             <div id="pages">
-                @using (Ajax.BeginForm(
+                @using(Ajax.BeginForm(
                             "GetOffers",
                             "Offer",
                             new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" },
-                            new { @id = "Form_all" }))
-                {
+                            new { @id = "Form_all" })) {
                     <input type="hidden" name="storename" value="all" />
                     <input type="hidden" name="page" value="1" id="page" />
                 }
@@ -87,7 +96,7 @@
                         <li id="previousPage" class="disabled">
                             <a href="#" onclick="ChangePage(this)">
                                 <span id="val" class="hidden">0</span>
-                                &larr; Forrige side
+                                &larr;<span class="hidden-xs"> Forrige side</span>
                             </a>
                         </li>
                         <li id="currentPage" class="">
@@ -98,25 +107,24 @@
                         <li id="nextPage" class="">
                             <a href="#" onclick="ChangePage(this)">
                                 <span id="val" class="hidden">2</span>
-                                Næste side &rarr;
+                                <span class="hidden-xs">Næste side </span>&rarr;
                             </a>
                         </li>
                     </ul>
                 </nav>
             </div>
         </div>
-        @foreach (var store in ViewBag.Stores)
-        {
+        @foreach(var store in ViewBag.Stores) {
             string storename = ((string)store).Replace(" ", string.Empty).Replace("ø", string.Empty);
             <div class="tab-pane fade" id="@storename">
+                <h4 class="visible-xs" style="padding-left:10px;">@store</h4>
                 <div id="offerTable"></div>
                 <div id="pages">
-                    @using (Ajax.BeginForm(
+                    @using(Ajax.BeginForm(
                             "GetOffers",
                             "Offer",
                             new AjaxOptions { HttpMethod = "POST", OnSuccess = "ShowOffers" },
-                            new { @id = "Form_" + storename }))
-                    {
+                            new { @id = "Form_" + storename })) {
                         <input type="hidden" name="storename" value="@storename" />
                         <input type="hidden" name="page" value="1" id="page" />
                     }
@@ -125,7 +133,7 @@
                             <li id="previousPage" class="disabled">
                                 <a href="#" onclick="ChangePage(this)">
                                     <span id="val" class="hidden">0</span>
-                                    &larr; Forrige side
+                                    &larr;<span class="hidden-xs"> Forrige side</span>
                                 </a>
                             </li>
                             <li id="currentPage" class="disabled">
@@ -136,7 +144,7 @@
                             <li id="nextPage" class="">
                                 <a href="#" onclick="ChangePage(this)">
                                     <span id="val" class="hidden">2</span>
-                                    Næste side &rarr;
+                                    <span class="hidden-xs">Næste side </span>&rarr;
                                 </a>
                             </li>
                         </ul>
@@ -146,10 +154,6 @@
         }
     </div>
 </div>
-
-<p>
-    @Html.ActionLink("Hent tilbud fra API igen", "ImportOffers", null, new { @class = "btn btn-default btn-xs" })
-</p>
 
 @section Scripts {                              @*  Don't question the JavaScript-Gods!!!                             *@
 @Scripts.Render("~/bundles/homemade")       @*  Magic part that makes the buttons change if POST was succesfull   *@

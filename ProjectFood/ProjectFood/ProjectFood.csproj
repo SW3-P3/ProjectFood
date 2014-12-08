@@ -55,6 +55,9 @@
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -268,6 +271,7 @@
     <EmbeddedResource Include="App_Data\jsonData\130597409391886574-Output-mod.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Content\bad-words.dat" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af-ZA.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af.js" />
@@ -682,9 +686,9 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Item\Index.cshtml" />
-    <Content Include="Views\ShoppingLists\Delete.cshtml" />
+    <Content Include="Views\ShoppingLists\_Delete.cshtml" />
     <Content Include="Views\ShoppingLists\Details.cshtml" />
-    <Content Include="Views\ShoppingLists\Edit.cshtml" />
+    <Content Include="Views\ShoppingLists\_Edit.cshtml" />
     <Content Include="Views\ShoppingLists\Index.cshtml" />
     <Content Include="Views\Offer\Index.cshtml" />
     <Content Include="Views\Shared\_CreateShoppingList.cshtml" />

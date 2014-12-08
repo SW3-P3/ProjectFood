@@ -17,7 +17,15 @@ namespace ProjectFood.Controllers
 {
     public class RecipesController : Controller
     {
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
+
+        public RecipesController() { }
+
+        public RecipesController(IDataBaseContext context)
+        {
+            _db = context;
+        }
+
 
         // GET: Recipes
         public ActionResult Index(string sort, string searchString)
@@ -119,7 +127,7 @@ namespace ProjectFood.Controllers
             {
                 return RedirectToAction("index");
             }
-            ViewBag.Author = _db.Users.First(u => u.Username == recipe.AuthorName);
+            ViewBag.Author = _db.Users.FirstOrDefault(u => u.Username == recipe.AuthorName);
             ViewBag.OriginalAuthor = _db.Users.SingleOrDefault(u => u.Username == recipe.OriginalAuthorName);
             if (recipe.Ingredients.Count > 0)
             {
@@ -237,7 +245,7 @@ namespace ProjectFood.Controllers
 
             if (ModelState.IsValid)
             {
-                _db.Entry(recipe).State = EntityState.Modified;
+                _db.MarkAsModified(recipe);
                 _db.SaveChanges();
                 if(_db.Recipes.FirstOrDefault(r => r.ID == recipe.ID).Title == null) {
                     return View(recipe);
@@ -317,7 +325,7 @@ namespace ProjectFood.Controllers
             Item knownItem = null;
             if (_db.Items.Any())
             {
-                knownItem = _db.Items.SingleOrDefault(i => i.Name.CompareTo(name) == 0);
+                knownItem = _db.Items.FirstOrDefault(i => i.Name.CompareTo(name) == 0);
             }
 
             var tmpIngredient = knownItem ?? new Item { Name = name };
@@ -339,6 +347,8 @@ namespace ProjectFood.Controllers
 
         public ActionResult RemoveIngredient(int id, int ingredientId)
         {
+            var test = _db.Recipes.Include(r => r.Ingredients);
+
             var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
 
             //Find the item to be deleted, and remove it from the shopping list

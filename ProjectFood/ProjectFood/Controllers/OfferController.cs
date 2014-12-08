@@ -18,7 +18,15 @@ namespace ProjectFood.Controllers
     public class OfferController : Controller
     {
 
-        private readonly DataBaseContext _db = new DataBaseContext();
+        private IDataBaseContext _db = new DataBaseContext();
+
+        public OfferController() { }
+
+        public OfferController(IDataBaseContext context)
+        {
+            _db = context;
+        }
+
 
         // GET: Offer
         public ActionResult Index(int? shoppingListID)
@@ -214,10 +222,11 @@ namespace ProjectFood.Controllers
             return RedirectToAction("Search/" + id);
         }
 
-        private List<Offer> GetOffersForItem(string str)
+        internal List<Offer> GetOffersForItem(string str)
         {
             return _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username.Equals(User.Identity.Name)))
-                .Where(x => x.Heading.ToLower().Contains(str.ToLower()))
+                .Where(x => x.Heading.ToLower().Contains(str.ToLower() + " ") || x.Heading.ToLower().Contains(" " + str.ToLower()) ||
+                            String.Equals(x.Heading, str, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
         }
 
@@ -233,6 +242,7 @@ namespace ProjectFood.Controllers
             {
                 if (user.LastSentNotification != null)
                 {
+
                     DateTime dt = (DateTime)user.LastSentNotification;
                     // Only sent notification if non have been sent for x days. (or always true, because it wont send unless new offers has been added)
                     if (dt.AddDays(user.MaxSendEmailsEveryDays ?? 1) < DateTime.Now || true)
@@ -259,6 +269,7 @@ namespace ProjectFood.Controllers
 
                         }
                     }
+
                 }
             }
             _db.SaveChanges();
@@ -307,10 +318,12 @@ namespace ProjectFood.Controllers
             }
         }
 
-        private List<Offer> GetOffersForItem(Item item)
+        internal List<Offer> GetOffersForItem(Item item)
         {
             return _db.Offers
-                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") 
+                    || x.Heading.ToLower().Contains(" " + item.Name.ToLower())
+                    || String.Equals(x.Heading, item.Name, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
         }
         private IEnumerable<Offer> GetOffersFilteredForItem(Item item, User u)
@@ -323,7 +336,6 @@ namespace ProjectFood.Controllers
         private Item OfferToItem(Offer offer)
         {
             return new Item { Name = offer.Heading };
-
         }
 
         [HttpPost]

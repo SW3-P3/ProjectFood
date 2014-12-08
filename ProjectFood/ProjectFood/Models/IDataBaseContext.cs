@@ -20,6 +20,12 @@ namespace ProjectFood.Models
         DbSet<Rating> Ratings { get; }
 
         int SaveChanges();
-        void MarkAsModified(ShoppingList item);    
+        void MarkAsModified(ShoppingList item);
+
+        IEnumerable<Offer> OffersFilteredWithString(params string[] args);
+        IEnumerable<Offer> OffersFilteredByUserPrefs(User u);
+        IEnumerable<Offer> OffersFiltered();
+
+        void MarkAsModified(Recipe item);
     }
 }
