@@ -188,7 +188,7 @@ namespace ProjectFood.Controllers
                     
                     var list = new ShoppingList();
                     list.Title = "Min Indkøbsliste";
-                    var tmpUser = new User() {Username = model.Email, Name = name.Trim()};
+                    var tmpUser = new User() {Username = model.Email, Name = (name.Contains(",") == true ? name.Split(',').First() : name)};
                     _db.Users.Add(tmpUser);
                     tmpUser.ShoppingLists.Add(list);
 

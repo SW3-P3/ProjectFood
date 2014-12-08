@@ -15,6 +15,15 @@
 </div>
 <hr />
 
+@if (ViewBag.BadWord != null)
+{
+    <div class="alert alert-warning alert-dismissable errormessage">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h1>Det kan du da ikke kalde dig selv!</h1>
+        <p class="lead">Hvordan ville du have det, hvis din mor kaldte dig @ViewBag.BadWord??</p>
+    </div>
+}
+
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div class="row">
     <div class="col-md-6">

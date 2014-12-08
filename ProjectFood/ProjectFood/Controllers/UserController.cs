@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
+using System.IO;
+using System.Reflection;
 
 
 
@@ -35,7 +37,21 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
             {
-                _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
+                var assembly = Assembly.GetExecutingAssembly();
+                var resourceName = "ProjectFood.Content.bad-words.dat";
+
+                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var badWords = reader.ReadToEnd();
+                    if (badWords.Contains(name.Split(' ').First().Trim()) && badWords.Contains(name.Split(',').First().Trim()))
+                    {
+                        ViewBag.BadWord = name.Trim();
+                        return RedirectToAction("EditPreferences");
+                    }
+                }
+                
+                _db.Users.SingleOrDefault(u => u.Username == username).Name = (name.Contains(",") == true ? name.Split(',').First() : name);
                 _db.SaveChanges();
             }
                 return RedirectToAction("EditPreferences");
