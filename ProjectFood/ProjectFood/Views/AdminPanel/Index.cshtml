@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "AdminPanel";
 }
 
 <div class="page-header nopadding-xs">
@@ -11,7 +11,34 @@
             <div class="panel-heading lead">Tilbud</div>
             <div class="panel-body">
                 <div class="list-group">
-                    <a href="@Url.Action("LoadNewOffers", "AdminPanel")" class="list-group-item list-group-item-info">Hent nye tilbud</a>
+                    <a href="@Url.Action("LoadNewOffers", "AdminPanel")" class="list-group-item list-group-item-info">Hent nye tilbud (fra API)</a>
+                    <a href="@Url.Action("ImportOffersFromFiles", "AdminPanel")" class="list-group-item list-group-item-info">Hent nye tilbud (fra JSON filer)</a>
+                    <div style="height: 20px;"></div>
+                    @using (Html.BeginForm("ChangeTimePeriod", "AdminPanel"))
+                    {
+                        <div>
+                            @Html.TextBox("year", null, new { @class = "form-control", @placeholder = "År", @size = "30" })
+                            @Html.TextBox("month", null, new { @class = "form-control", @placeholder = "Måned", @size = "30" })
+                            @Html.TextBox("day", null, new { @class = "form-control", @placeholder = "Dag", @size = "30" })
+                        </div>
+                        <button type="submit" class="list-group-item list-group-item-info">Ændrer tidspunktet for PF</button>
+
+                    }
+                    <div style="height: 20px;"></div>
+                    @using (Html.BeginForm("ChangeTimePeriodDropdown", "AdminPanel"))
+                    {
+                        if (ViewBag.DateTimes != null)
+                        {
+                            var listItems = new List<SelectListItem>();
+                            foreach (var list in ViewBag.DateTimes)
+                            {
+                                listItems.Add(new SelectListItem { Text = list.ToString(), Value = list.ToString() });
+                            }
+                            <label for="Selection">Vælg Tidspunkt</label>
+                            @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control" })
+                        }
+                        <button type="submit" class="list-group-item list-group-item-info">Ændrer tidspunktet for PF</button>
+                    }
                 </div>
             </div>
         </div>
@@ -23,6 +50,11 @@
                 <div class="list-group">
                     <a href="@Url.Action("DeleteAllShoppinglistItems", "AdminPanel")" class="list-group-item list-group-item-info">Ryd alle indkøbslister</a>
                     <a href="@Url.Action("DeleteAllShoppinglists", "AdminPanel")" class="list-group-item list-group-item-info">Slet alle indkøbslister</a>
+                    <div style="height: 20px;"></div>
+                    <a href="@Url.Action("DeleteAllRecipes", "AdminPanel")" class="list-group-item list-group-item-info">Slet alle opskrifter</a>
+                    <a href="@Url.Action("DeleteAllRecipesRatings", "AdminPanel")" class="list-group-item list-group-item-info">Slet vurderingerne fra alle opskrifter</a>
+                    <div style="height: 20px;"></div>
+                    <a href="@Url.Action("DeleteEntireDatabase", "AdminPanel")" class="list-group-item list-group-item-info btn-block">Ryd databasen</a>
 
                 </div>
             </div>
@@ -30,3 +62,9 @@
     </div>
 
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $('.datepicker').datepicker(); //Initialise any date pickers
+    </script>
+}

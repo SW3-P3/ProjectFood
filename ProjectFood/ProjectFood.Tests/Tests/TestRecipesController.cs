@@ -84,7 +84,7 @@ namespace ProjectFood.Tests.Tests
         {
 
             //Compute
-            var result = _controller.Index("Old");
+            var result = _controller.Index("Old","");
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));

@@ -292,8 +292,11 @@ namespace ProjectFood.Controllers
                 if(user != null && user.ShoppingLists.FirstOrDefault(s => s.ID == id) != null) {
                     shoppingList.Items.Clear();
                     var itemRels = _db.ShoppingList_Item.Where(x => x.ShoppingListID == id);
-                    _db.ShoppingList_Item.RemoveRange(itemRels);
+                    foreach (var shoppingListItem in itemRels)
+                    {
+                        _db.ShoppingList_Item.Remove(shoppingListItem);
 
+                    }
                     _db.SaveChanges();  
                 }
             }
