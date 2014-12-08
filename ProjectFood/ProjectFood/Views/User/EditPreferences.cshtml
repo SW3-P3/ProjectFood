@@ -4,34 +4,35 @@
     ViewBag.Title = "Bruger: " + @User.Identity.Name;
 }
 
-<div class="page-header">
-    <h1>
-        Brugerindstillinger
-        <span class="hidden-xs">
-            for
-            @(Model.Name ?? User.Identity.Name)
-        </span>
-    </h1>
+<div class="page-header nopadding-xs">
+    <div class="container-fluid nopadding">
+        <h1>
+            <span class="glyphicon glyphicon-cog"></span>
+            <span class="visible-xs-inline">
+                Indstillinger
+            </span>
+            <span class="hidden-xs">
+                &nbsp;&nbsp;Brugerindstillinger for
+                @(Model.Name ?? User.Identity.Name)
+            </span>
+        </h1>
+    </div>
 </div>
-<hr />
 
-@if (ViewBag.BadWord != null)
-{
+@if(ViewBag.BadWord != null) {
     <div class="alert alert-warning alert-dismissable errormessage">
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h1>Det kan du da ikke kalde dig selv!</h1>
         <p class="lead">Hvordan ville du have det, hvis din mor kaldte dig @ViewBag.BadWord??</p>
     </div>
 }
-
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading"><h4>Vist navn</h4></div>
             <div class="panel-body">
-                @using (Html.BeginForm("EditName", "User", new { username = User.Identity.Name }, FormMethod.Post, new { }))
-                {
+                @using(Html.BeginForm("EditName", "User", new { username = User.Identity.Name }, FormMethod.Post, new { })) {
                     @Html.AntiForgeryToken()
 
                     <div class="input-group input-group">
@@ -60,17 +61,15 @@
                 <h4>Her kan du vælge hvilke butikker du ønsker at se tilbud fra.</h4>
             </div>
             <div class="panel-body">
-                @foreach (var store in (List<string>)ViewBag.Store)
-                {
+                @foreach(var store in (List<string>)ViewBag.Store) {
                     string storename = store.Replace(" ", string.Empty);
                     string onSuccess = "ToggleBoolByID('" + storename + "')";
 
                     <div class="col-md-4 form-group">
-                        @using (Ajax.BeginForm(
+                        @using(Ajax.BeginForm(
         "EditStore",
         new { storename = store },
-        new AjaxOptions { HttpMethod = "POST", OnSuccess = onSuccess }))
-                        {
+        new AjaxOptions { HttpMethod = "POST", OnSuccess = onSuccess })) {
                             <span class="h5" onclick="$(this).parent().submit()">
                                 @{
                             bool storeBlackListed = Model.Preferences.Any(x => x.Store == true && x.Value == store);
@@ -100,8 +99,7 @@
                 </h4>
             </div>
             <div class=" panel-body form-group">
-                @using (Html.BeginForm("AddPreference", "User", FormMethod.Post))
-                {
+                @using(Html.BeginForm("AddPreference", "User", FormMethod.Post)) {
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="username" value="@User.Identity.Name" />
                     <input type="hidden" name="store" value="false" />
@@ -116,8 +114,7 @@
 
             <div class="list-group">
 
-                @foreach (var pref in Model.Preferences.Where(p => p.Store == false))
-                {
+                @foreach(var pref in Model.Preferences.Where(p => p.Store == false)) {
                     <div class="list-group-item">
                         <span class="lead">
                             <a href="@Url.Action("RemovePreference",

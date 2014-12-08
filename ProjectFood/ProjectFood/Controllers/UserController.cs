@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 
 
@@ -25,8 +26,7 @@ namespace ProjectFood.Controllers
         // GET: User
         public ActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
+            if(User.Identity.IsAuthenticated) {
                 return View(User);
             }
 
@@ -35,43 +35,31 @@ namespace ProjectFood.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditName(string username, string name)
         {
-            if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-                var resourceName = "ProjectFood.Content.bad-words.dat";
-
-                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    var badWords = reader.ReadToEnd();
-                    if (badWords.Contains(name.Split(' ').First().Trim()) && badWords.Contains(name.Split(',').First().Trim()))
-                    {
-                        ViewBag.BadWord = name.Trim();
-                        return RedirectToAction("EditPreferences");
-                    }
+            if(User.Identity.IsAuthenticated && User.Identity.Name == username && name.Split(',').First().Trim() != string.Empty) {
+                if(!IsNameLegal(name)) {
+                    return RedirectToAction("EditPreferences", new { BadName = name.Trim() });
                 }
-                
+
                 _db.Users.FirstOrDefault(u => u.Username == username).Name = (name.Contains(",") == true ? name.Split(',').First() : name);
                 _db.SaveChanges();
             }
-                return RedirectToAction("EditPreferences");
+            return RedirectToAction("EditPreferences");
         }
         [ValidateAntiForgeryToken]
         public ActionResult AddAName(string username, string name)
         {
-            if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
-            {
+            if(User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty) {
                 _db.Users.FirstOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
             return RedirectToAction("Index", "Home");
         }
-        public ActionResult EditPreferences()
+        public ActionResult EditPreferences(string BadName)
         {
-            if (User.Identity.IsAuthenticated)
-            {
+            if(User.Identity.IsAuthenticated) {
                 ViewBag.Store = _db.Offers.Select(x => x.Store).Distinct().OrderBy(x => x.ToLower()).ToList();
                 ViewBag.Prefs = _db.Preferences.ToList();
+                ViewBag.BadWord = BadName;
                 return View(_db.Users.Include(s => s.Preferences).First(u => u.Username == User.Identity.Name));
 
             }
@@ -118,6 +106,40 @@ namespace ProjectFood.Controllers
             }
 
             _db.SaveChanges();
+        }
+
+        public static bool IsNameLegal(string name)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "ProjectFood.Content.bad-words.dat";
+
+            using(Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using(StreamReader reader = new StreamReader(stream)) {
+                var badWords = reader.ReadToEnd();
+                foreach(string sub in name.Split(' ')) {
+                    if(badWords.Contains(sub.Trim().ToLower())) {
+                        return false;
+                    }
+                }
+                foreach(string sub in name.Split(',')) {
+                    if(badWords.Contains(sub.Trim().ToLower())) {
+                        return false;
+                    }
+                }
+                foreach(string sub in SplitCamelCase(name)) {
+                    if(badWords.Contains(sub)) {
+                        return false;
+                    }
+                }
+                
+            }
+
+            return true;
+        }
+
+        private static string[] SplitCamelCase(string source)
+        {
+            return Regex.Split(source, @"(?<!^)(?=[A-Z])");
         }
 
     }

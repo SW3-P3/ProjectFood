@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -11,8 +7,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ProjectFood.Models;
 using System.Net;
-using System.Reflection;
-using System.IO;
 
 namespace ProjectFood.Controllers
 {
@@ -162,16 +156,13 @@ namespace ProjectFood.Controllers
         {
             if (ModelState.IsValid)
             {
-                var assembly = Assembly.GetExecutingAssembly();
-                var resourceName = "ProjectFood.Content.bad-words.dat";
+                if(name.Split(' ').First().Trim() == string.Empty) {
+                    return View(model);
+                }
 
-
-                using(Stream stream = assembly.GetManifestResourceStream(resourceName))
-                using(StreamReader reader = new StreamReader(stream)) {
-                    if(reader.ReadToEnd().Contains(name.Trim())) {
-                        ViewBag.BadWord = name.Trim();
-                        return View(model);
-                    }
+                if(!UserController.IsNameLegal(name)) {
+                    ViewBag.BadWord = name.Trim();
+                    return View(model);
                 }
                 
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };

@@ -14,7 +14,7 @@ function ToggleBoolByID(store) {
         $('span#storeName_' + store).removeClass('text-muted').removeClass('text-strikethrough');
     }
 
-    MakeSnackbar("Gemt&hellip;", "glyphicon-ok");
+    MakeSnackbar("Gemt&hellip;", "glyphicon-ok", null, "1000");
 };
 
 function ToggleBoolRememberMe() {
@@ -98,7 +98,7 @@ function ChangeToCheckRecipe(json) {
         .removeClass('glyphicon-plus')
         .addClass('glyphicon-ok');
 
-    MakeSnackbar("Vare tilføjet til " + json.shoppingListTitle, "glyphicon-ok")
+    MakeSnackbar("Vare tilføjet til " + json.shoppingListTitle, "glyphicon-ok", "toast", "1000")
 };
 
 function GetSelectedList() {
@@ -225,17 +225,38 @@ function GetSelectedListWL() {
 function ChangeButton(json) {
     $('#AddButton_' + json.offerID).removeClass('btn-info').addClass('btn-success');
     $('#AddButton_' + json.offerID).children().removeClass('glyphicon-plus').addClass('glyphicon-ok');
-    MakeSnackbar("Tilføjet til indkøbsliste&hellip;", "glyphicon-ok");
+    MakeSnackbar("Tilføjet til indkøbsliste&hellip;", "glyphicon-ok", "toast", "1000");
 };
 //END_WatchList
 
-function MakeSnackbar(text, glyphicon) {
-    if (typeof glyphicon !== "undefined") {
+function MakeSnackbar(text, glyphicon, style, timeout) {
+    $('#snackbar-container').children().each(function () {
+        $(this).snackbar('hide');
+    });
+    var options;
+    if (isset(glyphicon)) {
         var glyphiconContainer = $('<div>');
         var span = $('<span>').addClass('glyphicon').addClass(glyphicon);
         glyphiconContainer.append(span);
-        $.snackbar({ content: glyphiconContainer.html() + "&nbsp;&nbsp;" + text });
+        options = {
+            content: glyphiconContainer.html() + "&nbsp;&nbsp;" + ((isset(text)) ? text : " "),
+            style: (isset(style)) ? style : "snackbar",
+            timeout: (isset(timeout)) ? timeout : 2000
+        };
     } else {
-        $.snackbar({ content: text });
+        options = {
+            content: (isset(text)) ? text : " ",
+            style: (isset(style)) ? style : "snackbar",
+            timeout: (isset(timeout)) ? timeout : 2000
+        };
+    }
+    $.snackbar(options);
+};
+
+function isset(variable) {
+    if (typeof variable !== "undefined" && variable !== null) {
+        return true;
+    } else {
+        return false;
     }
 };

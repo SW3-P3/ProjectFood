@@ -4,15 +4,15 @@
     ViewBag.Title = "Details";
 }
 
-<div class="page-header">
+<div class="page-header nopadding-xs">
     <div class="row">
         <div class="col-md-9">
-            <div class="container-fluid">
+            <div class="container-fluid nopadding">
                 <h1>
                     @Model.Title &nbsp;&nbsp;
                 </h1>
             </div>
-            <div class="container-fluid">
+            <div class="container-fluid nopadding">
                 <span class="text-muted">
                     Lavet af
                     @{
@@ -24,41 +24,43 @@
                     }
                 </span>
             </div>
-            <div class="container-fluid">
+            <div class="container-fluid nopadding">
                 <span class="lead">
                     <span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;@Model.Minutes Minutter
                 </span>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="container-fluid nopadding">
-                @if(User.Identity.IsAuthenticated) {
+            <div class="container-fluid nopadding text-center">
+                <div class="well well-sm">
+                    @if(User.Identity.IsAuthenticated) {
 
-                    using(Ajax.BeginForm(
-                    "AddRating",
-                    new { id = Model.ID },
-                    new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateStarsAndAvg" },
-                    new { @class = "form-group h1", @id = "starForm" }
-                    )) {
-                        var rating = ViewBag.UserRating != null ? ViewBag.UserRating.Score : 0;
-                        <input id="rateVal" type="hidden" name="rating" value="@((int)rating)" />
+                        using(Ajax.BeginForm(
+                        "AddRating",
+                        new { id = Model.ID },
+                        new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateStarsAndAvg" },
+                        new { @class = "form-group h1 nopadding", @id = "starForm" }
+                        )) {
+                            var rating = ViewBag.UserRating != null ? ViewBag.UserRating.Score : 0;
+                            <input id="rateVal" type="hidden" name="rating" value="@((int)rating)" />
 
 
-                        for(int i = 1; i <= 5; i++) {
-                            string star = rating >= i ? "glyphicon-star" : "glyphicon-star-empty"; ;
-                            <span id="@i" class="glyphicon @star" onmouseover="DrawStars('@i')" onmouseout="DrawStars($('#rateVal').val())" onclick="ClickedStar(@i)"></span>
+                            for(int i = 1; i <= 5; i++) {
+                                string star = rating >= i ? "glyphicon-star" : "glyphicon-star-empty"; ;
+                                <span id="@i" class="glyphicon @star" onmouseover="DrawStars('@i')" onmouseout="DrawStars($('#rateVal').val())" onclick="ClickedStar(@i)"></span>
+                            }
                         }
                     }
-                }
-                <span class="lead">
-                    <span id="avgRating">@(((decimal)ViewBag.AverageScore).ToString("0.0"))</span>
-                    <span class="glyphicon glyphicon-star"></span>
-                    <small> - <span id="numRatings">@ViewBag.RatingCount</span> brugere</small>
-                </span>
+                    <span class="lead">
+                        <span id="avgRating">@(((decimal)ViewBag.AverageScore).ToString("0.0"))</span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <small> - <span id="numRatings">@ViewBag.RatingCount</span> brugere</small>
+                    </span>
+                </div>
             </div>
 
-            <div class="row">&nbsp;</div>
-            <div class="container-fluid nopadding">
+            <div class="row hidden-xs">&nbsp;</div>
+            <div class="container-fluid nopadding hidden-xs">
                 @if(User.Identity.IsAuthenticated == true) {
                     if(User.Identity.Name == Model.AuthorName) {
 
@@ -70,7 +72,7 @@
                 }
             </div>
 
-            <div class="container-fluid nopadding">
+            <div class="container-fluid nopadding hidden-xs">
                 @if(User.Identity.Name == Model.AuthorName) {
                     <div class="row">&nbsp;</div>
                     <div onclick="$('div#deleteRecipeModal').modal('show');" class="btn btn-danger btn-block">
@@ -84,24 +86,24 @@
         </div>
     </div>
 </div>
-<hr />
+<hr class="hidden-xs" />
 <div class="row">
     <div class="col-md-5">
-        <div class="container-fluid">
-            <div class="col-md-4">
+        <div class="container-fluid nopadding">
+            <div class="col-md-4 col-xs-6" style="padding-left:0px;">
                 @{
                     string onChange = "ChangeNumPersons(this, '" + @Model.Ingredients.Count + "')";
                     <label class="control-label">Antal personer</label>
                     @Html.TextBox("numPersons", 4, new { @type = "number", @min = "1", @max = "100", @class = "form-control", @onchange = onChange })
                 }
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8 col-xs-6" style="padding-right:0px;">
                 @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
                     List<SelectListItem> listItems = new List<SelectListItem>();
                     foreach(var list in ViewBag.ShoppingLists) {
                         listItems.Add(new SelectListItem { Text = list.Title, Value = list.ID.ToString() });
                     }
-                    <label for="Selection">Vælg indkøbsliste</label>
+                    <label for="Selection"><span class="hidden-xs">Vælg </span>Indkøbsliste</label>
                     @Html.DropDownList("ListSelect", listItems, new { @id = "Selection", @class = "form-control", @onchange = "GetSelectedList()" })
 
                 } else {
@@ -115,16 +117,16 @@
         </div>
         <div class="row">&nbsp;</div>
         <div class="container-fluid nopadding">
-            <table class="table table-striped">
+            <table class="table table-striped" style="margin-bottom:0px;">
                 <tr>
                     @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
-                        <th class="col-md-1 text-center">Tilføj</th>
+                        <th class="col-md-1 col-xs-1 text-center" style="padding-left:0px;padding-right:0px;"><span id="add" style="display:none;">Tilføj</span></th>
                     }
                     <th class="col-md-2"></th>
                     <th>Ingrediens</th>
                 </tr>
                 @{
-                    int numItem = 0;
+                    ViewBag.numItem = 0;
                     foreach(var item in Model.Ingredients) {
                         var ingredientRel = ((IEnumerable<ProjectFood.Models.Recipe_Ingredient>)ViewBag.Recipe_Ingredient)
                         .Where(x => x.IngredientID == item.ID)
@@ -132,48 +134,50 @@
                         <tr>
 
                             @if(ViewBag.ShoppingLists != null && ViewBag.ShoppingLists.Count > 0) {
-                                <td class="col-md-1">
-                                    @using(Ajax.BeginForm(
+                                <td class="col-md-1 col-xs-1" style="padding-left:0px;padding-right:0px;">
+                                    <span id="add" style="display:none;">
+                                        @using(Ajax.BeginForm(
                                         "AddItem",
                                         "ShoppingLists",
                                         new { name = item.Name, unit = ingredientRel.Unit, itemID = item.ID },
                                         new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckRecipe" },
-                                        new { @id = "AddItem_" + numItem })) {
-                                        <input type="hidden" name="amount" id="amount_@numItem" value="@(ingredientRel.AmountPerPerson * 4)" />
-                                        <input type="hidden" name="id" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
-                                        <button id="AddItem_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
+                                        new { @id = "AddItem_" + ViewBag.numItem })) {
+                                            <input type="hidden" name="amount" id="amount_@ViewBag.numItem" value="@(ingredientRel.AmountPerPerson * 4)" />
+                                            <input type="hidden" name="id" id="shoppingListId" value="@ViewBag.ShoppingLists[0].ID" />
+                                            <button id="AddItem_@item.ID" type="submit" class="btn btn-info btn-xs btn-block">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
 
-                                    }
+                                        }
+                                    </span>
                                 </td>
                             }
-                            <td class="col-md-2 text-right">
+                            <td class="col-md-1 text-right">
                                 @if(ingredientRel.AmountPerPerson > 0) {
-                                    <span class="hidden" id="amountPP_@numItem">@((ingredientRel.AmountPerPerson).ToString().Replace(",", "."))</span>
-                                    <span id="amount_@numItem">@(ingredientRel.AmountPerPerson * 4)</span> @ingredientRel.Unit
-                                    @*<span>@(ingredientRel.AmountPerPerson * ViewBag.numPersons) @ingredientRel.Unit</span>*@
+                                    <span class="hidden" id="amountPP_@ViewBag.numItem">@((ingredientRel.AmountPerPerson).ToString().Replace(",", "."))</span>
+                                    <span id="amount_@ViewBag.numItem">@(ingredientRel.AmountPerPerson * 4)</span> @ingredientRel.Unit
                                 }
 
                             </td>
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                         </tr>
-                                numItem++;
+                        ViewBag.numItem++;
                     }
-                    <tr>
-                        <td colspan="3">
-                            <div class="btn btn-info btn-block"
-                                 onclick="AddAllTheItems('@numItem')">
-                                Tilføj alle varer til den valgte indkøbsliste
-                            </div>
-                        </td>
-                    </tr>
                 }
             </table>
+            <div class="btn btn-info btn-block"
+                 onclick="AddAllTheItems('@ViewBag.numItem')">
+                Tilføj alle varer til valgt indkøbsliste
+            </div>
+            <div class="btn btn-info btn-block"
+                 onclick="$('*#add').toggle();">
+                Tilføj enkelte varer til valgt indkøbsliste
+            </div>
         </div>
     </div>
     <div class="col-md-7">
         <div class="container-fluid nopadding">
+            <h4 class="text-muted" style="margin-bottom:0px;">Instruktioner</h4>
             <div class="well">
                 <span style="white-space: pre-line">@Model.Instructions</span>
             </div>
@@ -188,6 +192,6 @@
 </p>
 
 @section Scripts {                          @*  Don't question the JavaScript-Gods!!!                             *@
-    @Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
-    @Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
+@Scripts.Render("~/bundles/homemade")   @*  Magic part that makes the buttons change if POST was succesfull   *@
+@Scripts.Render("~/bundles/jqueryval")  @*  Magic part that makes the AJAX POST possible                      *@
 }

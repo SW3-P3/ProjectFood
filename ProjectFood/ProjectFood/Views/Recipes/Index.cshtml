@@ -15,8 +15,8 @@
                 Her kan du finde opskrifter lagt op af ProjectFoods brugere. Du kan selv tilføje opskrifter, samt sortere og søge i opskrifterne.
             </p>
         </div>
-        <div class="col-md-3 nopadding">
-            <div class="row hidden-xs">&nbsp;</div>
+        <div class="hidden-xs col-md-3 nopadding">
+            <div class="row">&nbsp;</div>
             @if (User.Identity.IsAuthenticated)
             {
                 <a href="@Url.Action("Create")" class="btn btn-lg btn-success btn-block">Opret ny opskrift</a>
@@ -27,7 +27,7 @@
 <div class="container-fluid nopadding">
     @using (Html.BeginForm("Index", "Recipes", FormMethod.Get))
     {
-        <div class="col-md-4 col-xs-6 nopadding-sides-xs" style="padding-left:0px;">
+        <div class="col-md-4 nopadding-sides-xs" style="padding-left:0px;">
             <label class="sr-only" for="searchString">Søg på opskrifter</label>
             <div class="input-group">
                 @Html.TextBox("searchString", null, new { @class = "form-control", @placeholder = "Indtast Opskriftnavn ex. Lasagne" })
@@ -36,8 +36,8 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4 col-xs-6 nopadding-sides-xs" style="padding-right:0px; padding-left:0px;">
+        <div class="visible-xs row">&nbsp;</div>
+        <div class="col-md-4 nopadding-sides-xs" style="padding-right:0px; padding-left:0px;">
             @{
         List<SelectListItem> listItems = new List<SelectListItem>();
         listItems.Add(new SelectListItem { Text = "Dato (Nyeste først)", Selected = true, Value = "New" });
