@@ -157,7 +157,7 @@ function ShowOffers(json) {
                     + "<th class='col-md-7'>Navn</th>"
                     + "<th class='col-md-1'>Pris</th>"
                     + "<th class='col-md-1'>Mængde</th>"
-                    + "<th class='col-md-1'>Udløber</th>"
+                    + "<th class='col-md-1'><span class='hidden-xs'>Udløber</span></th>"
                     + "<th class='col-md-1" +
                     (store == "all" ? "" : " hidden") + 
                     "'>Butik</th></tr>")
@@ -174,7 +174,7 @@ function ShowOffers(json) {
         var table_heading = $('<td>', { html: offer.Heading});
         var table_price = $('<td>', { html: offer.Price + " kr." });
         var table_unit = $('<td>', { html: offer.Unit });
-        var table_end = $('<td>', { html: (new Date(parseInt(offer.End.substr(6))).toLocaleDateString('da-DK')) });
+        var table_end = $('<td>', { html: (new Date(parseInt(offer.End.substr(6))).toLocaleDateString('da-DK')), 'class':"hidden-xs" });
         var table_store = $('<td>', { html: offer.Store, 'class': store == "all" ? "" : "hidden"});
         table_row.append(table_add).append(table_heading).append(table_price).append(table_unit).append(table_end).append(table_store);
         table.append(table_row);

@@ -132,12 +132,13 @@ namespace ProjectFood.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Title")] ShoppingList shoppingList)
+        public ActionResult Edit([Bind(Include = "ID,Title")] ShoppingList shoppingList, string from)
         {
             if(ModelState.IsValid) {
                 _db.MarkAsModified(shoppingList);
                 _db.SaveChanges();
-                return RedirectToAction("Index");
+
+                return Redirect(from);
             }
             return View(shoppingList);
         }
