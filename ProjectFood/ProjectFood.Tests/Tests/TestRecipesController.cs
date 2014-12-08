@@ -87,6 +87,8 @@ namespace ProjectFood.Tests.Tests
             var result = _controller.Index("Old","");
             //Assert
             var vb = ((ViewResult)result).ViewBag;
+            Assert.IsNotNull(vb);
+            Assert.AreEqual(vb.Selected,"Old");
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
