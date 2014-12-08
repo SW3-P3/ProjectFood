@@ -150,7 +150,7 @@ namespace ProjectFood.Tests.Tests
             var result = _controller.Edit(1);
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
         }
         [Test]
         public void Edit_ShouldNotEditNoList()
@@ -181,10 +181,10 @@ namespace ProjectFood.Tests.Tests
             //Setup
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
             //Compute
-            var result = _controller.Edit(_shoppinglist);
+            var result = _controller.Edit(_shoppinglist, "Index");
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
         }
         [Test]
         public void AREdit_ShouldNotEdit()
@@ -194,10 +194,10 @@ namespace ProjectFood.Tests.Tests
             //Compute
             _controller.ModelState.Add("testError", new ModelState());
             _controller.ModelState.AddModelError("testError", "test");
-            var result = _controller.Edit(_shoppinglist);            
+            var result = _controller.Edit(_shoppinglist, "Index");            
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
         }
         /*
         [Test]
@@ -233,11 +233,12 @@ namespace ProjectFood.Tests.Tests
         {
             //Compute
             Assert.IsTrue(_mockdata.ShoppingLists.Count() == 1);
+            _mockdata.ShoppingLists.First().Users.Add(_mockdata.Users.First());
             var result = _controller.DeleteConfirmed(1);
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-            Assert.IsTrue(!_mockdata.ShoppingLists.Any());
+            Assert.IsTrue(!_mockdata.ShoppingLists.Any(x => x.ID == 1));
         }
         [Test]
         public void RemoveItem_ShouldBeGone()
