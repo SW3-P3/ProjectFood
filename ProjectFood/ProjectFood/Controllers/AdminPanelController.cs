@@ -23,7 +23,7 @@ namespace ProjectFood.Controllers
             #region Dropdown
             var datapointdates = GetJsonFileNames().Select(item => DateTime.FromFileTime(long.Parse(item.Substring(item.LastIndexOf('\\') + 1, 18)))).ToList();
             datapointdates.Add(DateTime.Now);
-            ViewBag.DateTimes = datapointdates.Any() ? datapointdates : new List<DateTime>();
+            ViewBag.DateTimes = datapointdates;
             #endregion
             return View();
         }
@@ -51,8 +51,7 @@ namespace ProjectFood.Controllers
             };
 
             objCtx.ExecuteStoreCommand("exec sp_MSforeachtable \"declare @name nvarchar(max); set @name = parsename('?', 1); exec sp_MSdropconstraints @name\"");
-
-
+            
             foreach (var derp in tables.Select(con => string.Format("TRUNCATE TABLE [{0}]", con)))
             {
                 objCtx.ExecuteStoreCommand(derp);
