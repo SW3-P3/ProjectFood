@@ -35,7 +35,7 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
             {
-                _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
+                _db.Users.FirstOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
                 return RedirectToAction("EditPreferences");
@@ -45,7 +45,7 @@ namespace ProjectFood.Controllers
         {
             if (User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty)
             {
-                _db.Users.SingleOrDefault(u => u.Username == username).Name = name;
+                _db.Users.FirstOrDefault(u => u.Username == username).Name = name;
                 _db.SaveChanges();
             }
             return RedirectToAction("Index", "Home");
@@ -65,7 +65,7 @@ namespace ProjectFood.Controllers
         public ActionResult AddPreference(string username, string pref, bool store)
         {
             if(User.Identity.IsAuthenticated && User.Identity.Name == username) {
-                var user = _db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
+                var user = _db.Users.Include(u => u.Preferences).First(u => u.Username == username);
                 var toAdd = pref.Trim().Split(',');
                 foreach(var lePref in toAdd) {
                     user.Preferences.Add(new Pref { Value = lePref, Store = store });
@@ -79,7 +79,7 @@ namespace ProjectFood.Controllers
         public ActionResult RemovePreference(string username, int prefId)
         {
             if(User.Identity.IsAuthenticated && User.Identity.Name == username) {
-                var user = _db.Users.Include(u => u.Preferences).Single(u => u.Username == username);
+                var user = _db.Users.Include(u => u.Preferences).First(u => u.Username == username);
                 var tmpPref = user.Preferences.First(p => p.ID == prefId);
 
                 user.Preferences.Remove(tmpPref);

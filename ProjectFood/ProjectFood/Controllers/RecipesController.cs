@@ -128,7 +128,7 @@ namespace ProjectFood.Controllers
                 return RedirectToAction("index");
             }
             ViewBag.Author = _db.Users.FirstOrDefault(u => u.Username == recipe.AuthorName);
-            ViewBag.OriginalAuthor = _db.Users.SingleOrDefault(u => u.Username == recipe.OriginalAuthorName);
+            ViewBag.OriginalAuthor = _db.Users.FirstOrDefault(u => u.Username == recipe.OriginalAuthorName);
             if (recipe.Ingredients.Count > 0)
             {
                 ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
@@ -306,7 +306,7 @@ namespace ProjectFood.Controllers
 
         public ActionResult AddIngredient(int id, string name, double? amountPerPerson, string unit, int numPersons)
         {
-            var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+            var recipe = _db.Recipes.Include(r => r.Ingredients).First(x => x.ID == id);
 
             if (name.Trim() == string.Empty)
             {
@@ -349,14 +349,14 @@ namespace ProjectFood.Controllers
         {
             var test = _db.Recipes.Include(r => r.Ingredients);
 
-            var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+            var recipe = _db.Recipes.Include(r => r.Ingredients).First(x => x.ID == id);
 
             //Find the item to be deleted, and remove it from the shopping list
             var rmIngredient = recipe.Ingredients.ToList().Find(x => x.ID == ingredientId);
             recipe.Ingredients.Remove(rmIngredient);
 
             //Find the item in the ShoppingList_Item table
-            var rmRecipeIngredient = _db.Recipe_Ingredient.SingleOrDefault(x => x.IngredientID == ingredientId && x.RecipeID == id);
+            var rmRecipeIngredient = _db.Recipe_Ingredient.FirstOrDefault(x => x.IngredientID == ingredientId && x.RecipeID == id);
             //... and remove it
             if (rmRecipeIngredient != null)
                 _db.Recipe_Ingredient.Remove(rmRecipeIngredient);
@@ -385,7 +385,7 @@ namespace ProjectFood.Controllers
                 return RedirectToAction("Index");
             }
 
-            var recipe = _db.Recipes.Include(r => r.Ingredients).Single(x => x.ID == id);
+            var recipe = _db.Recipes.Include(r => r.Ingredients).First(x => x.ID == id);
             if (recipe.Ingredients.Count > 0)
             {
                 ViewBag.Recipe_Ingredient = _db.Recipe_Ingredient.Where(x => x.RecipeID == id).ToList();
@@ -432,7 +432,7 @@ namespace ProjectFood.Controllers
         public ActionResult AddRating(int id, int rating)
         {
             Recipe recipe = _db.Recipes.Include(r => r.Ratings).FirstOrDefault(x => x.ID == id);
-            User user = _db.Users.Include(u => u.Ratings).SingleOrDefault(u => u.Username == User.Identity.Name);
+            User user = _db.Users.Include(u => u.Ratings).FirstOrDefault(u => u.Username == User.Identity.Name);
             Rating prevRating = recipe.Ratings.FirstOrDefault(x => x.User.ID == user.ID);
 
             if (prevRating != null)
