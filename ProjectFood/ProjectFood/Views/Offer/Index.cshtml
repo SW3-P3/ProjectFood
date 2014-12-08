@@ -20,7 +20,7 @@
     new AjaxOptions { HttpMethod = "POST", OnSuccess = "ChangeToCheckOffer" },
     new { @class = "hidden", @id = "AddOffer" }))
 {
-    <input type="hidden" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
+    <input type="hidden" id="shoppingListId" name="shoppingListId" value="@ViewBag.SelectedShoppingListID" />
     <input type="hidden" id="offerID" name="offerId" value="" />
 }
 
