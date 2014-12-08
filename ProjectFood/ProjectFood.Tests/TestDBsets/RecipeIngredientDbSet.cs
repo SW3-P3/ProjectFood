@@ -7,7 +7,7 @@ namespace ProjectFood.Tests.TestDBsets
     {
         public override Recipe_Ingredient Find(params object[] keyValues)
         {
-            return this.SingleOrDefault(shoppinglist => shoppinglist.IngredientID == (int)keyValues.Single());
+            return this.FirstOrDefault(shoppinglist => shoppinglist.IngredientID == (int)keyValues.First());
         }
     }
 }

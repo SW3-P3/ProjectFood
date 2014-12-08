@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 using ProjectFood.Models;
@@ -114,16 +115,6 @@ namespace ProjectFood.Controllers
                 return HttpNotFound();
             }
 
-
-            if (User.Identity.IsAuthenticated &&
-                _db.Users
-                .Include(s => s.ShoppingLists)
-                .First(u => u.Username == User.Identity.Name)
-                .ShoppingLists.ToList().Exists(s => s.ID == id))
-            {
-                return View(shoppingList);
-            }
-
             return RedirectToAction("Index");
         }
 
@@ -140,7 +131,7 @@ namespace ProjectFood.Controllers
 
                 return Redirect(from);
             }
-            return View(shoppingList);
+            return RedirectToAction("Index");
         }
 
         // POST: ShoppingLists/Delete/5
@@ -255,8 +246,22 @@ namespace ProjectFood.Controllers
 
             if (offerID != null)
             {
-                _db.ShoppingList_Item.First(x => x.ShoppingListID == id && x.ItemID == tmpItem.ID).selectedOffer
-                    = _db.Offers.Find((int)offerID);
+                var derp = _db.ShoppingList_Item.Where(x => x.ShoppingList.ID == id && x.Item.Name == tmpItem.Name && x.selectedOffer != null).ToList();
+
+                Debug.WriteLine(derp.Count());
+
+                if(derp.Any())
+                {
+                    var herp = _db.ShoppingList_Item.ToList().Last(x => x.ShoppingList.ID == id && x.Item.Name == tmpItem.Name);
+                    herp.selectedOffer = _db.Offers.Find((int)offerID);
+                }
+                else
+                {
+                    var shoppingListItem = _db.ShoppingList_Item.ToList().LastOrDefault(x => x.ShoppingList.ID == id && x.Item.ID == tmpItem.ID);
+                if (shoppingListItem != null)
+                    shoppingListItem.selectedOffer = _db.Offers.Find((int) offerID);
+                }
+                
                 _db.SaveChanges();
             }
 
@@ -385,6 +390,7 @@ namespace ProjectFood.Controllers
         private void addToShoppingList_Item(Item item, ShoppingList shoppingList, double? amount, string unit)
         {
             shoppingList.Items.Add(item);
+
             var shoppingListItem = new ShoppingList_Item { Item = item, ShoppingList = shoppingList, Amount = (double)amount, Unit = unit };
             _db.ShoppingList_Item.Add(shoppingListItem);
 
