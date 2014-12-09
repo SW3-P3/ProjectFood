@@ -186,16 +186,16 @@ namespace ProjectFood.Migrations
                 .Index(t => t.ShoppingListId);
             
             CreateTable(
-                "dbo.Recipie_Item",
+                "dbo.Recipe_Item",
                 c => new
                     {
-                        RecipieId = c.Int(nullable: false),
+                        RecipeId = c.Int(nullable: false),
                         ItemId = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => new { t.RecipieId, t.ItemId })
-                .ForeignKey("dbo.Items", t => t.RecipieId, cascadeDelete: true)
+                .PrimaryKey(t => new { t.RecipeId, t.ItemId })
+                .ForeignKey("dbo.Items", t => t.RecipeId, cascadeDelete: true)
                 .ForeignKey("dbo.Recipes", t => t.ItemId, cascadeDelete: true)
-                .Index(t => t.RecipieId)
+                .Index(t => t.RecipeId)
                 .Index(t => t.ItemId);
             
         }
@@ -207,8 +207,8 @@ namespace ProjectFood.Migrations
             DropForeignKey("dbo.ShoppingList_Item", "ItemID", "dbo.Items");
             DropForeignKey("dbo.Recipe_Ingredient", "RecipeID", "dbo.Recipes");
             DropForeignKey("dbo.Recipe_Ingredient", "IngredientID", "dbo.Items");
-            DropForeignKey("dbo.Recipie_Item", "ItemId", "dbo.Recipes");
-            DropForeignKey("dbo.Recipie_Item", "RecipieId", "dbo.Items");
+            DropForeignKey("dbo.Recipe_Item", "ItemId", "dbo.Recipes");
+            DropForeignKey("dbo.Recipe_Item", "RecipeId", "dbo.Items");
             DropForeignKey("dbo.Users", "WatchList_ID", "dbo.ShoppingLists");
             DropForeignKey("dbo.UserShoppingLists", "ShoppingListId", "dbo.ShoppingLists");
             DropForeignKey("dbo.UserShoppingLists", "UserId", "dbo.Users");
@@ -222,8 +222,8 @@ namespace ProjectFood.Migrations
             DropForeignKey("dbo.Prefs", "User_ID", "dbo.Users");
             DropForeignKey("dbo.OfferItems", "Item_ID", "dbo.Items");
             DropForeignKey("dbo.OfferItems", "Offer_ID", "dbo.Offers");
-            DropIndex("dbo.Recipie_Item", new[] { "ItemId" });
-            DropIndex("dbo.Recipie_Item", new[] { "RecipieId" });
+            DropIndex("dbo.Recipe_Item", new[] { "ItemId" });
+            DropIndex("dbo.Recipe_Item", new[] { "RecipeId" });
             DropIndex("dbo.UserShoppingLists", new[] { "ShoppingListId" });
             DropIndex("dbo.UserShoppingLists", new[] { "UserId" });
             DropIndex("dbo.OfferSentTo", new[] { "OfferId" });
@@ -242,7 +242,7 @@ namespace ProjectFood.Migrations
             DropIndex("dbo.Prefs", new[] { "User_ID" });
             DropIndex("dbo.Users", new[] { "WatchList_ID" });
             DropIndex("dbo.Users", new[] { "RelevantOffers_ID" });
-            DropTable("dbo.Recipie_Item");
+            DropTable("dbo.Recipe_Item");
             DropTable("dbo.UserShoppingLists");
             DropTable("dbo.OfferSentTo");
             DropTable("dbo.ShoppingListItems");
