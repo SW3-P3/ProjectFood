@@ -69,9 +69,9 @@ namespace ProjectFood.Tests
 
         #region RecipeController
 
-        public static Recipe GetDemoRecipeWithItem(int amount)
+        public static Recipe GetDemoRecipeWithItem(int amount, int id)
         {
-            var demoRecipe = new Recipe() { ID = 1, Title = "DemoRecipe", AuthorName = "DemoUser" };
+            var demoRecipe = new Recipe() { ID = id, Title = "DemoRecipe", AuthorName = "DemoUser", OriginalAuthorName = "DemoUser"};
 
             for (int i = 0; i < amount; i++)
             {
@@ -85,12 +85,15 @@ namespace ProjectFood.Tests
         {
                 var demoRecipe = new Recipe() { ID = id, Title = title, AuthorName = "DemoUser" };
 
+            int j = 0;
+
                 for (int i = 0; i < amount; i++)
                 {
                     demoRecipe.Ingredients.Add(GetDemoItem(i));
+                    j = i;
                 }
                 
-                demoRecipe.Ingredients.Add(GetDemoItem(1, "SameItem"));
+                demoRecipe.Ingredients.Add(GetDemoItem(j, "SameItem"));
 
                 return demoRecipe;
         }

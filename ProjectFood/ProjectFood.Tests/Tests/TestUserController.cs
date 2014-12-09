@@ -92,7 +92,7 @@ namespace ProjectFood.Tests.Tests
         {
 
 
-            var result = _controller.EditPreferences();
+            var result = _controller.EditPreferences("abcd");
 
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof (ViewResult));
@@ -104,7 +104,7 @@ namespace ProjectFood.Tests.Tests
         {
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
-            var result = _controller.EditPreferences();
+            var result = _controller.EditPreferences("abcd");
 
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
