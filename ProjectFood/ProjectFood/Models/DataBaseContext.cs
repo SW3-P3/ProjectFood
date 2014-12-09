@@ -57,8 +57,7 @@ namespace ProjectFood.Models
 
             foreach (var o in Offers)
             {
-                bool flag = !(o.End < GlobalVariables.CurrentSystemTime);
-                flag = true;
+                var flag = (o.End > GlobalVariables.CurrentSystemTime) && o.Begin < GlobalVariables.CurrentSystemTime;
 
                 foreach (var item in blacklist)
                 {
