@@ -155,7 +155,7 @@ namespace ProjectFood.Tests.Tests
             var result = _controller.Details(1) as ViewResult;
             //Assert
             Assert.IsTrue(result.ViewBag.Author.Username == "DemoUser");
-            Assert.IsTrue(result.ViewBag.UserRating.Score == 3);
+            Assert.IsTrue(result.ViewBag.UserRating.Score == 1);
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
