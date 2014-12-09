@@ -61,7 +61,7 @@ namespace ProjectFood.Controllers
 
             foreach (var item in shoppingList.Items)
             {
-                item.Offers = GetOffersForItem(_db, item).OrderBy(x=>x.Store).ToList();
+                item.Offers = GetOffersForItem(_db, item, _db.Users.FirstOrDefault(u => u.Username == User.Identity.Name)).OrderBy(x=>x.Store).ToList();
             }
 
             _db.SaveChanges();
@@ -180,7 +180,7 @@ namespace ProjectFood.Controllers
 
                 foreach (var item in user.WatchList.Items)
                 {
-                    item.Offers = GetOffersForItem(_db, item).OrderBy(x => x.Store).ToList();
+                    item.Offers = GetOffersForItem(_db, item, user).OrderBy(x => x.Store).ToList();
                 }
 
                 return View(user.WatchList);
@@ -343,7 +343,14 @@ namespace ProjectFood.Controllers
 
         public static List<Offer> GetOffersForItem(IDataBaseContext db, Item item)
         {
-            return db.Offers 
+            return db.OffersFiltered() 
+                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()) ||
+                            String.Equals(x.Heading.ToLower(), item.Name.ToLower())).ToList();
+        }
+
+        public static List<Offer> GetOffersForItem(IDataBaseContext db, Item item, User user)
+        {
+            return db.OffersFilteredByUserPrefs(user)
                 .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()) ||
                             String.Equals(x.Heading.ToLower(), item.Name.ToLower())).ToList();
         }

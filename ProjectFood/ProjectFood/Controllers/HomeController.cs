@@ -36,7 +36,7 @@ namespace ProjectFood.Controllers
                     _db.SaveChanges();
                 }
                 foreach(var item in user.WatchList.Items) {
-                    item.Offers = ShoppingListsController.GetOffersForItem(_db, item).OrderBy(x => x.Store).ToList();
+                    item.Offers = ShoppingListsController.GetOffersForItem(_db, item, user).OrderBy(x => x.Store).ToList();
                 }
                 ViewBag.WatchList = user.WatchList;
                 ViewBag.ShoppingLists = user.ShoppingLists;
