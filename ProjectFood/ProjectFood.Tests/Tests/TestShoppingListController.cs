@@ -40,7 +40,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Index_ShouldReturnView()
         {
-            //Compute
+            //Act
             var result = _controller.Index();
             //Assert
             Assert.IsNotNull(result);
@@ -50,7 +50,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Details_ShouldReturnDetailsView()
         {
-            //Compute
+            //Act
             var result = _controller.Details(1);
             //Assert            
             Assert.IsNotNull(result);
@@ -59,7 +59,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Details_ShouldRedirectToView()
         {
-            //Compute
+            //Act
             _mockdata.ShoppingLists.Remove(_shoppinglist);
             var result = _controller.Details(1);            
             //Assert
@@ -70,12 +70,12 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void WatchList_ShouldCreateList()
         {
-            //Setup
+            //Arrange
             var offer = DemoGetMethods.GetDemoOffer("Demo", 1, 20);
             var item = DemoGetMethods.GetDemoItem(1, "Demo");
             _mockdata.Items.Add(item);
             _mockdata.Offers.Add(offer);          
-            //Compute
+            //Act
             var resultCreateList = _controller.WatchList(null);
             _mockdata.Users.First().WatchList.Items.Add(_mockdata.Items.First());
             var resultAddItemGetOffers = _controller.WatchList(null);
@@ -91,12 +91,12 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void ShareList_ShouldShare()
         {
-            //Setup
+            //Arrange
             _user.Username = "DemoMail";
             var user2 = DemoGetMethods.GetDemoUser(2);
             _mockdata.Users.Add(user2); 
             user2.Username = "DemoMail2";
-            //Compute
+            //Act
             Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail").ShoppingLists.First().ID == 1);
             Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.FirstOrDefault() == null);
             var result = _controller.ShareList(1, "DemoMail2");
@@ -109,7 +109,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Create_ShouldCreate()
         {
-            //Compute
+            //Act
             var result = _controller.Create();
             //Assert
             Assert.IsNotNull(result);
@@ -118,7 +118,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void ARCreate_ShouldCreate()
         {
-            //Compute
+            //Act
             var result = _controller.Create(_shoppinglist, "Index");
             var resultlist = _mockdata.ShoppingLists.FirstOrDefault();
             //Assert
@@ -130,10 +130,10 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void ARCreate_ShouldNotCreate()
         {
-            //Setup
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
-            //Compute
+            //Act
             _user.ShoppingLists.Clear();
             var result = _controller.Create(_shoppinglist, "Index");
             var resultlist = _mockdata.ShoppingLists.FirstOrDefault();
@@ -146,7 +146,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Edit_ShouldEdit()
         {
-            //Compute
+            //Act
             var result = _controller.Edit(1);
             //Assert
             Assert.IsNotNull(result);
@@ -155,9 +155,9 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Edit_ShouldNotEditNoList()
         {
-            //Setup
+            //Arrange
             _mockdata.ShoppingLists.Remove(_shoppinglist);
-            //Compute
+            //Act
             var result = _controller.Edit(1);
             //Assert
             Assert.IsNotNull(result);
@@ -166,9 +166,9 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Edit_ShouldNotEditNoAuthentication()
         {
-            //Setup
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
-            //Compute
+            //Act
             var result = _controller.Edit(1);
             //Assert
             Assert.IsNotNull(result);
@@ -178,9 +178,9 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void AREdit_ShouldEdit()
         {
-            //Setup
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
-            //Compute
+            //Act
             var result = _controller.Edit(_shoppinglist, "Index");
             //Assert
             Assert.IsNotNull(result);
@@ -189,9 +189,9 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void AREdit_ShouldNotEdit()
         {
-            //Setup
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
-            //Compute
+            //Act
             _controller.ModelState.Add("testError", new ModelState());
             _controller.ModelState.AddModelError("testError", "test");
             var result = _controller.Edit(_shoppinglist, "Index");            
@@ -203,7 +203,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Delete_ShouldReturnView()
         {
-            //Compute
+            //Act
             var result = _controller.Delete(1);
             //Assert
             Assert.IsNotNull(result);
@@ -212,7 +212,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Delete_ShouldRedirect()
         {
-            //Compute
+            //Act
             var result = _controller.Delete(null);
             //Assert
             Assert.IsNotNull(result);
@@ -221,7 +221,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void Delete_Should404()
         {
-            //Compute
+            //Act
             var result = _controller.Delete(3);
             //Assert
             Assert.IsNotNull(result);
@@ -231,7 +231,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void DeleteConfirmed_ShouldDelete()
         {
-            //Compute
+            //Act
             Assert.IsTrue(_mockdata.ShoppingLists.Count() == 1);
             _mockdata.ShoppingLists.First().Users.Add(_mockdata.Users.First());
             var result = _controller.DeleteConfirmed(1);
@@ -243,10 +243,10 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void RemoveItem_ShouldBeGone()
         {
-            //Setup
+            //Arrange
             var tmp = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(1));
             _mockdata.ShoppingLists.First().Items.Add(tmp);
-            //Compute
+            //Act
             Assert.AreEqual(1, _mockdata.ShoppingLists.First().Items.Count);
             var result = _controller.RemoveItem(1,1);
             //Assert
@@ -256,11 +256,11 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void ClearShoppingList_ShouldBeCleared()
         {
-            //Setup
+            //Arrange
             _mockdata.ShoppingLists.Add(DemoGetMethods.GetDemoShoppingListWithItem(5, 2));
             _mockdata.ShoppingLists.First(x => x.ID == 2).Users.Add(_mockdata.Users.First(x => x.Name == "DemoUser"));
             _mockdata.Users.First(x => x.Name == "DemoUser").ShoppingLists.Add(_mockdata.ShoppingLists.First(x => x.ID == 2));
-            //Compute
+            //Act
             Assert.AreEqual(5, _mockdata.ShoppingLists.First(i => i.ID == 2).Items.Count);
             var result = _controller.ClearShoppingList(2);
             //Assert
@@ -271,9 +271,9 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void AddItem_ShouldBeAdded()
         {
-            //Setup
+            //Arrange
             _mockdata.Items.Add(new Item(){Name = "DemoItem", ID = 1});
-            //Compute
+            //Act
             var result = _controller.AddItem(1, "DemoItem", null, "", null, 1);
             var resultitem = _mockdata.ShoppingLists.First().Items.First();
             //Assert
@@ -286,10 +286,10 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void MoveItemToBought_ShouldBeMoved()
         {
-            //Setup
+            //Arrange
             var _shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(2, 2);
             _mockdata.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(_shoppinglist, 2, 1));
-            //Compute
+            //Act
             var result = _controller.MoveItemToBought(2, 1);
             var resultitem = (_mockdata.ShoppingList_Item.FirstOrDefault(i => i.ItemID == _shoppinglist.Items.First().ID && i.ShoppingListID == _shoppinglist.ID));
             //Assert
@@ -302,7 +302,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void GetOffersForItem_ShouldGetOffer()
         {
-            //Setup
+            //Arrange
             var _shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(1,2);
             _shoppinglist.Items.Add(DemoGetMethods.GetDemoItem(2, "DemoOfferItem"));
             var offer = DemoGetMethods.GetDemoOffer("DemoOfferItem Bacon", 1, 20);
@@ -311,7 +311,7 @@ namespace ProjectFood.Tests.Tests
             _mockdata.Offers.Add(offerExact);
             var item = _shoppinglist.Items.FirstOrDefault(i => i.Name == "DemoOfferItem");
             _mockdata.Items.Add(item);
-            //Compute
+            //Act
             var result = ShoppingListsController.GetOffersForItem(_mockdata, item);
             //Assert
             Assert.IsNotNull(result);
@@ -323,14 +323,14 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void EditAmount_ShouldEditAmount()
         {
-            //Setup;
+            //Arrange;
             var shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(2,2);
             _mockdata.ShoppingLists.Add(shoppinglist);
             _mockdata.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(shoppinglist, 2, 1));
             _mockdata.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(shoppinglist, 2, 2));
             _mockdata.ShoppingList_Item.FirstOrDefault(i => i.ItemID == 1).Amount = 12;
             _mockdata.ShoppingList_Item.FirstOrDefault(i => i.ItemID == 2).Amount = 10;
-            //Compute
+            //Act
             var result = _controller.EditAmount(2, 1, "15", "");
             var resultitem = _mockdata.ShoppingList_Item.FirstOrDefault(i => i.ItemID == 1);
             var resultunchanged = _mockdata.ShoppingList_Item.FirstOrDefault(i => i.ItemID == 2);
@@ -344,7 +344,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void ChooseOffer_ShouldChooseOffer()
         {
-            //Setup
+            //Arrange
             var item = DemoGetMethods.GetDemoItem(1, "DemoOfferItem");
             var offer = DemoGetMethods.GetDemoOffer("DemoOfferItem", 1, 20);
             item.Offers.Add(offer);
@@ -353,7 +353,7 @@ namespace ProjectFood.Tests.Tests
             _mockdata.Offers.Add(offer);
             _mockdata.Items.Add(item);
             _mockdata.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(_shoppinglist, 1, 1));
-            //Compute
+            //Act
             var result = _controller.ChooseOffer(1, 1, 1);
             //Assert
             Assert.IsNotNull(result);
