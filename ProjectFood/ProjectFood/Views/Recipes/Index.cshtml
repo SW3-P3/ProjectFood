@@ -81,7 +81,7 @@
         {
             var rat = recipe.Ratings.Select(x => x.Score);
 
-            @rat.Average()
+            @rat.Average().ToString("0.##")
             ;
         }
                         }

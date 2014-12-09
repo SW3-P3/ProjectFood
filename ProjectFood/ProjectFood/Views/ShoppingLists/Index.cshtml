@@ -8,7 +8,7 @@
     <div class="container-fluid nopadding">
         <div class="col-md-9 col-xs-12 nopadding">
             <h1><span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;Indkøbslister</h1>
-            <p class="hidden-xs lead text-muted">
+            <p class="hidden-xs lead text-muted nopadding">
                 Her kan du lave indkøbslister, tilføje varer til listerne, samt finde tilbud for de indtastede varer.
                 Du kan desuden dele indkøbslisten med andre brugere ved at dele den med deres e-mail.
             </p>
@@ -24,10 +24,10 @@
 </div>
 @Html.Partial("_CreateShoppingList")
 <div class="container-fluid nopadding">
-    <h2 class="nopadding-xs">Personlige</h2>
+    <h2 class="nopadding-xs" style="margin-top:0px;">Personlige</h2>
     @if(Model.Count() < 1) {
         <div class="alert alert-warning" role="alert"
-             onclick="$('div#createModal').modal('show'); $('input#title').focus();"
+             onclick="$('div#createModal').modal('show'); setTimeout(function () { $('input#title').focus() }, 500);"
              style="cursor:pointer">
             Du har ingen personlige indkøbslister. Klik her for at oprette en.
         </div>
@@ -47,14 +47,14 @@
                     @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
                 </td>
                 <td class="col-md-1 hidden-xs text-center">
-                    <div onclick="$('#shoppingListTitle_edit').html('@list.Title'); $('#shoppingListID_edit').val('@list.ID'); $('#editShoppingListModal').modal('show');"
+                    <div onclick="$('#shoppingListTitle_edit').html('@Html.Encode(list.Title)'); $('#shoppingListID_edit').val('@list.ID'); $('#editShoppingListModal').modal('show');"
                          class="btn btn-info">
                         <span class="glyphicon glyphicon-pencil"></span> Rediger titel
                     </div>
                 </td>
                 <td class="col-md-1 col-xs-1 text-center">
 
-                    <div onclick="$('#shoppingListTitle_delete').html('@list.Title'); $('#shoppingListID_delete').val('@list.ID'); $('#deleteShoppingListModal').modal('show');" 
+                    <div onclick="$('#shoppingListTitle_delete').html('@Html.Encode(list.Title)'); $('#shoppingListID_delete').val('@list.ID'); $('#deleteShoppingListModal').modal('show');"
                          class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>
                     </div>
@@ -91,15 +91,14 @@
                 <td class="col-md-2 hidden-xs">
                     @Html.ActionLink("Tilføj og fjern varer", "Details", new { id = list.ID }, new { @class = "btn btn-info btn-block" })
                 </td>
-                <td class="col-md-1 col-xs-1 text-center">
-                    <div onclick="$('#shoppingListTitle_edit').html('@list.Title'); $('#shoppingListID_edit').val('@list.ID'); $('#editShoppingListModal').modal('show');"
+                <td class="col-md-1 hidden-xs text-center">
+                    <div onclick="$('#shoppingListTitle_edit').html('@Html.Encode(list.Title)'); $('#shoppingListID_edit').val('@list.ID'); $('#editShoppingListModal').modal('show');"
                          class="btn btn-info">
                         <span class="glyphicon glyphicon-pencil"></span> Rediger titel
                     </div>
                 </td>
-                <td class="col-md-2 col-xs-1 text-center">
-
-                    <div onclick="$('#shoppingListTitle_delete').html('@list.Title'); $('#shoppingListID_delete').val('@list.ID'); $('#deleteShoppingListModal').modal('show');"
+                <td class="col-md-1 col-xs-1 text-center">
+                    <div onclick="$('#shoppingListTitle_delete').html('@Html.Encode(list.Title)'); $('#shoppingListID_delete').val('@list.ID'); $('#deleteShoppingListModal').modal('show');"
                          class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>
                     </div>

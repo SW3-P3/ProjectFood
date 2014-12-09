@@ -5,7 +5,7 @@
 }
 
 <div class="page-header nopadding-xs">
-    <div class="col-md-8">
+    <div class="col-md-8 nopadding">
         <h1>
             <span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;
             <span class="visible-xs-inline">
@@ -92,7 +92,7 @@
                         <span class="glyphicon glyphicon-remove"></span>
                     </a>
                 </td>
-                <td colspan="6">
+                <td class="lead" colspan="6">
                     @(item.Name.First().ToString().ToUpper() + item.Name.Substring(1))
                 </td>
                 @if (item.Offers.Count > 0)
