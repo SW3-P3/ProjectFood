@@ -99,12 +99,12 @@ namespace ProjectFood.Models
                 });
 
             modelBuilder.Entity<Item>()
-                .HasMany(x => x.OnRecipes)
+                .HasMany(x => x.OnRecipies)
                 .WithMany(x => x.Ingredients)
                 .Map(x =>
                 {
-                    x.ToTable("Recipe_Item");
-                    x.MapLeftKey("RecipeId");
+                    x.ToTable("Recipie_Item");
+                    x.MapLeftKey("RecipieId");
                     x.MapRightKey("ItemId");
                 });
         }
