@@ -89,7 +89,7 @@
 
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade active in" id="all">
-            <h4 class="visible-xs" style="padding-left:10px;">Alle&hellip;</h4>
+            <h3 class="visible-xs text-center" style="padding-left:10px;">Alle&hellip;</h3>
             <div id="offerTable"></div>
             <div id="pages">
                 @using (Ajax.BeginForm(
@@ -128,7 +128,7 @@
         {
             string storename = ((string)store).Replace(" ", string.Empty).Replace("ø", string.Empty);
             <div class="tab-pane fade" id="@storename">
-                <h4 class="visible-xs" style="padding-left:10px;">@store</h4>
+                <h3 class="visible-xs text-center" style="padding-left:10px;">@store</h3>
                 <div id="offerTable"></div>
                 <div id="pages">
                     @using (Ajax.BeginForm(
