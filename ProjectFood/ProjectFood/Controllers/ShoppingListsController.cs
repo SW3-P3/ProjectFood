@@ -257,7 +257,7 @@ namespace ProjectFood.Controllers
                 }
                 else
                 {
-                    var shoppingListItem = _db.ShoppingList_Item.ToList().LastOrDefault(x => x.ShoppingList.ID == id && x.Item.ID == tmpItem.ID);
+                    var shoppingListItem = _db.ShoppingList_Item.FirstOrDefault(x => x.ShoppingList.ID == id && x.Item.ID == tmpItem.ID);
                 if (shoppingListItem != null)
                     shoppingListItem.selectedOffer = _db.Offers.Find((int) offerID);
                 }
