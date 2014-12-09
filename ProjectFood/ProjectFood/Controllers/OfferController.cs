@@ -320,7 +320,7 @@ namespace ProjectFood.Controllers
 
         internal List<Offer> GetOffersForItem(Item item)
         {
-            return _db.Offers
+            return _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username == User.Identity.Name))
                 .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") 
                     || x.Heading.ToLower().Contains(" " + item.Name.ToLower())
                     || String.Equals(x.Heading, item.Name, StringComparison.CurrentCultureIgnoreCase))
