@@ -119,9 +119,12 @@ function ChangeNumPersons(element, numItems) {
 
     for (var i = 0; i < numItems; i++) {
         amountPP = $('span#amountPP_' + i).html();
-        amount = amountPP * numPersons;
-        $('input#amount_' + i).val(parseFloat(amount).toLocaleString('da-DK'));
-        $('span#amount_' + i).html(parseFloat(amount).toLocaleString('da-DK'));
+        if (amountPP != null) {
+            amount = amountPP * numPersons;
+
+            $('input#amount_' + i).val(parseFloat(amount).toLocaleString('da-DK'));
+            $('span#amount_' + i).html(parseFloat(amount).toLocaleString('da-DK'));
+        }
     }
 };
 //END_Recipe
