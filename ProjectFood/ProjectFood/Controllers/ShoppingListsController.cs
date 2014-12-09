@@ -286,7 +286,7 @@ namespace ProjectFood.Controllers
             shoppingList.Items.Remove(rmItem);
 
             //Find the item in the ShoppingList_Item table
-            var rmShoppingListItem = _db.ShoppingList_Item.SingleOrDefault(x => x.ItemID == itemID && x.ShoppingListID == id);
+            var rmShoppingListItem = _db.ShoppingList_Item.FirstOrDefault(x => x.ItemID == itemID && x.ShoppingListID == id);
             //... and remove it
             if(rmShoppingListItem != null)
                 _db.ShoppingList_Item.Remove(rmShoppingListItem);
@@ -351,7 +351,7 @@ namespace ProjectFood.Controllers
         [HttpPost]
         public ActionResult EditAmount(int shoppingListID, int itemID, string amount, string unit)
         {
-            var tmpItemRel = _db.ShoppingList_Item.SingleOrDefault(r => r.ShoppingListID == shoppingListID && r.ItemID == itemID);
+            var tmpItemRel = _db.ShoppingList_Item.FirstOrDefault(r => r.ShoppingListID == shoppingListID && r.ItemID == itemID);
 
             double parsedAmount;
             bool parseRes = double.TryParse(amount.Replace(".", ","), out parsedAmount);
@@ -398,7 +398,7 @@ namespace ProjectFood.Controllers
         }
 
         private bool isOfferSelectedOnItem(int id, Item item){
-            return (_db.ShoppingList_Item.Single(x => x.ItemID == item.ID && x.ShoppingListID == id).selectedOffer != null);
+            return (_db.ShoppingList_Item.First(x => x.ItemID == item.ID && x.ShoppingListID == id).selectedOffer != null);
         }
         
     }
