@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
 using Moq;
@@ -36,6 +37,8 @@ namespace ProjectFood.Tests.Tests
             _mockdata.Users.First().ShoppingLists.Add(list);
 
             _mockdata.Items.Add(DemoGetMethods.GetDemoItem(4, "Ost"));
+            _mockdata.Items.Add(DemoGetMethods.GetDemoItem(5, "Bacon"));
+            _mockdata.Items.Add(DemoGetMethods.GetDemoItem(6, "Leverpostej"));
 
         }
 
@@ -48,10 +51,17 @@ namespace ProjectFood.Tests.Tests
 
 
 
-        [Test]
-        public void IndexView_UserLoggedIn_ShouldReturnViewResult()
+        [TestCase("Ost")]
+        [TestCase("Bacon")]
+        [TestCase("Leverpostej")]
+        public void IndexView_UserLoggedIn_ShouldReturnViewResult(string offerName)
         {
-            var result = _controller.Index(_user.ShoppingLists.First().ID);
+            var result = _controller.Index(_user.ShoppingLists.First().ID) as ViewResult;
+            var viewmodel = result.ViewData.Model as IEnumerable<Offer>;
+
+
+            Assert.IsTrue(result.ViewBag.SelectedShoppingListID == 1);
+            Assert.IsTrue(viewmodel.Any(x=>x.Heading == offerName));
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
@@ -61,11 +71,11 @@ namespace ProjectFood.Tests.Tests
         [TestCase(3, 1)]
         public void AddOfferToShoppingList_Offers_ShouldAddOffer(int offerId, int shoppingListId)
         {
-            Assert.AreEqual(_user.ShoppingLists.First().Items.Count(), 3);
+            Assert.AreEqual(_user.ShoppingLists.First(x=>x.ID == 1).Items.Count(), 3);
 
             _controller.AddOfferToShoppingList(offerId, shoppingListId);
 
-            Assert.AreEqual(_user.ShoppingLists.First().Items.Count(), 4);
+            Assert.AreEqual(_user.ShoppingLists.First(x=>x.ID == 1).Items.Count(), 4);
         }
 
         [TestCase("Ost")]
@@ -75,13 +85,15 @@ namespace ProjectFood.Tests.Tests
         {
             var result = _controller.GetOffersForItem(id);
             
-            Assert.AreEqual(result.Count(), 1 );
+            Assert.AreEqual(result.Count(), 1);
         }
 
-        [Test]
-        public void GetofferForItem_AnItem_ShouldFind()
+        [TestCase("Ost")]
+        [TestCase("Bacon")]
+        [TestCase("Leverpostej")]
+        public void GetofferForItem_AnItem_ShouldFind(string name)
         {
-            var result = _controller.GetOffersForItem(_mockdata.Items.First(x=> x.Name == "Ost"));
+            var result = _controller.GetOffersForItem(_mockdata.Items.First(x=> x.Name == name));
 
             Assert.AreEqual(result.Count(), 1);
 
