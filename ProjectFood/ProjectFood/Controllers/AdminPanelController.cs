@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using ProjectFood.Models;
 using ProjectFood.Models.Api;
@@ -82,7 +83,9 @@ namespace ProjectFood.Controllers
                 apiOfferList.AddRange(JsonConvert.DeserializeObject<List<ApiOffer>>(text));
             }
 
-            _db.BulkInsert(apiOfferList.Select(ApiOfferToOffer));
+            var distinct = apiOfferList.DistinctBy(x => x.id);
+
+            _db.BulkInsert(distinct.Select(ApiOfferToOffer));
 
             _db.SaveChanges();
 
