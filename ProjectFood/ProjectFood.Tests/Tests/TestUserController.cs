@@ -17,10 +17,10 @@ namespace ProjectFood.Tests.Tests
         [SetUp]
         public void Initialize()
         {
-            var mockdata = new TestProjectFoodContext();
-            _controller = new UserController(mockdata);
+            _mockdata = new TestProjectFoodContext();
+            _controller = new UserController(_mockdata);
             _user = DemoGetMethods.GetDemoUser(1);
-            mockdata.Users.Add(_user);
+            _mockdata.Users.Add(_user);
             var controllerContext = new Mock<ControllerContext>();
             _principal = new Moq.Mock<IPrincipal>();
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
@@ -28,14 +28,21 @@ namespace ProjectFood.Tests.Tests
             controllerContext.SetupGet(x => x.HttpContext.User).Returns(_principal.Object);
             _controller.ControllerContext = controllerContext.Object;
 
-            _user.Preferences.Add(DemoGetMethods.GetDemoPref(1,true,"Kvickly"));
-            _user.Preferences.Add(DemoGetMethods.GetDemoPref(2,false,"Fisk"));
-            _user.Preferences.Add(DemoGetMethods.GetDemoPref(3,false,"Kyling"));
+            var pref1 = DemoGetMethods.GetDemoPref(1, true, "Kvickly");
+            var pref2 = DemoGetMethods.GetDemoPref(2, false, "Fisk");
+            var pref3 = DemoGetMethods.GetDemoPref(3, false, "Kylling");
+
+            _user.Preferences.Add(pref1);
+            _user.Preferences.Add(pref2);
+            _user.Preferences.Add(pref3);
+
+
         }
 
         private User _user = new User();
         private Moq.Mock<IPrincipal> _principal = new Moq.Mock<IPrincipal>(); 
         private UserController _controller = new UserController();
+        private TestProjectFoodContext _mockdata = new TestProjectFoodContext();
 
         #endregion  
 
@@ -90,8 +97,6 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void EditPreferencesView_NoInputIsNeeded_ShouldReturnViewResult()
         {
-
-
             var result = _controller.EditPreferences("abcd");
 
             Assert.IsNotNull(result);
@@ -116,12 +121,12 @@ namespace ProjectFood.Tests.Tests
         [TestCase("DemoUser", "Lam", false)]
         public void AddPreference_DiferentPreferences_ShouldHaveANewPreference(string username, string pref, bool store)
         {
-            Assert.AreEqual(3, _user.Preferences.Count());
+            Assert.IsFalse(_user.Preferences.Any(x=>x.ID == 0));
             Assert.IsFalse(_user.Preferences.Exists(x => x.Value == pref));
 
             _controller.AddPreference(username, pref, store);
 
-            Assert.AreNotEqual(_user.Preferences.Count(), 3);
+            Assert.IsTrue(_user.Preferences.Any(x => x.ID == 0));
             Assert.AreEqual(_user.Preferences.Count(), 4);
             Assert.IsTrue(_user.Preferences.Exists(x=> x.Value == pref));
         }
@@ -134,10 +139,12 @@ namespace ProjectFood.Tests.Tests
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
             Assert.AreEqual(3, _user.Preferences.Count());
+            Assert.IsFalse(_user.Preferences.Any(x => x.ID == 0));
             Assert.IsFalse(_user.Preferences.Exists(x => x.Value == pref));
 
             _controller.AddPreference(username, pref, store);
 
+            Assert.IsFalse(_user.Preferences.Any(x => x.ID == 0));
             Assert.AreEqual(_user.Preferences.Count(), 3);
             Assert.AreNotEqual(_user.Preferences.Count(), 4);
             Assert.IsFalse(_user.Preferences.Exists(x => x.Value == pref));
@@ -191,7 +198,7 @@ namespace ProjectFood.Tests.Tests
 
 
         [TestCase("Kvickly")]
-        public void EditStore_DifferentAlreadyThereStrings_PreferenceRemovd(string storename)
+        public void EditStore_DifferentAlreadyThereStrings_PreferenceRemoved(string storename)
         {
             Assert.AreEqual(_user.Preferences.Count(), 3);
             Assert.IsTrue(_user.Preferences.Exists(x => x.Value == storename));
