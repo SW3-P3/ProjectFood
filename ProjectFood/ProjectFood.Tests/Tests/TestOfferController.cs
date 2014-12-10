@@ -61,7 +61,7 @@ namespace ProjectFood.Tests.Tests
             var result = _controller.Index(_user.ShoppingLists.First().ID) as ViewResult;
             var viewmodel = result.ViewData.Model as IEnumerable<Offer>;
             var shoppinglists = getvalue("ShoppingLists", result) as List<ShoppingList>;
-            var stores = getvalue("Stores", result) as List<string>;
+            var stores = getvalue("Stores", result) as IEnumerable<string>;
 
             //Assert
             Assert.AreEqual(stores.First(), "Netto");
@@ -77,10 +77,13 @@ namespace ProjectFood.Tests.Tests
         [TestCase(3, 1)]
         public void AddOfferToShoppingList_Offers_ShouldAddOffer(int offerId, int shoppingListId)
         {
+            //PreCondition
             Assert.AreEqual(_user.ShoppingLists.First(x=>x.ID == 1).Items.Count(), 3);
 
+            //Act
             _controller.AddOfferToShoppingList(offerId, shoppingListId);
 
+            //Assert
             Assert.AreEqual(_user.ShoppingLists.First(x=>x.ID == 1).Items.Count(), 4);
         }
 
@@ -89,8 +92,10 @@ namespace ProjectFood.Tests.Tests
         [TestCase("Leverpostej")]
         public void GetOfferForItem_DifferentStrings_ShouldFindOffers(string id)
         {
+            //Act
             var result = _controller.GetOffersForItem(id);
             
+            //Assert
             Assert.AreEqual(result.Count(), 1);
         }
 
@@ -99,9 +104,11 @@ namespace ProjectFood.Tests.Tests
         [TestCase("Leverpostej")]
         public void GetofferForItem_AnItem_ShouldFind(string name)
         {
+            //Act
             var result = _controller.GetOffersForItem(_mockdata.Items.First(x=> x.Name == name));
 
-            Assert.AreEqual(result.Count(), 1);
+            //Assert
+            Assert.IsTrue(result.First().Heading.Contains(name));
 
         }
 
