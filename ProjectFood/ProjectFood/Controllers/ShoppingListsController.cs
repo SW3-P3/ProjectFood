@@ -252,12 +252,15 @@ namespace ProjectFood.Controllers
 
                 if(derp.Any())
                 {
-                    var herp = _db.ShoppingList_Item.ToList().Last(x => x.ShoppingList.ID == id && x.Item.Name == tmpItem.Name);
-                    herp.selectedOffer = _db.Offers.Find((int)offerID);
+
+                    var shoppingListItems = _db.ShoppingList_Item.ToList();
+                    var itemsForId = shoppingListItems.Where(x => x.ShoppingListID == id).ToList();
+                    var item = itemsForId.Last(x => x.Item.Name == tmpItem.Name);
+                    item.selectedOffer = _db.Offers.Find((int)offerID);
                 }
                 else
                 {
-                    var shoppingListItem = _db.ShoppingList_Item.ToList().LastOrDefault(x => x.ShoppingList.ID == id && x.Item.ID == tmpItem.ID);
+                    var shoppingListItem = _db.ShoppingList_Item.FirstOrDefault(x => x.ShoppingList.ID == id && x.Item.ID == tmpItem.ID);
                 if (shoppingListItem != null)
                     shoppingListItem.selectedOffer = _db.Offers.Find((int) offerID);
                 }
