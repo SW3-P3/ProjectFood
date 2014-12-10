@@ -38,7 +38,7 @@ namespace ProjectFood.Tests
         public static Offer GetDemoOffer(string heading, int id, decimal price)
         {
             return new Offer() {Heading = heading, ID = id, Price = price, Store = "Netto", 
-                End = DateTime.Now.AddDays(3), Begin = DateTime.Now.AddDays(-1), Unit = "1 stk"};
+                End = DateTime.Now.AddDays(3), Begin = DateTime.Now.AddDays(-1), Unit = "1"};
         }
 
         public static User GetDemoUser(int id)

@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using ProjectFood.Controllers;
 using ProjectFood.Models;
+using ProjectFood.Models.Api;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace ProjectFood.Tests.Tests
@@ -56,10 +57,15 @@ namespace ProjectFood.Tests.Tests
         [TestCase("Leverpostej")]
         public void IndexView_UserLoggedIn_ShouldReturnViewResult(string offerName)
         {
+            //Act
             var result = _controller.Index(_user.ShoppingLists.First().ID) as ViewResult;
             var viewmodel = result.ViewData.Model as IEnumerable<Offer>;
+            var shoppinglists = getvalue("ShoppingLists", result) as List<ShoppingList>;
+            var stores = getvalue("Stores", result) as List<string>;
 
-
+            //Assert
+            Assert.AreEqual(stores.First(), "Netto");
+            Assert.IsTrue(shoppinglists.First().ID == 1);
             Assert.IsTrue(result.ViewBag.SelectedShoppingListID == 1);
             Assert.IsTrue(viewmodel.Any(x=>x.Heading == offerName));
 
@@ -97,6 +103,14 @@ namespace ProjectFood.Tests.Tests
 
             Assert.AreEqual(result.Count(), 1);
 
+        }
+
+        private object getvalue(string key, ViewResult view)
+        {
+            object value;
+            view.ViewData.TryGetValue(key, out value);
+
+            return value;
         }
 
     }

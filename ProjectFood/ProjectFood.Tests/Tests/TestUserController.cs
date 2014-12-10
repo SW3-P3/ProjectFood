@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using ProjectFood.Controllers;
 using ProjectFood.Models;
+using ProjectFood.Models.Api;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace ProjectFood.Tests.Tests
@@ -32,9 +34,16 @@ namespace ProjectFood.Tests.Tests
             var pref2 = DemoGetMethods.GetDemoPref(2, false, "Fisk");
             var pref3 = DemoGetMethods.GetDemoPref(3, false, "Kylling");
 
+            _mockdata.Preferences.Add(pref1);
+            _mockdata.Preferences.Add(pref2);
+            _mockdata.Preferences.Add(pref3);
+
             _user.Preferences.Add(pref1);
             _user.Preferences.Add(pref2);
             _user.Preferences.Add(pref3);
+
+            var offer = new Offer() {Store = "Kvickly", Heading = "Bacon"};
+            _mockdata.Offers.Add(offer);
 
 
         }
@@ -49,8 +58,10 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void GetIndexView_NoInputsNeeded_ShouldReturnViewResult()
         {
+            //Act
             var result = _controller.Index();
 
+            //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             
@@ -59,10 +70,13 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void GetIndexView_UserNotLoggedIn_ShouldReturnRedirectToRouteResult()
         {
+            //Arrance
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
+            //Act
             var result = _controller.Index();
 
+            //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
 
@@ -73,8 +87,10 @@ namespace ProjectFood.Tests.Tests
         [TestCase("Søren", Result = "Søren")]
         public string EditName_DifferentNames_ShouldChangeName(string name)
         {
+            //PreCondition
             Assert.AreNotEqual(name,_user.Name);
 
+            //Act
             _controller.EditName(_user.Username, name);
 
             return _user.Name;
@@ -85,10 +101,13 @@ namespace ProjectFood.Tests.Tests
         [TestCase("Søren")]
         public void EditName_UserNotLoggedIn_ShouldReturnRedirectToRouteResult(string name)
         {
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
+            //Act
             var result = _controller.EditName(_user.Username, name);
 
+            //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
 
@@ -97,8 +116,14 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void EditPreferencesView_NoInputIsNeeded_ShouldReturnViewResult()
         {
-            var result = _controller.EditPreferences("abcd");
+            //Act
+            var result = _controller.EditPreferences("abcd") as ViewResult;
+            var stores = getvalue("Store", result) as List<string>;
+            var prefs = getvalue("Prefs", result) as List<Pref>;
 
+            //Assert
+            Assert.AreEqual(stores.First(), "Kvickly");
+            Assert.IsTrue(prefs.First(x=>x.ID == 1).Store);
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof (ViewResult));
 
@@ -107,10 +132,13 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void EditPreferencesView_UserNotLoggedIn_ShouldReturnRedirectToRouteResult()
         {
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
+            //Act
             var result = _controller.EditPreferences("abcd");
 
+            //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
 
@@ -121,11 +149,14 @@ namespace ProjectFood.Tests.Tests
         [TestCase("DemoUser", "Lam", false)]
         public void AddPreference_DiferentPreferences_ShouldHaveANewPreference(string username, string pref, bool store)
         {
+            //PreCondition
             Assert.IsFalse(_user.Preferences.Any(x=>x.ID == 0));
             Assert.IsFalse(_user.Preferences.Exists(x => x.Value == pref));
 
+            //Act
             _controller.AddPreference(username, pref, store);
 
+            //Assert
             Assert.IsTrue(_user.Preferences.Any(x => x.ID == 0));
             Assert.AreEqual(_user.Preferences.Count(), 4);
             Assert.IsTrue(_user.Preferences.Exists(x=> x.Value == pref));
@@ -136,14 +167,18 @@ namespace ProjectFood.Tests.Tests
         [TestCase("DemoUser", "Lam", false)]
         public void AddPreference_DiferentPreferences_ShouldHaveSamePreferencesCauseFailed(string username, string pref, bool store)
         {
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
+            //Precondition
             Assert.AreEqual(3, _user.Preferences.Count());
             Assert.IsFalse(_user.Preferences.Any(x => x.ID == 0));
             Assert.IsFalse(_user.Preferences.Exists(x => x.Value == pref));
 
+            //Arrange
             _controller.AddPreference(username, pref, store);
 
+            //Act
             Assert.IsFalse(_user.Preferences.Any(x => x.ID == 0));
             Assert.AreEqual(_user.Preferences.Count(), 3);
             Assert.AreNotEqual(_user.Preferences.Count(), 4);
@@ -155,11 +190,14 @@ namespace ProjectFood.Tests.Tests
         [TestCase("DemoUser", 3)]
         public void RemovePreference_AllThreePreferencesOnUser_ShouldBeGone(string username, int preferenceID)
         {
+            //PreCondition
             Assert.AreEqual(3,_user.Preferences.Count());
             Assert.IsTrue(_user.Preferences.Exists(x => x.ID == preferenceID));
 
+            //Act
             _controller.RemovePreference(username, preferenceID);
 
+            //Assert
             Assert.AreNotEqual(3,_user.Preferences.Count());
             Assert.IsFalse(_user.Preferences.Exists(x=> x.ID == preferenceID));
         }
@@ -169,13 +207,17 @@ namespace ProjectFood.Tests.Tests
         [TestCase("DemoUser", 3)]
         public void RemovePreference_AllThreePreferencesOnUser_ShouldStillBeThereCauseFailed(string username, int preferenceID)
         {
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
+            //PreCondition
             Assert.AreEqual(3, _user.Preferences.Count());
             Assert.IsTrue(_user.Preferences.Exists(x => x.ID == preferenceID));
 
+            //Act
             _controller.RemovePreference(username, preferenceID);
 
+            //Assert
             Assert.AreEqual(3, _user.Preferences.Count());
             Assert.IsTrue(_user.Preferences.Exists(x => x.ID == preferenceID));
         }
@@ -185,11 +227,14 @@ namespace ProjectFood.Tests.Tests
         [TestCase("Netto")]
         public void EditStore_DifferentNewStores_PreferenceAdded(string storename)
         {
+            //PreCondition
             Assert.AreEqual(_user.Preferences.Count(), 3);
             Assert.IsFalse(_user.Preferences.Exists(x => x.Value == storename));
 
+            //Act
             _controller.EditStore(storename);
 
+            //Assert
             Assert.AreNotEqual(_user.Preferences.Count(), 3);
             Assert.AreEqual(_user.Preferences.Count(), 4);
             Assert.IsTrue(_user.Preferences.Exists(x => x.Value == storename));
@@ -200,15 +245,26 @@ namespace ProjectFood.Tests.Tests
         [TestCase("Kvickly")]
         public void EditStore_DifferentAlreadyThereStrings_PreferenceRemoved(string storename)
         {
+            //PreCondition
             Assert.AreEqual(_user.Preferences.Count(), 3);
             Assert.IsTrue(_user.Preferences.Exists(x => x.Value == storename));
 
+            //Act
             _controller.EditStore(storename);
 
+            //Assert
             Assert.AreNotEqual(_user.Preferences.Count(), 3);
             Assert.AreEqual(_user.Preferences.Count(), 2);
             Assert.IsFalse(_user.Preferences.Exists(x => x.Value == storename));
 
+        }
+
+        private object getvalue(string key, ViewResult view)
+        {
+            object value;
+            view.ViewData.TryGetValue(key, out value);
+
+            return value;
         }
     }
 }

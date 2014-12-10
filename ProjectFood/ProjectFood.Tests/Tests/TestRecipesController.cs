@@ -42,10 +42,22 @@ namespace ProjectFood.Tests.Tests
                 Score = 1,
                 User = _user
             };
-            recipe.Ratings.Add(rating);
-            _mockdata.Ratings.Add(rating);
 
-            var shoppingList = new ShoppingList() {ID = 1};
+            var rating2 = new Rating()
+            {
+                
+                Recipe = recipe,
+                Score = 4,
+                User = _user
+            };
+
+            _mockdata.Ratings.Add(rating);
+            recipe.Ratings.Add(rating);
+
+            _mockdata.Ratings.Add(rating2);
+            recipe.Ratings.Add(rating2);
+
+            var shoppingList = new ShoppingList() {ID = 1, Title = "DemoShoppingList"};
             _user.ShoppingLists.Add(shoppingList);
 
             _mockdata.Recipes.Add(recipe);
@@ -63,45 +75,52 @@ namespace ProjectFood.Tests.Tests
         #endregion
 
         [Test]
-        public void Recipe_DeleteConfirmedRecipe_Test()
+        public void RecipeDeleteConfirmed_RecipeID_ShouldBeRemoved()
         {
-
+            //Precondition
             Assert.IsTrue(_mockdata.Recipes.Any(x=> x.ID == 1));
-            //Compute
+
+            //Act
             _controller.DeleteConfirmed(1);
+
             //Assert
             Assert.IsFalse(_mockdata.Recipes.Any(x => x.ID == 1));
         }
 
         [Test]
-        public void Recipe_RemoveIngredient_Test()
+        public void RecipeRemoveIngredient_RecipeAndIngredient_ShouldBeRemoved()
         {
+            //Precondition
             Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.ID == 1));
-            //Compute
+
+            //Act
             var result = _controller.RemoveIngredient(1, 1);
+
             //Assert
             Assert.IsNotNull(result);
             Assert.IsFalse(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.ID == 1));
         }
 
         [Test]
-        public void Recipe_AddIngredient_Test()
+        public void RecipeAddIngredient_Itemvalues_ShouldBeAdded()
         {
-
+            //Precondition
             Assert.IsFalse(_mockdata.Recipes.First(x=> x.ID == 1).Ingredients.Any(x=> x.Name == "test"));
-            //Compute
+
+            //Act
             var result = _controller.AddIngredient(1, "test", 10, "kg", 4);
+
             //Assert
             Assert.IsNotNull(result);
             Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
         }
 
         [Test]
-        public void Recipe_Create_Test()
+        public void RecipeCreate_NoInput_ShouldOpenCreateWindow()
         {
-
-            //Compute
+            //Act
             var result = _controller.Create();
+
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -111,12 +130,12 @@ namespace ProjectFood.Tests.Tests
         [TestCase("Bøf")]
         [TestCase("Ost")]
         [TestCase("Bacon")]
-        public void Recipe_IndexWithSearch_Test(string searchWord)
+        public void RecipeIndex_OldAndDifferentSearches_ShouldResultIn2Recipes(string searchWord)
         {
-
+            //PreCondition
             Assert.IsFalse(_mockdata.Recipes.All(x => x.Title.Contains(searchWord)));
 
-            //Compute
+            //Act
             var result = _controller.Index("Old",searchWord);
             var viewModel = _controller.ViewData.Model as IEnumerable<Recipe>;
             var vb = ((ViewResult)result).ViewBag;
@@ -124,19 +143,17 @@ namespace ProjectFood.Tests.Tests
             //Assert
             Assert.IsNotNull(vb);
             Assert.AreEqual(vb.Selected, "Old");
-
             Assert.IsTrue(viewModel.All(x=>x.Title.Contains(searchWord)));
-
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
         [Test]
-        public void Recipe_IndexNoSearch_Test()
+        public void RecipeIndex_OldAndNoSearch_ShouldReturnAllRecipes()
         {
 
-            //Compute
+            //Act
             var result = _controller.Index("Old", "");
             //Assert
             var vb = ((ViewResult)result).ViewBag;
@@ -148,24 +165,31 @@ namespace ProjectFood.Tests.Tests
         }
 
         [Test]
-        public void Recipe_Details_Test()
+        public void RecipeDetails_RecipeID1_ShouldLoadViewWithData()
         {
             
-            //Compute
+            //Act
             var result = _controller.Details(1) as ViewResult;
+            var shoppingList = getvalue("ShoppingLists", result) as List<ShoppingList>;
+            var averageRating = getvalue("AverageScore", result);
+            var ratingCount = getvalue("RatingCount", result);
+            
             //Assert
             Assert.IsTrue(result.ViewBag.Author.Username == "DemoUser");
             Assert.IsTrue(result.ViewBag.UserRating.Score == 1);
-
+            Assert.IsTrue(shoppingList.First().Title == "DemoShoppingList");
+            Assert.AreEqual(2.5M, averageRating );
+            Assert.AreEqual(2, ratingCount);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
         [Test]
-        public void Recipe_Edit_Test()
+        public void RecipeEdit_RecipeID1False_ShouldReturnView()
         {
-            //Compute
+            //Act
             var result = _controller.Edit(1, false);
+
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -173,36 +197,53 @@ namespace ProjectFood.Tests.Tests
         }
 
         [Test]
-        public void Recipe_EditFork_Test()
+        public void RecipeEditFork_RecipeID1True_ShouldReturnView()
         {
-            //Compute
-            var result = _controller.Edit(1, true);
+            //Act
+            var result = _controller.Edit(1, true) as ViewResult;
             var viewModel = _controller.ViewData.Model as Recipe;
+
             //Assert
             Assert.IsNotNull(result);
+            Assert.IsTrue(result.ViewBag.Forked == true);
             Assert.AreNotEqual(_mockdata.Recipes.First(x => x.ID == 1).ID, viewModel.ID);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
-        [Test]
-        public void Recipe_Ingredients_Test()
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void RecipeIngredients_NumberOfPersonsHasValueRecipeID1_ShouldSetNumberToValue(int? numPersons)
         {
-            //Compute
-            var result = _controller.Ingredients(1, 4) as ViewResult;
+            //Act
+            var result = _controller.Ingredients(1, numPersons) as ViewResult;
+
             //Assert
-            Assert.AreEqual(result.ViewBag.numPersons, 4);
+            Assert.AreEqual(result.ViewBag.numPersons, numPersons);
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
-        [Test]
-        public void Recipe_AddRating_Test()
+        public void RecipeIngredients_NumberOfPersonsHasNoValueRecipeID1_ShouldBeFour()
         {
+            //Act
+            var result = _controller.Ingredients(1, null) as ViewResult;
 
+            //Assert
+            Assert.AreEqual(result.ViewBag.numPersons, 4);   
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [Test]
+        public void RecipeAddRating_RecipeId2Rating4_ShouldAddRating()
+        {
+            //PreCondition
             Assert.IsFalse(_mockdata.Recipes.First(x => x.ID == 2).Ratings.Any(x=>x.ID == 0));
-            //Compute
+
+            //Act
             var result = _controller.AddRating(2, 4);
             //Assert
             Assert.IsNotNull(result);
@@ -211,33 +252,37 @@ namespace ProjectFood.Tests.Tests
         }
 
         [Test]
-        public void Recipe_AddItemToShoppingList_Test()
+        public void RecipeAddItemToShoppingList_ItemValues_ShouldAddItem()
         {
+            //PreCondition
             Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any());
-            //Compute
+
+            //Act
             var result = _controller.AddItemToShoppingList(1, 1, 100, "gram");
+
             //Assert
             Assert.IsNotNull(result);
             Assert.IsTrue(_mockdata.ShoppingLists.First(x=>x.ID == 1).Items.Any());
         }
 
         [Test]
-        public void Recipe_RecommendRecipe_Test()
+        public void RecipeRecommendRecipe_Test()
         {
 
             //Three recipes, recipe from Initialize(), and another two from this setup
             //The recipes from this setup has two items in common, which is different than from the Initialize()
-            //Setup
+            
+            //Arrange
             var recipe2 = DemoGetMethods.GetDemoRecipeWithItem(5, "TestRecipe2", 4);
             var recipe3 = DemoGetMethods.GetDemoRecipeWithItem(5, "TestRecipe3", 5);
             var item = DemoGetMethods.GetDemoItem(10, "laks");
-
+            
             recipe2.Ingredients.Add(item);
             recipe3.Ingredients.Add(item);
             _mockdata.Recipes.Add(recipe2);
             _mockdata.Recipes.Add(recipe3);
 
-            //Compute
+            //Act
 
             _controller.AddRating(4, 5);
             var result = _controller.RecommendRecipes(_user);
@@ -245,6 +290,14 @@ namespace ProjectFood.Tests.Tests
             //Assert
             Assert.AreEqual(recipe2, result.First());
             Assert.AreEqual(_mockdata.Recipes.First(), result.Last());
+        }
+
+        private object getvalue(string key, ViewResult view)
+        {
+            object value;
+            view.ViewData.TryGetValue(key, out value);
+
+            return value;
         }
     }
 }
