@@ -253,10 +253,10 @@ namespace ProjectFood.Controllers
                 if(derp.Any())
                 {
 
-                    var herp = _db.ShoppingList_Item.ToList();
-                    var derp2 = herp.Where(x => x.ShoppingListID == id).ToList();
-                    var derp3 = derp2.Last(x => x.Item.Name == tmpItem.Name);
-                    derp3.selectedOffer = _db.Offers.Find((int)offerID);
+                    var shoppingListItems = _db.ShoppingList_Item.ToList();
+                    var itemsForId = shoppingListItems.Where(x => x.ShoppingListID == id).ToList();
+                    var item = itemsForId.Last(x => x.Item.Name == tmpItem.Name);
+                    item.selectedOffer = _db.Offers.Find((int)offerID);
                 }
                 else
                 {
