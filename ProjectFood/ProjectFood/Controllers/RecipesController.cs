@@ -255,24 +255,6 @@ namespace ProjectFood.Controllers
             return View(recipe);
         }
 
-        // GET: Recipes/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToAction("index");
-            }
-
-            var recipe = _db.Recipes.Find(id);
-
-            if (recipe == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(recipe);
-        }
-
         // POST: Recipes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

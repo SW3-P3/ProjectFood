@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
@@ -29,6 +30,16 @@ namespace ProjectFood.Tests.TestDBsets
             _data.Remove(item);
             return item;
         }
+
+        public override IEnumerable<T> RemoveRange(IEnumerable<T> item )
+        {
+            foreach (var entity in item.ToList())
+            {
+                _data.Remove(entity);
+            }
+            return null;
+        }
+
 
         public override T Attach(T item)
         {

@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="file:///C:/PROGRAM FILES (X86)/MICROSOFT VISUAL STUDIO 12.0/COMMON7/IDE/EXTENSIONS/MICROSOFT/ARCHITECTURE TOOLS/EXTENSIBILITY/Logging/ReverseEngineeringLog.xslt"?>
+<Log xmlns="http://schemas.microsoft.com/VisualStudio/2010/CodeGen.RE.Log" Label="Code Generation/Text Transformation Log">
+  <MessageClass Name="Message" Label="Message" Option="Show informational messages" />
+  <MessageClass Name="Warning" Label="Warning" Option="Show warnings" />
+  <MessageClass Name="Error" Label="Error" Option="Show errors" />
+  <MessageClass Name="Property" Label="Property" Option="Show metadata" />
+  <MessageClass Name="Diagnostic" Label="Message" Option="Show diagnostic messages" />
+  <Message Timestamp="2014-12-10T13:15:24" Importance="High" Text="Reverse Engineering Started." />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: '522d1dfd-186e-47dc-877c-4b3cd0749ffd' -  (ClassifierTemplateParameter)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'Boolean' -  (PrimitiveType)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'da6d2faa-6fa0-4e2d-b18a-1f1fcb23a59b' -  (ClassifierTemplateParameter)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'de23cadc-7152-4f41-8715-0c480e7e86fb' -  (ClassifierTemplateParameter)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'Integer' -  (PrimitiveType)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood' -  (Package)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models' -  (Package)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Item' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Item::ID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Item::Item' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Item::Name' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Item::Offers' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Item::OnRecipies' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Item::OnShoppinglists' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::Begin' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::End' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::eTilbudsavisID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::GenericItems' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::Heading' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::ID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::Offer' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::Price' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::SentToUsers' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::Store' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Offer::Unit' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Pref' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Pref::ID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Pref::Pref' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Pref::Store' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Pref::Value' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Rating' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Rating::ID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Rating::Rating' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Rating::Recipe' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Rating::Score' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Rating::User' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::AuthorName' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::ID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::Ingredients' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::Instructions' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::Minutes' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::OriginalAuthorName' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::Ratings' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::Recipe' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe::Title' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe_Ingredient' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe_Ingredient::AmountPerPerson' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe_Ingredient::Ingredient' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe_Ingredient::IngredientID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe_Ingredient::Recipe' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe_Ingredient::Recipe_Ingredient' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe_Ingredient::RecipeID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::Recipe_Ingredient::Unit' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList::ID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList::Items' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList::ShoppingList' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList::Title' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList::Users' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::Amount' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::Bought' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::Item' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::ItemID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::selectedOffer' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::ShoppingList' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::ShoppingList_Item' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::ShoppingListID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::ShoppingList_Item::Unit' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Medium" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User' -  (Class)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::ID' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::LastSentNotification' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::MaxSendEmailsEveryDays' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::Name' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::Preferences' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::Ratings' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::RelevantOffers' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::SentOffers' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::ShoppingLists' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::User' -  (Operation)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::Username' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::ProjectFood::Models::User::WatchList' -  (Property)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System' -  (Package)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections' -  (Package)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic' -  (Package)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::ICollection' -  (Interface)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::ICollection&lt;Item‎&gt;' -  (Interface)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::ICollection&lt;Offer‎&gt;' -  (Interface)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::ICollection&lt;Rating‎&gt;' -  (Interface)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::ICollection&lt;Recipe‎&gt;' -  (Interface)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::ICollection&lt;ShoppingList‎&gt;' -  (Interface)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::ICollection&lt;User‎&gt;' -  (Interface)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::List' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::List&lt;Offer‎&gt;' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::List&lt;Pref‎&gt;' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::List&lt;Rating‎&gt;' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Collections::Generic::List&lt;User‎&gt;' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::DateTime' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Decimal' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Double' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Nullable' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Nullable&lt;DateTime‎&gt;' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'PFModel::System::Nullable&lt;Int32‎&gt;' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'String' -  (PrimitiveType)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Rating to PFModel::ProjectFood::Models::Recipe (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Rating to PFModel::System::Decimal (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Rating to PFModel::ProjectFood::Models::User (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Recipe to PFModel::System::Collections::Generic::ICollection&lt;Item‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Recipe to PFModel::System::Collections::Generic::ICollection&lt;Rating‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Recipe_Ingredient to PFModel::System::Double (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Recipe_Ingredient to PFModel::ProjectFood::Models::Item (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Recipe_Ingredient to PFModel::ProjectFood::Models::Recipe (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::ShoppingList to PFModel::System::Collections::Generic::ICollection&lt;Item‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::ShoppingList to PFModel::System::Collections::Generic::ICollection&lt;User‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::ShoppingList_Item to PFModel::System::Double (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::ShoppingList_Item to PFModel::ProjectFood::Models::Item (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::ShoppingList_Item to PFModel::ProjectFood::Models::ShoppingList (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::ShoppingList_Item to PFModel::ProjectFood::Models::Offer (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::User to PFModel::System::Nullable&lt;DateTime‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::User to PFModel::System::Nullable&lt;Int32‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::User to PFModel::System::Collections::Generic::List&lt;Pref‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::User to PFModel::System::Collections::Generic::List&lt;Rating‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::User to PFModel::ProjectFood::Models::ShoppingList (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::User to PFModel::System::Collections::Generic::List&lt;Offer‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::User to PFModel::System::Collections::Generic::ICollection&lt;ShoppingList‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::User to PFModel::ProjectFood::Models::ShoppingList (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Item to PFModel::System::Collections::Generic::ICollection&lt;Offer‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Item to PFModel::System::Collections::Generic::ICollection&lt;Recipe‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Item to PFModel::System::Collections::Generic::ICollection&lt;ShoppingList‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Offer to PFModel::System::DateTime (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Offer to PFModel::System::DateTime (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Offer to PFModel::System::Collections::Generic::ICollection&lt;Item‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Offer to PFModel::System::Decimal (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::ProjectFood::Models::Offer to PFModel::System::Collections::Generic::List&lt;User‎&gt; (Association)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::System::Collections::Generic::List&lt;Rating‎&gt; to PFModel::System::Collections::Generic::ICollection&lt;Rating‎&gt; (InterfaceRealization)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::System::Collections::Generic::List&lt;Offer‎&gt; to PFModel::System::Collections::Generic::ICollection&lt;Offer‎&gt; (InterfaceRealization)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="Diagnostic" Text="Relationship reverse engineered into the UML model: PFModel::System::Collections::Generic::List&lt;User‎&gt; to PFModel::System::Collections::Generic::ICollection&lt;User‎&gt; (InterfaceRealization)" />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="High" Text="(9) type(s) fully reverse engineered." />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="High" Text="(18) type(s) partially reverse engineered.  These types were not included in the original selection so their full definitions are not reverse engineered.  Instead, this shallow operation has simply ensured these types exist in the UML model because they are needed in order to fully describe other elements." />
+  <Message Timestamp="2014-12-10T13:15:31" Importance="High" Text="The reverse engineering operation completed with (0) error(s), and (0) warning(s)." />
+</Log>

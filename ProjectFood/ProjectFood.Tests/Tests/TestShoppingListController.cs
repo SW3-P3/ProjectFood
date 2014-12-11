@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
 using Moq;
@@ -18,10 +19,9 @@ namespace ProjectFood.Tests.Tests
             _mockdata = new TestProjectFoodContext();
             _controller = new ShoppingListsController(_mockdata);
             _user = DemoGetMethods.GetDemoUser(1);
-            _shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            _shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty(_user);
             _user.ShoppingLists.Add(_shoppinglist);
             _mockdata.Users.Add(_user);
-            _mockdata.ShoppingLists.Add(_shoppinglist);
             var controllerContext = new Mock<ControllerContext>();
             _principal = new Moq.Mock<IPrincipal>();
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
@@ -29,6 +29,28 @@ namespace ProjectFood.Tests.Tests
             controllerContext.SetupGet(x => x.HttpContext.User).Returns(_principal.Object);
             _controller.ControllerContext = controllerContext.Object;
 
+            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Leverpostej", 1, 10.00M));
+            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Bacon", 2, 11.00M));
+            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Ost", 3, 13.00M));
+            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Cola", 4, 10.00M, "Føtex"));
+
+            var item1 = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(4, "Ost"));
+            var item2 = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(5, "Bacon"));
+            var item3 = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(6, "Leverpostej"));
+
+            _shoppinglist.Items.Add(item1);
+            _shoppinglist.Items.Add(item2);
+            _shoppinglist.Items.Add(item3);
+
+           _mockdata.ShoppingLists.Add(_shoppinglist);
+
+           _mockdata.ShoppingList_Item.Add(new ShoppingList_Item()
+           {
+               Item = _mockdata.Items.First(x => x.ID == 4),
+               ShoppingList = _shoppinglist,
+               ItemID = 4,
+               ShoppingListID = 1
+           });
         }
 
         private User _user = new User();
@@ -38,17 +60,23 @@ namespace ProjectFood.Tests.Tests
         private TestProjectFoodContext _mockdata = new TestProjectFoodContext();
 
         [Test]
-        public void Index_ShouldReturnView()
+        public void ShoppingListIndex_NoInputNoSharedLists_ShouldReturnViewWithUserListsNoSharedLists()
         {
             //Act
-            var result = _controller.Index();
+            var result = _controller.Index() as ViewResult;
+            var sharedList = getvalue("sharedLists", result) as IEnumerable<ShoppingList>;
+            var viewModel = _controller.ViewData.Model as IEnumerable<ShoppingList>;
+            
+
             //Assert
             Assert.IsNotNull(result);
+            Assert.IsTrue(viewModel.Any(x=>x.ID == _shoppinglist.ID));
+            Assert.IsFalse(sharedList.Any());
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
         [Test]
-        public void Details_ShouldReturnDetailsView()
+        public void ShoppingListDetails_InputID1_ShouldReturnDetailsView()
         {
             //Act
             var result = _controller.Details(1);
@@ -57,11 +85,22 @@ namespace ProjectFood.Tests.Tests
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
         [Test]
-        public void Details_ShouldRedirectToView()
+        public void ShoppingListDetails_InputIDNull_ShouldReturnRedirectToRoute()
+        {
+            //Act
+            var result = _controller.Details(null);
+            //Assert            
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+        }
+
+        [Test]
+        public void ShoppingListDetails_InputInvalid_ShouldGiveHttpNotFound()
         {
             //Act
             _mockdata.ShoppingLists.Remove(_shoppinglist);
-            var result = _controller.Details(1);            
+            var result = _controller.Details(1);        
+    
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
@@ -70,26 +109,22 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void WatchList_ShouldCreateList()
         {
-            //Arrange
-            var offer = DemoGetMethods.GetDemoOffer("Demo", 1, 20);
-            var item = DemoGetMethods.GetDemoItem(1, "Demo");
-            _mockdata.Items.Add(item);
-            _mockdata.Offers.Add(offer);          
             //Act
             var resultCreateList = _controller.WatchList(null);
-            _mockdata.Users.First().WatchList.Items.Add(_mockdata.Items.First());
+            _mockdata.Users.First(x=>x.ID == 1).WatchList.Items.Add(_mockdata.Items.First(x=> x.ID == 4));
             var resultAddItemGetOffers = _controller.WatchList(null);
+
             //Assert
             Assert.IsNotNull(resultAddItemGetOffers);
             Assert.IsNotNull(resultCreateList);
             Assert.IsNotNull(_user.WatchList);
-            Assert.IsTrue(_mockdata.Users.First().WatchList.Items.First().Offers.Count == 1);
+            Assert.IsTrue(_mockdata.Users.First(x => x.ID == 1).WatchList.Items.First(x => x.ID == 4).Offers.Any(x=>x.Heading == "Ost"));
             Assert.IsInstanceOfType(resultCreateList, typeof(ViewResult));
             Assert.IsInstanceOfType(resultAddItemGetOffers, typeof(ViewResult));
         }
 
         [Test]
-        public void ShareList_ShouldShare()
+        public void ShoppingListShareList_DemoMail2UserAsInput_ShouldShare()
         {
             //Arrange
             _user.Username = "DemoMail";
@@ -97,17 +132,16 @@ namespace ProjectFood.Tests.Tests
             _mockdata.Users.Add(user2); 
             user2.Username = "DemoMail2";
             //Act
-            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail").ShoppingLists.First().ID == 1);
-            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.FirstOrDefault() == null);
+            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail").ShoppingLists.Any(x=>x.ID == 1));
+            Assert.IsFalse(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.Any(x=>x.ID == 1));
             var result = _controller.ShareList(1, "DemoMail2");
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.First().ID == 1);
-            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.First().ID == 
-                _mockdata.Users.First(i => i.Username == "DemoMail").ShoppingLists.First().ID);
+            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail").ShoppingLists.Any(x => x.ID == 1));
+            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.Any(x => x.ID == 1));
         }
         [Test]
-        public void Create_ShouldCreate()
+        public void ShoppingListCreate_NoInput_ShouldCreate()
         {
             //Act
             var result = _controller.Create();
@@ -116,32 +150,46 @@ namespace ProjectFood.Tests.Tests
             Assert.IsInstanceOfType(result, typeof(PartialViewResult));
         }
         [Test]
-        public void ARCreate_ShouldCreate()
+        public void ShoppingListARCreate_ShoppingListAndIndex_ShouldCreate()
         {
+
+            Assert.IsFalse(_mockdata.ShoppingLists.Any(x => x.ID == 2));
             //Act
-            var result = _controller.Create(_shoppinglist, "Index");
+            var result = _controller.Create(DemoGetMethods.GetDemoShoppingListWithItem(1,2), "Index");
             var resultlist = _mockdata.ShoppingLists.FirstOrDefault();
             //Assert
+
+            Assert.IsTrue(_mockdata.ShoppingLists.Any(x=>x.ID==2));
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectResult));
             Assert.IsNotNull(resultlist);
         }
 
         [Test]
-        public void ARCreate_ShouldNotCreate()
+        public void ShoppingListARCreate_UserNotLoggedIn_ShouldNotCreate()
         {
+            Assert.IsFalse(_mockdata.ShoppingLists.Any(x => x.ID == 2));
             //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
             //Act
             _user.ShoppingLists.Clear();
-            var result = _controller.Create(_shoppinglist, "Index");
+            var result = _controller.Create(DemoGetMethods.GetDemoShoppingListWithItem(1, 2), "Index");
             var resultlist = _mockdata.ShoppingLists.FirstOrDefault();
             //Assert
+            Assert.IsFalse(_mockdata.ShoppingLists.Any(x => x.ID == 2));
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectResult));
             Assert.IsNotNull(resultlist);
         }
+
+
+        //DU ER NÅET HERTIL
+        //DU ER NÅET HERTIL
+        //DU ER NÅET HERTIL
+        //DU ER NÅET HERTIL
+        //DU ER NÅET HERTIL
+        //DU ER NÅET HERTIL
 
         [Test]
         public void Edit_ShouldEdit()
@@ -164,12 +212,12 @@ namespace ProjectFood.Tests.Tests
             Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
         }
         [Test]
-        public void Edit_ShouldNotEditNoAuthentication()
+        public void Edit_Should()
         {
             //Arrange
-            _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
+
             //Act
-            var result = _controller.Edit(1);
+            var result = _controller.Edit(null);
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
@@ -199,41 +247,12 @@ namespace ProjectFood.Tests.Tests
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
         }
-        /*
-        [Test]
-        public void Delete_ShouldReturnView()
-        {
-            //Act
-            var result = _controller.Delete(1);
-            //Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-        }
-        [Test]
-        public void Delete_ShouldRedirect()
-        {
-            //Act
-            var result = _controller.Delete(null);
-            //Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-        }
-        [Test]
-        public void Delete_Should404()
-        {
-            //Act
-            var result = _controller.Delete(3);
-            //Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
-        }
-        */
+
         [Test]
         public void DeleteConfirmed_ShouldDelete()
         {
             //Act
-            Assert.IsTrue(_mockdata.ShoppingLists.Count() == 1);
-            _mockdata.ShoppingLists.First().Users.Add(_mockdata.Users.First());
+            Assert.IsTrue(_mockdata.ShoppingLists.Any(x=>x.ID == 1));
             var result = _controller.DeleteConfirmed(1);
             //Assert
             Assert.IsNotNull(result);
@@ -243,15 +262,19 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void RemoveItem_ShouldBeGone()
         {
+
             //Arrange
             var tmp = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(1));
-            _mockdata.ShoppingLists.First().Items.Add(tmp);
+            _mockdata.ShoppingLists.First(x=>x.ID == 1).Items.Add(tmp);
+            Assert.IsTrue(_mockdata.Items.Any(x => x.ID == 1));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x=>x.ID == 1).Items.Any(x=>x.ID ==1));
+           
             //Act
-            Assert.AreEqual(1, _mockdata.ShoppingLists.First().Items.Count);
             var result = _controller.RemoveItem(1,1);
+
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, _mockdata.ShoppingLists.First().Items.Count);
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(x => x.ID == 1));
         }
         [Test]
         public void ClearShoppingList_ShouldBeCleared()
@@ -271,33 +294,17 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void AddItem_ShouldBeAdded()
         {
+
             //Arrange
             _mockdata.Items.Add(new Item(){Name = "DemoItem", ID = 1});
             //Act
-            var result = _controller.AddItem(1, "DemoItem", null, "", null, 1);
-            var resultitem = _mockdata.ShoppingLists.First().Items.First();
+            var result = _controller.AddItem(1, "DemoItem", null, "", null, null);
+
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, _mockdata.ShoppingLists.First().Items.Count);
-            Assert.AreEqual(resultitem.Name, "DemoItem");
-            Assert.AreEqual(resultitem.ID, 1);
+            Assert.IsTrue(_mockdata.ShoppingLists.Any(x=>x.Items.Any(u=>u.Name=="DemoItem")));
+
         }
-        /*
-        [Test]
-        public void MoveItemToBought_ShouldBeMoved()
-        {
-            //Arrange
-            var _shoppinglist = DemoGetMethods.GetDemoShoppingListWithItem(2, 2);
-            _mockdata.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(_shoppinglist, 2, 1));
-            //Act
-            var result = _controller.MoveItemToBought(2, 1);
-            var resultitem = (_mockdata.ShoppingList_Item.FirstOrDefault(i => i.ItemID == _shoppinglist.Items.First().ID && i.ShoppingListID == _shoppinglist.ID));
-            //Assert
-            Assert.IsNotNull(result);  
-            Assert.IsNotNull(resultitem);
-            Assert.IsTrue(resultitem.Bought);
-        } 
-         */
 
         [Test]
         public void GetOffersForItem_ShouldGetOffer()
@@ -344,21 +351,19 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void ChooseOffer_ShouldChooseOffer()
         {
-            //Arrange
-            var item = DemoGetMethods.GetDemoItem(1, "DemoOfferItem");
-            var offer = DemoGetMethods.GetDemoOffer("DemoOfferItem", 1, 20);
-            item.Offers.Add(offer);
-            _shoppinglist.Items.Add(item);
-            _mockdata.ShoppingLists.Add(_shoppinglist);
-            _mockdata.Offers.Add(offer);
-            _mockdata.Items.Add(item);
-            _mockdata.ShoppingList_Item.Add(DemoGetMethods.GetDemoShoppingListItemRelation(_shoppinglist, 1, 1));
             //Act
-            var result = _controller.ChooseOffer(1, 1, 1);
+            var result = _controller.ChooseOffer(1, 4, 3);
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsTrue(_mockdata.ShoppingList_Item.First().selectedOffer == offer);
+            Assert.IsTrue(_mockdata.ShoppingList_Item.First().selectedOffer.Heading == "Ost");
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+        }
+        private object getvalue(string key, ViewResult view)
+        {
+            object value;
+            view.ViewData.TryGetValue(key, out value);
+
+            return value;
         }
     }
 }

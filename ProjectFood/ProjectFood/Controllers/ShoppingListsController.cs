@@ -388,7 +388,6 @@ namespace ProjectFood.Controllers
         {
 
             ShoppingList list = findShoppingListFromID(shoppingListId);
-            var item = list.Items.First(x => x.ID == ItemId);
 
             _db.ShoppingList_Item.First(x => x.ItemID == ItemId && x.ShoppingListID == shoppingListId).selectedOffer = _db.Offers.First(x => x.ID == offerId);
             _db.SaveChanges();

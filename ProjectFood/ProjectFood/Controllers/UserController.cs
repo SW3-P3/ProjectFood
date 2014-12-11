@@ -1,7 +1,5 @@
 ﻿using ProjectFood.Models;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using System.IO;
@@ -45,15 +43,8 @@ namespace ProjectFood.Controllers
             }
             return RedirectToAction("EditPreferences");
         }
-        [ValidateAntiForgeryToken]
-        public ActionResult AddAName(string username, string name)
-        {
-            if(User.Identity.IsAuthenticated && User.Identity.Name == username && name.Trim() != string.Empty) {
-                _db.Users.FirstOrDefault(u => u.Username == username).Name = name;
-                _db.SaveChanges();
-            }
-            return RedirectToAction("Index", "Home");
-        }
+
+
         public ActionResult EditPreferences(string BadName)
         {
             if(User.Identity.IsAuthenticated) {

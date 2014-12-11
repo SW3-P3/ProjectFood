@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using ProjectFood.Controllers;
 using ProjectFood.Models;
+using ProjectFood.Models.Api;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace ProjectFood.Tests.Tests
@@ -31,11 +34,26 @@ namespace ProjectFood.Tests.Tests
             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Leverpostej", 1, 10.00M));
             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Bacon", 2, 11.00M));
             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Ost", 3, 13.00M));
+            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Cola", 4, 10.00M, "Føtex"));
+
+            var pref = new Pref(){ID = 0, Store = false, Value = "Ost"};
+            _mockdata.Preferences.Add(pref);
+
+            _user.Preferences.Add(pref);
 
             var list =  _mockdata.ShoppingLists.Add(DemoGetMethods.GetDemoShoppingListWithItem(3, 1));
             _mockdata.Users.First().ShoppingLists.Add(list);
 
+            var baconItem = DemoGetMethods.GetDemoItem(5, "Bacon");
+
             _mockdata.Items.Add(DemoGetMethods.GetDemoItem(4, "Ost"));
+            _mockdata.Items.Add(baconItem);
+            _mockdata.Items.Add(DemoGetMethods.GetDemoItem(6, "Leverpostej"));
+
+            _user.WatchList = new ShoppingList();
+            _user.WatchList.Items.Add(baconItem);
+            _user.LastSentNotification = DateTime.Now.AddDays(-7);
+            _user.MaxSendEmailsEveryDays = 2;
 
         }
 
@@ -48,43 +66,94 @@ namespace ProjectFood.Tests.Tests
 
 
 
-        [Test]
-        public void IndexView_UserLoggedIn_ShouldReturnViewResult()
+        [TestCase("Ost")]
+        [TestCase("Leverpostej")]
+        public void IndexView_UserLoggedInWithOSTPref_ShouldReturnViewResultOffersNotThere(string offerName)
         {
-            var result = _controller.Index(_user.ShoppingLists.First().ID);
+            //Act
+            var result = _controller.Index(_user.ShoppingLists.First().ID) as ViewResult;
+            var viewmodel = result.ViewData.Model as IEnumerable<Offer>;
+            var shoppinglists = getvalue("ShoppingLists", result) as List<ShoppingList>;
+            var stores = getvalue("Stores", result) as IEnumerable<string>;
+
+            //Assert
+            Assert.AreEqual(stores.First(), "Netto");
+            Assert.IsTrue(shoppinglists.First().ID == 1);
+            Assert.IsTrue(result.ViewBag.SelectedShoppingListID == 1);
+            Assert.IsFalse(viewmodel.Any(x=>x.Heading == offerName));
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
+
+        [Test]
+        public void NotifyWatcher()
+        {
+             _controller.NotifyWatchers();
+            Assert.IsTrue(_user.SentOffers.Any());
+        }
+
+        [TestCase("Bacon")]
+        public void IndexView_UserLoggedInWithOSTPref_ShouldReturnViewResultOfferThere(string offerName)
+        {
+            //Act
+            var result = _controller.Index(_user.ShoppingLists.First().ID) as ViewResult;
+            var viewmodel = result.ViewData.Model as IEnumerable<Offer>;
+            var shoppinglists = getvalue("ShoppingLists", result) as List<ShoppingList>;
+            var stores = getvalue("Stores", result) as IEnumerable<string>;
+
+            //Assert
+            Assert.AreEqual(stores.First(), "Netto");
+            Assert.IsTrue(shoppinglists.First().ID == 1);
+            Assert.IsTrue(result.ViewBag.SelectedShoppingListID == 1);
+            Assert.IsTrue(viewmodel.Any(x => x.Heading == offerName));
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
 
         [TestCase(1, 1)]
         [TestCase(2, 1)]
         [TestCase(3, 1)]
         public void AddOfferToShoppingList_Offers_ShouldAddOffer(int offerId, int shoppingListId)
         {
-            Assert.AreEqual(_user.ShoppingLists.First().Items.Count(), 3);
+            //PreCondition
+            Assert.AreEqual(_user.ShoppingLists.First(x=>x.ID == 1).Items.Count(), 3);
 
+            //Act
             _controller.AddOfferToShoppingList(offerId, shoppingListId);
 
-            Assert.AreEqual(_user.ShoppingLists.First().Items.Count(), 4);
+            //Assert
+            Assert.AreEqual(_user.ShoppingLists.First(x=>x.ID == 1).Items.Count(), 4);
         }
 
-        [TestCase("Ost")]
         [TestCase("Bacon")]
-        [TestCase("Leverpostej")]
         public void GetOfferForItem_DifferentStrings_ShouldFindOffers(string id)
         {
+            //Act
             var result = _controller.GetOffersForItem(id);
             
-            Assert.AreEqual(result.Count(), 1 );
+            //Assert
+            Assert.AreEqual(result.Count(), 1);
         }
 
-        [Test]
-        public void GetofferForItem_AnItem_ShouldFind()
+
+        [TestCase("Bacon")]
+        public void GetofferForItem_AnItem_ShouldFind(string name)
         {
-            var result = _controller.GetOffersForItem(_mockdata.Items.First(x=> x.Name == "Ost"));
+            //Act
+            var result = _controller.GetOffersForItem(_mockdata.Items.First(x=> x.Name == name));
 
-            Assert.AreEqual(result.Count(), 1);
+            //Assert
+            Assert.IsTrue(result.First().Heading.Contains(name));
 
+        }
+
+        private object getvalue(string key, ViewResult view)
+        {
+            object value;
+            view.ViewData.TryGetValue(key, out value);
+
+            return value;
         }
 
     }
