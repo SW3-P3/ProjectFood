@@ -51,21 +51,13 @@ namespace ProjectFood.Controllers
                     stopwatch.Stop();
                     Debug.WriteLine("OffersOnListByID " + stopwatch.ElapsedMilliseconds);
                 }
-                Stopwatch stopwatch2 = Stopwatch.StartNew();
-                ViewBag.Stores = _db
-                    .OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name))
-                    .OrderBy(d => d.Store)
-                    .Select(x => x.Store)
-                    .Distinct();
-                stopwatch2.Stop();
-                Debug.WriteLine("Stores " + stopwatch2.ElapsedMilliseconds);
 
                 ViewBag.Stores = _db.OffersFilteredByUserPrefs(_db.Users.First(u => u.Username == User.Identity.Name))
                     .OrderBy(d => d.Store).Select(x => x.Store).Distinct();
                 ViewBag.ShoppingLists = _db.Users.Include(s => s.ShoppingLists)
                     .First(u => u.Username == User.Identity.Name).ShoppingLists.ToList();
 
-                return View(_db.OffersFiltered().ToList());
+                return View(_db.OffersFilteredByUserPrefs(tmpUser).ToList());
             }
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action() });
         }
@@ -198,32 +190,6 @@ namespace ProjectFood.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Search(string id)
-        {
-            if (id != null)
-            {
-                ViewBag.Offers = GetOffersForItem(id);
-                ViewBag.SearchTerm = id;
-            }
-            else
-            {
-                ViewBag.Offers = new List<Offer>();
-            }
-
-            ViewBag.ShoppingLists = _db.Users
-                .Include(s => s.ShoppingLists)
-                .First(u => u.Username == User.Identity.Name)
-                .ShoppingLists
-                .ToList();
-
-            return View();
-        }
-
-        public ActionResult SearchDone(string id)
-        {
-            return RedirectToAction("Search/" + id);
-        }
-
         internal List<Offer> GetOffersForItem(string str)
         {
             return _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username.Equals(User.Identity.Name)))
@@ -232,10 +198,7 @@ namespace ProjectFood.Controllers
                 .ToList();
         }
 
-        private void NotifyWatchers(List<Offer> offers)
-        {
-            NotifyWatchers();
-        }
+
         public void NotifyWatchers()
         {
             var users = _db.Users.Include(u => u.RelevantOffers.Items).Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0);
@@ -327,17 +290,6 @@ namespace ProjectFood.Controllers
                     || x.Heading.ToLower().Contains(" " + item.Name.ToLower())
                     || String.Equals(x.Heading, item.Name, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
-        }
-        private IEnumerable<Offer> GetOffersFilteredForItem(Item item, User u)
-        {
-            return _db.OffersFilteredByUserPrefs(u)
-                .Where(x => x.Heading.ToLower().Contains(item.Name.ToLower() + " ") || x.Heading.ToLower().Contains(" " + item.Name.ToLower()))
-                .ToList();
-        }
-
-        private Item OfferToItem(Offer offer)
-        {
-            return new Item { Name = offer.Heading };
         }
 
         [HttpPost]

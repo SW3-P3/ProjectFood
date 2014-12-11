@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Web.Mvc;
@@ -33,13 +34,26 @@ namespace ProjectFood.Tests.Tests
             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Leverpostej", 1, 10.00M));
             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Bacon", 2, 11.00M));
             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Ost", 3, 13.00M));
+            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Cola", 4, 10.00M, "Føtex"));
+
+            var pref = new Pref(){ID = 0, Store = false, Value = "Ost"};
+            _mockdata.Preferences.Add(pref);
+
+            _user.Preferences.Add(pref);
 
             var list =  _mockdata.ShoppingLists.Add(DemoGetMethods.GetDemoShoppingListWithItem(3, 1));
             _mockdata.Users.First().ShoppingLists.Add(list);
 
+            var baconItem = DemoGetMethods.GetDemoItem(5, "Bacon");
+
             _mockdata.Items.Add(DemoGetMethods.GetDemoItem(4, "Ost"));
-            _mockdata.Items.Add(DemoGetMethods.GetDemoItem(5, "Bacon"));
+            _mockdata.Items.Add(baconItem);
             _mockdata.Items.Add(DemoGetMethods.GetDemoItem(6, "Leverpostej"));
+
+            _user.WatchList = new ShoppingList();
+            _user.WatchList.Items.Add(baconItem);
+            _user.LastSentNotification = DateTime.Now.AddDays(-7);
+            _user.MaxSendEmailsEveryDays = 2;
 
         }
 
@@ -53,9 +67,8 @@ namespace ProjectFood.Tests.Tests
 
 
         [TestCase("Ost")]
-        [TestCase("Bacon")]
         [TestCase("Leverpostej")]
-        public void IndexView_UserLoggedIn_ShouldReturnViewResult(string offerName)
+        public void IndexView_UserLoggedInWithOSTPref_ShouldReturnViewResultOffersNotThere(string offerName)
         {
             //Act
             var result = _controller.Index(_user.ShoppingLists.First().ID) as ViewResult;
@@ -67,10 +80,36 @@ namespace ProjectFood.Tests.Tests
             Assert.AreEqual(stores.First(), "Netto");
             Assert.IsTrue(shoppinglists.First().ID == 1);
             Assert.IsTrue(result.ViewBag.SelectedShoppingListID == 1);
-            Assert.IsTrue(viewmodel.Any(x=>x.Heading == offerName));
+            Assert.IsFalse(viewmodel.Any(x=>x.Heading == offerName));
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
+
+        [Test]
+        public void NotifyWatcher()
+        {
+             _controller.NotifyWatchers();
+            Assert.IsTrue(_user.SentOffers.Any());
+        }
+
+        [TestCase("Bacon")]
+        public void IndexView_UserLoggedInWithOSTPref_ShouldReturnViewResultOfferThere(string offerName)
+        {
+            //Act
+            var result = _controller.Index(_user.ShoppingLists.First().ID) as ViewResult;
+            var viewmodel = result.ViewData.Model as IEnumerable<Offer>;
+            var shoppinglists = getvalue("ShoppingLists", result) as List<ShoppingList>;
+            var stores = getvalue("Stores", result) as IEnumerable<string>;
+
+            //Assert
+            Assert.AreEqual(stores.First(), "Netto");
+            Assert.IsTrue(shoppinglists.First().ID == 1);
+            Assert.IsTrue(result.ViewBag.SelectedShoppingListID == 1);
+            Assert.IsTrue(viewmodel.Any(x => x.Heading == offerName));
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
 
         [TestCase(1, 1)]
         [TestCase(2, 1)]
@@ -87,9 +126,7 @@ namespace ProjectFood.Tests.Tests
             Assert.AreEqual(_user.ShoppingLists.First(x=>x.ID == 1).Items.Count(), 4);
         }
 
-        [TestCase("Ost")]
         [TestCase("Bacon")]
-        [TestCase("Leverpostej")]
         public void GetOfferForItem_DifferentStrings_ShouldFindOffers(string id)
         {
             //Act
@@ -99,9 +136,8 @@ namespace ProjectFood.Tests.Tests
             Assert.AreEqual(result.Count(), 1);
         }
 
-        [TestCase("Ost")]
+
         [TestCase("Bacon")]
-        [TestCase("Leverpostej")]
         public void GetofferForItem_AnItem_ShouldFind(string name)
         {
             //Act
