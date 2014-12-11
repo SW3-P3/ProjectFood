@@ -21,9 +21,11 @@ namespace ProjectFood.Tests
             }
             return demoList;
         }
-        public static ShoppingList GetDemoShoppingListEmpty()
+        public static ShoppingList GetDemoShoppingListEmpty(User user)
         {
-            return new ShoppingList() { ID = 1, Title = "DemoShopList" };
+            var userList = new List<User>();
+            userList.Add(user);
+            return new ShoppingList() { ID = 1, Title = "DemoShopList", Users = userList};
         }
 
         public static Item GetDemoItem(int id)
@@ -35,15 +37,45 @@ namespace ProjectFood.Tests
         {
             return new Item() { ID = id, Name = name };
         }
+
+        public static Offer GetDemoOffer(string heading, int id, decimal price, string store)
+        {
+                return new Offer()
+                {
+                    Heading = heading,
+                    ID = id,
+                    Price = price,
+                    Store = "Netto",
+                    End = DateTime.Now.AddDays(3),
+                    Begin = DateTime.Now.AddDays(-1),
+                    Unit = "1"
+                };
+
+        }
+
         public static Offer GetDemoOffer(string heading, int id, decimal price)
         {
-            return new Offer() {Heading = heading, ID = id, Price = price, Store = "Netto", 
-                End = DateTime.Now.AddDays(3), Begin = DateTime.Now.AddDays(-1), Unit = "1"};
+
+            return new Offer()
+                {
+                    Heading = heading,
+                    ID = id,
+                    Price = price,
+                    Store = "Netto",
+                    End = DateTime.Now.AddDays(3),
+                    Begin = DateTime.Now.AddDays(-1),
+                    Unit = "1"
+                };
+            
         }
 
         public static User GetDemoUser(int id)
         {
             return new User() { ID = id, Name = "DemoUser", Username = "DemoUser" };
+        }
+        public static User GetDemoUser(int id, string name)
+        {
+            return new User() { ID = id, Name = "DemoUser", Username = name };
         }
 
         public static Rating GetDemoRating(int id, int score)
@@ -69,18 +101,6 @@ namespace ProjectFood.Tests
 
         #region RecipeController
 
-        public static Recipe GetDemoRecipeWithItem(int amount, int id)
-        {
-            var demoRecipe = new Recipe() { ID = id, Title = "DemoRecipe", AuthorName = "DemoUser", OriginalAuthorName = "DemoUser"};
-
-            for (int i = 0; i < amount; i++)
-            {
-                demoRecipe.Ingredients.Add(GetDemoItem(i));
-            }
-
-            return demoRecipe;
-        }
-
         public static Recipe GetDemoRecipeWithItem(int amount, string title, int id)
         {
                 var demoRecipe = new Recipe() { ID = id, Title = title, AuthorName = "DemoUser" };
@@ -92,7 +112,9 @@ namespace ProjectFood.Tests
                     demoRecipe.Ingredients.Add(GetDemoItem(i));
                     j = i;
                 }
-                
+                demoRecipe.Ratings.Add(new Rating() { Score = 3.0M , User = GetDemoUser(j-1, "dontmatter")});
+                demoRecipe.Ratings.Add(new Rating() { Score = 4.0M, User = GetDemoUser(j, "dontmatter") });    
+
                 demoRecipe.Ingredients.Add(GetDemoItem(j, "SameItem"));
 
                 return demoRecipe;

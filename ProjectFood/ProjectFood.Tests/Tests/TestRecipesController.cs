@@ -64,7 +64,7 @@ namespace ProjectFood.Tests.Tests
             _mockdata.Recipes.Add(recipe2);
             _mockdata.Recipes.Add(recipe3);
 
-            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty();
+            var shoppinglist = DemoGetMethods.GetDemoShoppingListEmpty(_user);
             _mockdata.ShoppingLists.Add(shoppinglist);
         }
 
@@ -127,38 +127,93 @@ namespace ProjectFood.Tests.Tests
 
         }
 
-        [TestCase("Bøf")]
-        [TestCase("Ost")]
-        [TestCase("Bacon")]
-        public void RecipeIndex_OldAndDifferentSearches_ShouldResultIn2Recipes(string searchWord)
+        [TestCase("Bøf", "New")]
+        [TestCase("Ost", "Old")]
+        [TestCase("Bøf", "High")]
+        public void RecipeIndex_DifferentSortsAndDifferentSearches_ShouldResultIn2RecipesWithSort(string searchWord, string sort)
         {
             //PreCondition
             Assert.IsFalse(_mockdata.Recipes.All(x => x.Title.Contains(searchWord)));
 
             //Act
-            var result = _controller.Index("Old",searchWord);
+            var result = _controller.Index(sort,searchWord);
             var viewModel = _controller.ViewData.Model as IEnumerable<Recipe>;
             var vb = ((ViewResult)result).ViewBag;
 
             //Assert
             Assert.IsNotNull(vb);
-            Assert.AreEqual(vb.Selected, "Old");
+            Assert.AreEqual(vb.Selected, sort);
             Assert.IsTrue(viewModel.All(x=>x.Title.Contains(searchWord)));
-            Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
 
-        [Test]
-        public void RecipeIndex_OldAndNoSearch_ShouldReturnAllRecipes()
+        [TestCase("Bøf", "Recommend")]
+        public void RecipeIndex_OneSearchAndRecommend_ShouldResultInAllRecipesWithRecommend(string searchWord, string sort)
+        {
+            //PreCondition
+            Assert.IsFalse(_mockdata.Recipes.All(x => x.Title.Contains(searchWord)));
+
+            //Act
+            var result = _controller.Index(sort, searchWord);
+            var viewModel = _controller.ViewData.Model as IEnumerable<Recipe>;
+            var vb = ((ViewResult)result).ViewBag;
+
+            //Assert
+            Assert.IsNotNull(vb);
+            Assert.AreEqual(vb.Selected, sort);
+            Assert.IsFalse(viewModel.All(x => x.Title.Contains(searchWord)));
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+
+        }
+
+        [TestCase("Bøf", "nope")]
+        public void RecipeIndex_OneSearchAndNoSort_ShouldResultIn2WithNewSort(string searchWord, string sort)
+        {
+            //PreCondition
+            Assert.IsFalse(_mockdata.Recipes.All(x => x.Title.Contains(searchWord)));
+
+            //Act
+            var result = _controller.Index(sort, searchWord);
+            var viewModel = _controller.ViewData.Model as IEnumerable<Recipe>;
+            var vb = ((ViewResult)result).ViewBag;
+
+            //Assert
+            Assert.IsNotNull(vb);
+            Assert.IsTrue(vb.Selected == "New");
+            Assert.IsTrue(viewModel.All(x => x.Title.Contains(searchWord)));
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+
+        }
+
+        [TestCase("New")]
+        [TestCase("Old")]
+        [TestCase("Recommend")]
+        [TestCase("High")]
+
+        public void RecipeIndex_DifferentSortsNoSearch_ShouldReturnAllRecipesWithSort(string sort)
         {
 
             //Act
-            var result = _controller.Index("Old", "");
+            var result = _controller.Index(sort, "");
             //Assert
             var vb = ((ViewResult)result).ViewBag;
             Assert.IsNotNull(vb);
-            Assert.AreEqual(vb.Selected, "Old");
+            Assert.AreEqual(vb.Selected, sort);
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+
+        }
+        [TestCase("Nope")]
+        public void RecipeIndex_NoSortNoSearch_ShouldReturnAllRecipesNoSort(string sort)
+        {
+
+            //Act
+            var result = _controller.Index(sort, "");
+            //Assert
+            var vb = ((ViewResult)result).ViewBag;
+            Assert.IsNotNull(vb);
+            Assert.AreEqual(vb.Selected, "New");
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
@@ -178,8 +233,8 @@ namespace ProjectFood.Tests.Tests
             Assert.IsTrue(result.ViewBag.Author.Username == "DemoUser");
             Assert.IsTrue(result.ViewBag.UserRating.Score == 1);
             Assert.IsTrue(shoppingList.First().Title == "DemoShoppingList");
-            Assert.AreEqual(2.5M, averageRating );
-            Assert.AreEqual(2, ratingCount);
+            Assert.AreEqual(3M, averageRating );
+            Assert.AreEqual(4, ratingCount);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
 
         }
@@ -241,14 +296,13 @@ namespace ProjectFood.Tests.Tests
         public void RecipeAddRating_RecipeId2Rating4_ShouldAddRating()
         {
             //PreCondition
-            Assert.IsFalse(_mockdata.Recipes.First(x => x.ID == 2).Ratings.Any(x=>x.ID == 0));
+            Assert.IsFalse(_mockdata.Recipes.First(x => x.ID == 2).Ratings.Any(x=>x.Score == 5));
 
             //Act
-            var result = _controller.AddRating(2, 4);
+            var result = _controller.AddRating(2, 5);
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 2).Ratings.Any(x=>x.ID == 0));
-            Assert.AreEqual(4, _mockdata.Recipes.First(x => x.ID == 2).Ratings.First(x => x.ID == 0).Score);
+            Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 2).Ratings.Any(x=>x.Score == 5));
         }
 
         [Test]
