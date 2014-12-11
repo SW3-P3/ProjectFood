@@ -176,7 +176,7 @@ namespace ProjectFood.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    ss
+                    // TODO: SØREN DU ER HER!   
                     var list = new ShoppingList();
                     list.Title = "Min Indkøbsliste";
                     var tmpUser = new User() {Username = model.Email, Name = (name.Contains(",") == true ? name.Split(',').First() : name)};
