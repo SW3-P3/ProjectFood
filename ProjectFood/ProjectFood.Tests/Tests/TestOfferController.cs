@@ -55,6 +55,7 @@ namespace ProjectFood.Tests.Tests
             _user.LastSentNotification = DateTime.Now.AddDays(-7);
             _user.MaxSendEmailsEveryDays = 2;
 
+            GlobalVariables.CurrentSystemTime = DateTime.Now;
         }
 
         #endregion
@@ -106,6 +107,8 @@ namespace ProjectFood.Tests.Tests
             Assert.IsTrue(shoppinglists.First().ID == 1);
             Assert.IsTrue(result.ViewBag.SelectedShoppingListID == 1);
             Assert.IsTrue(viewmodel.Any(x => x.Heading == offerName));
+            Assert.IsTrue(_mockdata.Offers.Any(x=>x.Heading == "Ost"));
+            Assert.IsFalse(viewmodel.Any(x => x.Heading == "Ost"));
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }

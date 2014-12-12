@@ -127,6 +127,7 @@
     <Compile Include="Tests\TestRecipesController.cs" />
     <Compile Include="Tests\TestShoppingListController.cs" />
     <Compile Include="Tests\TestUserController.cs" />
+    <Compile Include="Tests\TestAccountController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

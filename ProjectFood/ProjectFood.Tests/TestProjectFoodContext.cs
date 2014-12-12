@@ -59,7 +59,7 @@ namespace ProjectFood.Tests
 
             foreach (var o in Offers)
             {
-                bool flag = !(o.End < DateTime.Now);
+                bool flag = (o.End > GlobalVariables.CurrentSystemTime) && o.Begin < GlobalVariables.CurrentSystemTime;
 
                 foreach (var item in blacklist)
                 {

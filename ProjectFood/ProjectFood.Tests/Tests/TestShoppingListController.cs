@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -29,14 +31,18 @@ namespace ProjectFood.Tests.Tests
             controllerContext.SetupGet(x => x.HttpContext.User).Returns(_principal.Object);
             _controller.ControllerContext = controllerContext.Object;
 
-            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Leverpostej", 1, 10.00M));
-            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Bacon", 2, 11.00M));
-            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Ost", 3, 13.00M));
-            _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Cola", 4, 10.00M, "Føtex"));
+             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Leverpostej", 1, 10.00M));
+             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Bacon", 2, 11.00M));
+             var offer = _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Ost", 3, 13.00M));
+             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Cola", 4, 10.00M, "Føtex"));
+             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("Revet ost", 5, 10.00M, "Føtex"));
+             _mockdata.Offers.Add(DemoGetMethods.GetDemoOffer("God Kage", 6, 10.00M, "Føtex"));
 
             var item1 = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(4, "Ost"));
             var item2 = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(5, "Bacon"));
             var item3 = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(6, "Leverpostej"));
+            var item4 = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(7, "Kage"));
+
 
             _shoppinglist.Items.Add(item1);
             _shoppinglist.Items.Add(item2);
@@ -49,7 +55,33 @@ namespace ProjectFood.Tests.Tests
                Item = _mockdata.Items.First(x => x.ID == 4),
                ShoppingList = _shoppinglist,
                ItemID = 4,
-               ShoppingListID = 1
+               ShoppingListID = 1,
+               Amount = 2.0,
+               Bought = false,
+               selectedOffer = offer,
+               Unit = "tsk"
+           });
+           _mockdata.ShoppingList_Item.Add(new ShoppingList_Item()
+           {
+               Item = _mockdata.Items.First(x => x.ID == 5),
+               ShoppingList = _shoppinglist,
+               ItemID = 5,
+               ShoppingListID = 1,
+               Amount = 2.0,
+               Bought = false,
+               selectedOffer = null,
+               Unit = "tsk"
+           });
+           _mockdata.ShoppingList_Item.Add(new ShoppingList_Item()
+           {
+               Item = _mockdata.Items.First(x => x.ID == 6),
+               ShoppingList = _shoppinglist,
+               ItemID = 6,
+               ShoppingListID = 1,
+               Amount = 2.0,
+               Bought = false,
+               selectedOffer = null,
+               Unit = "tsk"
            });
         }
 
@@ -183,16 +215,8 @@ namespace ProjectFood.Tests.Tests
             Assert.IsNotNull(resultlist);
         }
 
-
-        //DU ER NÅET HERTIL
-        //DU ER NÅET HERTIL
-        //DU ER NÅET HERTIL
-        //DU ER NÅET HERTIL
-        //DU ER NÅET HERTIL
-        //DU ER NÅET HERTIL
-
         [Test]
-        public void Edit_ShouldEdit()
+        public void ShoppingListEdit_Id1_ShouldEdit()
         {
             //Act
             var result = _controller.Edit(1);
@@ -201,7 +225,7 @@ namespace ProjectFood.Tests.Tests
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
         }
         [Test]
-        public void Edit_ShouldNotEditNoList()
+        public void ShoppingListEdit_InvalidID_ShouldNotEditNoList()
         {
             //Arrange
             _mockdata.ShoppingLists.Remove(_shoppinglist);
@@ -212,9 +236,8 @@ namespace ProjectFood.Tests.Tests
             Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
         }
         [Test]
-        public void Edit_Should()
+        public void ShoppingListEdit_NullAsInput_ShouldReturnRedirectToRoute()
         {
-            //Arrange
 
             //Act
             var result = _controller.Edit(null);
@@ -224,7 +247,7 @@ namespace ProjectFood.Tests.Tests
         }
 
         [Test]
-        public void AREdit_ShouldEdit()
+        public void ShoppingListAREdit_ShoppingListAndIndexAsInput_ShouldEdit()
         {
             //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
@@ -235,10 +258,9 @@ namespace ProjectFood.Tests.Tests
             Assert.IsInstanceOfType(result, typeof(RedirectResult));
         }
         [Test]
-        public void AREdit_ShouldNotEdit()
+        public void ShoppingListAREdit_ModelStateNotValid_ShouldNotEdit()
         {
-            //Arrange
-            _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
+
             //Act
             _controller.ModelState.Add("testError", new ModelState());
             _controller.ModelState.AddModelError("testError", "test");
@@ -249,62 +271,197 @@ namespace ProjectFood.Tests.Tests
         }
 
         [Test]
-        public void DeleteConfirmed_ShouldDelete()
+        public void ShoppingListDeleteConfirmed_ShoppingListID1_ShouldDelete()
         {
+            //PreCondition
+            Assert.IsTrue(_mockdata.ShoppingLists.Any(x => x.ID == 1));
+
             //Act
-            Assert.IsTrue(_mockdata.ShoppingLists.Any(x=>x.ID == 1));
             var result = _controller.DeleteConfirmed(1);
+
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-            Assert.IsTrue(!_mockdata.ShoppingLists.Any(x => x.ID == 1));
+            Assert.IsFalse(_mockdata.ShoppingLists.Any(x => x.ID == 1));
         }
+
         [Test]
-        public void RemoveItem_ShouldBeGone()
+        public void DeleteConfirmed_2Users_ShouldRemoveUserFromListListStillThere()
         {
+            //PreCondition
+            Assert.IsTrue(_mockdata.ShoppingLists.Any(x => x.ID == 1));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Users.Any(x => x.ID == 1));
 
             //Arrange
-            var tmp = _mockdata.Items.Add(DemoGetMethods.GetDemoItem(1));
-            _mockdata.ShoppingLists.First(x=>x.ID == 1).Items.Add(tmp);
-            Assert.IsTrue(_mockdata.Items.Any(x => x.ID == 1));
-            Assert.IsTrue(_mockdata.ShoppingLists.First(x=>x.ID == 1).Items.Any(x=>x.ID ==1));
+            var tmpUser =  _mockdata.Users.Add(new User(){ID = 2});
+            tmpUser.ShoppingLists.Add(_shoppinglist);
+            _mockdata.ShoppingLists.First(x=>x.ID==1).Users.Add(tmpUser);
+
+            //Act
+            var result = _controller.DeleteConfirmed(1);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            Assert.IsTrue(_mockdata.ShoppingLists.Any(x => x.ID == 1));
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x=>x.ID == 1).Users.Any(x=>x.ID == 1));
+        }
+        [Test]
+        public void ShoppingListRemoveItem_ItemIDAndShoppingListId_ShouldBeGone()
+        {
+
+            //Precondition
+            Assert.IsTrue(_mockdata.Items.Any(x => x.ID == 4));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x=>x.ID == 1).Items.Any(x=>x.ID ==4));
            
             //Act
-            var result = _controller.RemoveItem(1,1);
+            var result = _controller.RemoveItem(1,4);
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(x => x.ID == 1));
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(x => x.ID == 4));
         }
         [Test]
-        public void ClearShoppingList_ShouldBeCleared()
+        public void ShoppingListClearShoppingList_ListID1_ShouldBeCleared()
         {
-            //Arrange
-            _mockdata.ShoppingLists.Add(DemoGetMethods.GetDemoShoppingListWithItem(5, 2));
-            _mockdata.ShoppingLists.First(x => x.ID == 2).Users.Add(_mockdata.Users.First(x => x.Name == "DemoUser"));
-            _mockdata.Users.First(x => x.Name == "DemoUser").ShoppingLists.Add(_mockdata.ShoppingLists.First(x => x.ID == 2));
+
             //Act
-            Assert.AreEqual(5, _mockdata.ShoppingLists.First(i => i.ID == 2).Items.Count);
-            var result = _controller.ClearShoppingList(2);
+            Assert.IsTrue(_mockdata.ShoppingLists.First(i => i.ID == 1).Items.Any());
+            var result = _controller.ClearShoppingList(1);
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, _mockdata.ShoppingLists.First(i=> i.ID == 2).Items.Count);
+            Assert.IsFalse(_mockdata.ShoppingLists.First(i=> i.ID == 1).Items.Any());
         }
 
         [Test]
-        public void AddItem_ShouldBeAdded()
+        public void ShoppingListAddItemAjax_ItemInfoShoppingListId1_ShouldAdd()
+        {
+            //PreCondition
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x=>x.ID==1).Items.Any(x=>x.Name=="Oster"));
+
+            //Act
+            var result =  _controller.AddItemAjax(1, "Oster", null, "", null, null);
+
+            //Assert
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(x => x.Name == "Oster"));
+        }
+
+        [Test]
+        public void ShoppingListAddItem_ItemInfoShoppingListId1_ShouldAdd()
         {
 
-            //Arrange
-            _mockdata.Items.Add(new Item(){Name = "DemoItem", ID = 1});
             //Act
             var result = _controller.AddItem(1, "DemoItem", null, "", null, null);
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsTrue(_mockdata.ShoppingLists.Any(x=>x.Items.Any(u=>u.Name=="DemoItem")));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u=>u.Name=="DemoItem"));
 
         }
+
+        [Test]
+        public void ShoppingListAddItem_ItemInfoNoNameShoppingListId1_ShouldNotAdd()
+        {
+            //PreCondition
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == ""));
+
+            //Act
+            var result = _controller.AddItem(1, "", null, "", null, null);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == ""));
+
+        }
+
+        [Test]
+        public void ShoppingListAddItem_ItemInfoAlreadyThereShoppingListId1_ShouldAdd()
+        {
+            Assert.IsTrue(_mockdata.Items.Any(u => u.Name == "Kage"));
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Kage"));
+            //Act
+            var result = _controller.AddItem(1, "Kage", null, "", null, null);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Kage"));
+
+        }
+
+        [Test]
+        public void ShoppingListAddItem_ItemInfoAlreadyThereItemIDNotNullShoppingListId1_ShouldAdd()
+        {
+            Assert.IsTrue(_mockdata.Items.Any(u => u.Name == "Kage"));
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Kage"));
+            //Act
+            var result = _controller.AddItem(1, "Kage", null, "", null, 7);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Kage"));
+
+        }
+        [Test]
+        public void ShoppingListAddItem_ItemAlreadyOnListItemIDNoSelectedOfferShoppingListId1_ShouldNotAdd()
+        {
+            Assert.IsTrue(_mockdata.Items.Any(u => u.Name == "Bacon"));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Bacon"));
+            //Act
+            var result = _controller.AddItem(1, "Bacon", null, "", null, 5);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Bacon"));
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Count(x => x.Name == "Ost") == 2);
+
+        }
+
+        [Test]
+        public void ShoppingListAddItem_ItemAlreadyOnListItemIDSelectedOfferShoppingListId1_ShouldAdd()
+        {
+            Assert.IsTrue(_mockdata.Items.Any(u => u.Name == "Ost"));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Ost"));
+
+            //Act
+            var result = _controller.AddItem(1, "Ost", null, "", null, 4);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Count(x=> x.Name == "Ost") == 2);
+
+        }
+        [Test]
+        public void ShoppingListAddItem_ItemAlreadyOnListItemIDSelectedOfferOfferIdNotNullShoppingListId1_ShouldAdd()
+        {
+            Assert.IsTrue(_mockdata.Items.Any(u => u.Name == "Ost"));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Ost"));
+
+            //Act
+            var result = _controller.AddItem(1, "Ost", 2.0, "", 5, 4);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Count(x => x.Name == "Ost") == 2);
+
+        }
+
+        [Test]
+        public void ShoppingListAddItem_ItemAlreadyOnListItemIDNoOfferIdNotNullNotIsSelectedOfferShoppingListId1_ShouldAdd()
+        {
+            Assert.IsTrue(_mockdata.Items.Any(u => u.Name == "Bacon"));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Any(u => u.Name == "Bacon"));
+            Assert.IsTrue(_mockdata.ShoppingList_Item.First(x=>x.ItemID==5).selectedOffer == null);
+
+            //Act
+            var result = _controller.AddItem(1, "Bacon", 2.0, "", 2, 5);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Items.Count(x => x.Name == "Bacon") == 1);
+            Assert.IsTrue(_mockdata.ShoppingList_Item.First(x => x.ItemID == 5).selectedOffer == _mockdata.Offers.First(x=>x.ID==2));
+
+        }
+
 
         [Test]
         public void GetOffersForItem_ShouldGetOffer()
