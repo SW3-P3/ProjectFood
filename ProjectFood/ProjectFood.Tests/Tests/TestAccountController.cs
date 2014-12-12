@@ -57,9 +57,10 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void AccountCreateProjectFoodUser_AllInfo_ShouldCreateUserWithShoppingList()
         {
-
+            //Act
             _controller.CreateProjectFoodUser(new RegisterViewModel() { ConfirmPassword = "password", Email = "test@mail.dk", Password = "password" }, "Test");
 
+            //Assert
             Assert.IsTrue(_mockdata.Users.Any(x=>x.Name == "Test"));
             Assert.IsTrue(_mockdata.Users.Any(x => x.Username == "test@mail.dk"));
             Assert.IsTrue(_mockdata.Users.Any(x => x.ShoppingLists.Any(l=> l.Title == "Min Indkøbsliste")));

@@ -70,7 +70,7 @@ namespace ProjectFood.Tests.Tests
         [Test]
         public void GetIndexView_UserNotLoggedIn_ShouldReturnRedirectToRouteResult()
         {
-            //Arrance
+            //Arrange
             _principal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
             //Act
