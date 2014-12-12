@@ -201,40 +201,39 @@ namespace ProjectFood.Controllers
 
         public void NotifyWatchers()
         {
+            // Get all the users who have a watchlist with items.
             var users = _db.Users.Include(u => u.RelevantOffers.Items).Include(w => w.WatchList.Items).Where(u => u.WatchList != null && u.WatchList.Items.Count > 0);
 
             foreach (var user in users.Include(x => x.SentOffers))
             {
-                if (user.LastSentNotification != null)
+                var dt = (DateTime)user.LastSentNotification;
+                // Only sent notification if non have been sent for 1 day unless a preference is set.
+                if (dt.AddDays(user.MaxSendEmailsEveryDays ?? 1) < DateTime.Now)
                 {
-
-                    DateTime dt = (DateTime)user.LastSentNotification;
-                    // Only sent notification if non have been sent for x days. (or always true, because it wont send unless new offers has been added)
-                    if (dt.AddDays(user.MaxSendEmailsEveryDays ?? 1) < DateTime.Now || true)
+                    var relevantOffers = new List<Offer>();
+                    // Add every offer that maybe should be sent. 
+                    foreach (var item in user.WatchList.Items)
                     {
-                        var relevantOffers = new List<Offer>();
-                        foreach (var item in user.WatchList.Items)
-                        {
-                            relevantOffers.AddRange(GetOffersForItem(item.Name));
-                        }
-
-                        var output = new List<Offer>();
-
-                        foreach (var offer in relevantOffers.Where(offer => !user.SentOffers.Contains(offer)))
-                        {
-                            output.Add(offer);
-                            user.SentOffers.Add(offer);
-                            offer.SentToUsers.Add(user);
-                        }
-
-                        if (output.Count > 0)
-                        {
-                            SendEmailToUser(output, user);
-                            user.LastSentNotification = DateTime.Now;
-
-                        }
+                        relevantOffers.AddRange(GetOffersForItem(item.Name));
                     }
 
+                    var output = new List<Offer>();
+
+                    // Add offers not yet sent to the user to a list of item to send and to the list of offers sent.
+                    foreach (var offer in relevantOffers.Where(offer => !user.SentOffers.Contains(offer)))
+                    {
+                        output.Add(offer);
+                        user.SentOffers.Add(offer);
+                        offer.SentToUsers.Add(user);
+                    }
+
+                    // If there are new offers send them to the user.
+                    if (output.Count > 0)
+                    {
+                        SendEmailToUser(output, user);
+                        user.LastSentNotification = DateTime.Now;
+
+                    }
                 }
             }
             _db.SaveChanges();
