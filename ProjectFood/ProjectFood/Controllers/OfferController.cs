@@ -299,14 +299,14 @@ namespace ProjectFood.Controllers
             IQueryable<Offer> offers;
             if (storename == "all")
             {
-                offers = _db.OffersFiltered().AsQueryable()
+                offers = _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username == User.Identity.Name)).AsQueryable()
                     .OrderBy(o => o.Heading)
                     .Skip((page - 1) * PerPage)
                     .Take(PerPage);
             }
             else
             {
-                offers = _db.OffersFiltered().AsQueryable()
+                offers = _db.OffersFilteredByUserPrefs(_db.Users.FirstOrDefault(x => x.Username == User.Identity.Name)).AsQueryable()
                     .Where(o => o.Store.Replace("ø", string.Empty).Replace(" ", string.Empty) == storename).OrderBy(o => o.Heading)
                     .Skip((page - 1) * PerPage)
                     .Take(PerPage);
