@@ -205,6 +205,7 @@ namespace ProjectFood.Controllers
             if (!user.ShoppingLists.Any(x => x.ID == shoppingList.ID))
             {
                 user.ShoppingLists.Add(shoppingList);
+                shoppingList.Users.Add(user);
                 _db.SaveChanges();
                 return Json(new { Success = "true", Message = "Delt med " + email });
             }

@@ -162,21 +162,41 @@ namespace ProjectFood.Tests.Tests
         public void ShoppingListShareList_DemoMail2UserAsInput_ShouldShare()
         {
             //Arrange
-            _user.Username = "DemoMail";
             var user2 = DemoGetMethods.GetDemoUser(2);
-            _mockdata.Users.Add(user2); 
             user2.Username = "DemoMail2";
+            _mockdata.Users.Add(user2); 
+
+            //PreCondition
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x=>x.ID == 1).Users.Count == 2);
+            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoUser").ShoppingLists.Any(x=>x.ID == 1));
+            Assert.IsFalse(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.Any(x=>x.ID == 1));
 
             //Act
-            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail").ShoppingLists.Any(x=>x.ID == 1));
-            Assert.IsFalse(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.Any(x=>x.ID == 1));
             var result = _controller.ShareList(1, "DemoMail2");
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail").ShoppingLists.Any(x => x.ID == 1));
+            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoUser").ShoppingLists.Any(x => x.ID == 1));
             Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoMail2").ShoppingLists.Any(x => x.ID == 1));
+            Assert.IsTrue(_mockdata.ShoppingLists.First(x => x.ID == 1).Users.Count == 2);
         }
+
+        [Test]
+        public void ShoppingListShareList_Unknownuser_ShouldNotShare()
+        {
+            //PreCondition
+            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoUser").ShoppingLists.Any(x => x.ID == 1));
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Users.Count == 2);
+
+            //Act
+            _controller.ShareList(1, "DemoMail2");
+
+            //Assert
+
+            Assert.IsTrue(_mockdata.Users.First(i => i.Username == "DemoUser").ShoppingLists.Any(x => x.ID == 1));
+            Assert.IsFalse(_mockdata.ShoppingLists.First(x => x.ID == 1).Users.Count == 2);
+        }
+
         [Test]
         public void ShoppingListCreate_NoInput_ShouldCreate()
         {
