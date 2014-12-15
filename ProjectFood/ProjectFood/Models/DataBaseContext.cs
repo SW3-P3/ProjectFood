@@ -43,8 +43,7 @@ namespace ProjectFood.Models
         public IEnumerable<Offer> OffersFilteredWithString(params string[] args)
         {
             var blacklist = new List<string> { ",", "eller" };
-
-            var fromArgs = new List<string>();
+                        var fromArgs = new List<string>();
             foreach (var str in args)
             {
                 fromArgs.AddRange(str.Split(','));
@@ -57,18 +56,31 @@ namespace ProjectFood.Models
 
             foreach (var o in Offers)
             {
-                var flag = (o.End > GlobalVariables.CurrentSystemTime) && o.Begin < GlobalVariables.CurrentSystemTime;
-
-                foreach (var item in blacklist)
+                if (OfferIsRelevant(o, blacklist))
                 {
-                    if (o.Heading.ToLower().Contains(item.ToLower()) || o.Store.ToLower().Contains(item.ToLower()))
-                        flag = false;
-                }
-
-                if (flag && o.Unit.Trim() != "")
                     res.Add(o);
+                }
             }
             return res;
+        }
+
+
+        private static bool OfferIsRelevant(Offer o, IEnumerable<string> blacklist)
+        {
+            if (o.End < GlobalVariables.CurrentSystemTime)
+                return false;
+
+            if(o.Begin > GlobalVariables.CurrentSystemTime)
+                return false;
+
+            if (blacklist.Any(item => o.Heading.ToLower().Contains(item.ToLower()) || o.Store.ToLower().Contains(item.ToLower())))
+                return false;
+
+            if (o.Unit.Trim() == "")
+                return false;
+
+            // Base case.
+            return true;
         }
 
         public DataBaseContext()
