@@ -1,5 +1,5 @@
 ﻿$(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 });
 
 //User
@@ -14,7 +14,7 @@ function ToggleBoolByID(store) {
         $('span#storeName_' + store).removeClass('text-muted').removeClass('text-strikethrough');
     }
 
-    MakeSnackbar("Gemt&hellip;", "glyphicon-ok", null, "1000");
+    MakeSnackbar("Gemt&hellip;", "glyphicon-ok", null, "1500");
 };
 
 function ToggleBoolRememberMe() {
@@ -98,7 +98,7 @@ function ChangeToCheckRecipe(json) {
         .removeClass('glyphicon-plus')
         .addClass('glyphicon-ok');
 
-    MakeSnackbar("Vare tilføjet til " + json.shoppingListTitle, "glyphicon-ok", "toast", "1000")
+    MakeSnackbar("Vare tilføjet til " + json.shoppingListTitle, "glyphicon-ok", "toast", "1500");
 };
 
 function GetSelectedList() {
@@ -228,7 +228,7 @@ function GetSelectedListWL() {
 function ChangeButton(json) {
     $('#AddButton_' + json.offerID).removeClass('btn-info').addClass('btn-success');
     $('#AddButton_' + json.offerID).children().removeClass('glyphicon-plus').addClass('glyphicon-ok');
-    MakeSnackbar("Tilføjet til indkøbsliste&hellip;", "glyphicon-ok", "toast", "1000");
+    MakeSnackbar("Tilføjet til indkøbsliste&hellip;", "glyphicon-ok", "toast", "1500");
 };
 //END_WatchList
 
@@ -244,13 +244,13 @@ function MakeSnackbar(text, glyphicon, style, timeout) {
         options = {
             content: glyphiconContainer.html() + "&nbsp;&nbsp;" + ((isset(text)) ? text : " "),
             style: (isset(style)) ? style : "snackbar",
-            timeout: (isset(timeout)) ? timeout : 2000
+            timeout: (isset(timeout)) ? timeout : 2500
         };
     } else {
         options = {
             content: (isset(text)) ? text : " ",
             style: (isset(style)) ? style : "snackbar",
-            timeout: (isset(timeout)) ? timeout : 2000
+            timeout: (isset(timeout)) ? timeout : 2500
         };
     }
     $.snackbar(options);
@@ -263,3 +263,12 @@ function isset(variable) {
         return false;
     }
 };
+
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
