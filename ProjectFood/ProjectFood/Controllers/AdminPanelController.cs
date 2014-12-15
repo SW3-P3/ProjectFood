@@ -43,7 +43,7 @@ namespace ProjectFood.Controllers
                 "Ratings",
                 "Recipe_INgredient",
                 "Recipes",
-                "Recipie_Item",
+                "Recipe_Item",
                 "ShoppingList_Item",
                 "ShoppingListItems",
                 "ShoppingLists",

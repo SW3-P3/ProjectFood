@@ -192,9 +192,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201412040952468_Initial-derp.cs" />
-    <Compile Include="Migrations\201412040952468_Initial-derp.Designer.cs">
-      <DependentUpon>201412040952468_Initial-derp.cs</DependentUpon>
+    <Compile Include="Migrations\201412151255449_Initial.cs" />
+    <Compile Include="Migrations\201412151255449_Initial.Designer.cs">
+      <DependentUpon>201412151255449_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -270,6 +270,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Content\bad-words.dat" />
+    <EmbeddedResource Include="Migrations\201412151255449_Initial.resx">
+      <DependentUpon>201412151255449_Initial.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af-ZA.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af.js" />
@@ -709,11 +712,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201412040952468_Initial-derp.resx">
-      <DependentUpon>201412040952468_Initial-derp.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

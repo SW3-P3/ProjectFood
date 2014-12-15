@@ -416,20 +416,20 @@ namespace ProjectFood.Controllers
 
         public IEnumerable<Recipe> RecommendRecipes(User user)
         {
-            // Get all recipies rated by the user
-            var recipiesRatedByUser = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings.Select(y => y.User.ID).Contains(user.ID));
+            // Get all recipes rated by the user
+            var recipesRatedByUser = _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients).Where(x => x.Ratings.Select(y => y.User.ID).Contains(user.ID));
 
-            if (!recipiesRatedByUser.Any())
+            if (!recipesRatedByUser.Any())
                 return _db.Recipes.Include(x => x.Ratings).Include(x => x.Ingredients);
 
             // Pair the ingrdients with the rating given
             // If two ingredients are the same, take the avg of both ratings.
             var itemsWithRatings = new List<Tuple<Item, List<decimal>>>();
 
-            foreach (var recipie in recipiesRatedByUser.ToList())
+            foreach (var recipe in recipesRatedByUser.ToList())
             {
-                var score = recipie.Ratings.FirstOrDefault(x => x.User.Username == user.Username).Score;
-                foreach (var ingredient in recipie.Ingredients)
+                var score = recipe.Ratings.FirstOrDefault(x => x.User.Username == user.Username).Score;
+                foreach (var ingredient in recipe.Ingredients)
                 {
                     // If the element is already rated, add the new rating to the list of ratings
                     if (itemsWithRatings.Select(x => x.Item1).Contains(ingredient))
@@ -445,33 +445,33 @@ namespace ProjectFood.Controllers
                 }
             }
 
-            var avgRating = 2;// recipiesRatedByUser.Average(x => x.Ratings.FirstOrDefault(y => y.User.ID == user.ID).Score);
+            var avgRating = 2;// recipesRatedByUser.Average(x => x.Ratings.FirstOrDefault(y => y.User.ID == user.ID).Score);
 
-            var recipiesRated = new List<Tuple<Recipe, decimal>>();
+            var recipesRated = new List<Tuple<Recipe, decimal>>();
 
-            // Calculate the score for every recipie
-            foreach (var recipie in _db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings))
+            // Calculate the score for every recipe
+            foreach (var recipe in _db.Recipes.Include(x => x.Ingredients).Include(x => x.Ratings))
             {
-                if (recipie.Ratings.FirstOrDefault(y => y.User.ID == user.ID) != null)
+                if (recipe.Ratings.FirstOrDefault(y => y.User.ID == user.ID) != null)
                 {
-                    recipiesRated.Add(new Tuple<Recipe, decimal>(recipie, recipie.Ratings.FirstOrDefault(y => y.User.ID == user.ID).Score));
+                    recipesRated.Add(new Tuple<Recipe, decimal>(recipe, recipe.Ratings.FirstOrDefault(y => y.User.ID == user.ID).Score));
                 }
                 else
                 {
                     var score = new List<decimal>();
-                    foreach (var ingredient in recipie.Ingredients)
+                    foreach (var ingredient in recipe.Ingredients)
                     {
                         var derp = (itemsWithRatings.FirstOrDefault(x => x.Item1.Equals(ingredient)));
                         score.Add(derp != null ? derp.Item2.Average() : avgRating);
                     }
-                    recipiesRated.Add(new Tuple<Recipe, decimal>(item1: recipie, item2: score.Any() ? score.Average() : 0M));
+                    recipesRated.Add(new Tuple<Recipe, decimal>(item1: recipe, item2: score.Any() ? score.Average() : 0M));
                 }
 
             }
 
-            // Sort the recipies descending
+            // Sort the recipes descending
             // return itz
-            return recipiesRated.OrderByDescending(x => x.Item2).Select(x => x.Item1);
+            return recipesRated.OrderByDescending(x => x.Item2).Select(x => x.Item1);
         }
 
         public List<Recipe> SearchRecipe(string searchstring)
