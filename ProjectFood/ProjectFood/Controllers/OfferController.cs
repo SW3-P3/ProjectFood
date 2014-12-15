@@ -312,6 +312,7 @@ namespace ProjectFood.Controllers
             }
 
 
+
             var jsonSerialiser = new JavaScriptSerializer();
             var jsonOffers = jsonSerialiser.Serialize(offers);
 

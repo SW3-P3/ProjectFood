@@ -150,6 +150,9 @@ namespace ProjectFood.Controllers
                 _db.Users.Include(x => x.ShoppingLists)
                     .First(u => u.Username == User.Identity.Name)
                     .ShoppingLists.Remove(shoppingList);
+
+                var user = shoppingList.Users.First(u => u.Username == User.Identity.Name);
+                shoppingList.Users.Remove(user);
             }
             _db.SaveChanges();
             return RedirectToAction("Index");
@@ -202,6 +205,7 @@ namespace ProjectFood.Controllers
             if (!user.ShoppingLists.Any(x => x.ID == shoppingList.ID))
             {
                 user.ShoppingLists.Add(shoppingList);
+                shoppingList.Users.Add(user);
                 _db.SaveChanges();
                 return Json(new { Success = "true", Message = "Delt med " + email });
             }
@@ -248,7 +252,6 @@ namespace ProjectFood.Controllers
             {
                 var derp = _db.ShoppingList_Item.Where(x => x.ShoppingList.ID == id && x.Item.Name == tmpItem.Name && x.selectedOffer != null).ToList();
 
-                Debug.WriteLine(derp.Count());
 
                 if(derp.Any())
                 {
@@ -311,7 +314,7 @@ namespace ProjectFood.Controllers
                 if(user != null && user.ShoppingLists.FirstOrDefault(s => s.ID == id) != null) {
                     shoppingList.Items.Clear();
                     var itemRels = _db.ShoppingList_Item.Where(x => x.ShoppingListID == id);
-                    foreach (var shoppingListItem in itemRels)
+                    foreach (var shoppingListItem in itemRels.ToList())
                     {
                         _db.ShoppingList_Item.Remove(shoppingListItem);
 

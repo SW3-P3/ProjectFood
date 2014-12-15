@@ -176,14 +176,8 @@ namespace ProjectFood.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    // TODO: SØREN DU ER HER!   
-                    var list = new ShoppingList();
-                    list.Title = "Min Indkøbsliste";
-                    var tmpUser = new User() {Username = model.Email, Name = (name.Contains(",") == true ? name.Split(',').First() : name)};
-                    _db.Users.Add(tmpUser);
-                    tmpUser.ShoppingLists.Add(list);
-
-                    _db.SaveChanges();
+                    
+                    CreateProjectFoodUser(model, name);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -192,6 +186,17 @@ namespace ProjectFood.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        internal void CreateProjectFoodUser(RegisterViewModel model, string name)
+        {
+                    var list = new ShoppingList();
+                    list.Title = "Min Indkøbsliste";
+                    var tmpUser = new User() {Username = model.Email, Name = (name.Contains(",") == true ? name.Split(',').First() : name)};
+                    _db.Users.Add(tmpUser);
+                    tmpUser.ShoppingLists.Add(list);
+
+                    _db.SaveChanges();
         }
 
         //

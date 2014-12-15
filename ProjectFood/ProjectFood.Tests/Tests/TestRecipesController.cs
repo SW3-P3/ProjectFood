@@ -106,6 +106,7 @@ namespace ProjectFood.Tests.Tests
         {
             //Precondition
             Assert.IsFalse(_mockdata.Recipes.First(x=> x.ID == 1).Ingredients.Any(x=> x.Name == "test"));
+            Assert.IsFalse(_mockdata.Items.Any(x => x.Name == "test"));
 
             //Act
             var result = _controller.AddIngredient(1, "test", 10, "kg", 4);
@@ -114,6 +115,85 @@ namespace ProjectFood.Tests.Tests
             Assert.IsNotNull(result);
             Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
         }
+
+        [Test]
+        public void RecipeAddIngredient_ItemNoName_ShouldNotBeAdded()
+        {
+            //Precondition
+            Assert.IsFalse(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
+
+            //Act
+            var result = _controller.AddIngredient(1, "", 10, "kg", 4);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
+        }
+        [Test]
+        public void RecipeAddIngredient_ItemNameNoAmountPerPerson_ShouldBeAdded()
+        {
+            //Precondition
+            Assert.IsFalse(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
+
+            //Act
+            var result = _controller.AddIngredient(1, "test", null, "kg", 4);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
+            Assert.IsTrue(_mockdata.Recipe_Ingredient.First(x=>x.Ingredient.Name == "test").AmountPerPerson == 0);
+        }
+
+        [Test]
+        public void RecipeAddIngredient_ItemNameAlreadyThere_ShouldBeAddedItemAlreadyThere()
+        {
+            //Arrange
+            _mockdata.Items.Add(new Item() { Name = "test" });
+
+            //Precondition
+            Assert.IsTrue(_mockdata.Items.Any(x=>x.Name =="test"));
+            Assert.IsFalse(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
+
+            //Act
+            var result = _controller.AddIngredient(1, "test", null, "kg", 4);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
+            Assert.IsFalse(_mockdata.Items.Count(x => x.Name == "test") == 2);
+        }
+
+        [Test]
+        public void RecipeAddIngredient_ItemAlreadyOnList_ShouldBeAddedItemAlreadyThere()
+        {
+            //Arrange
+            var item = new Item() {Name = "test", ID = 0};
+            _mockdata.Items.Add(item);
+            _mockdata.Recipes.First(x=>x.ID == 1).Ingredients.Add(item);
+            _mockdata.Recipe_Ingredient.Add(new Recipe_Ingredient()
+            {
+                AmountPerPerson = 2.0,
+                Ingredient = item,
+                IngredientID = 0,
+                Recipe = _mockdata.Recipes.First(x => x.ID == 1),
+                RecipeID = 1,
+                Unit = "stk"
+            });
+
+            //Precondition
+            Assert.IsTrue(_mockdata.Items.Any(x => x.Name == "test"));
+            Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
+
+            //Act
+            var result = _controller.AddIngredient(1, "test", null, "kg", 4);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(_mockdata.Recipes.First(x => x.ID == 1).Ingredients.Any(x => x.Name == "test"));
+            Assert.IsFalse(_mockdata.Items.Count(x => x.Name == "test") == 2);
+        }
+
+
 
         [Test]
         public void RecipeCreate_NoInput_ShouldOpenCreateWindow()
