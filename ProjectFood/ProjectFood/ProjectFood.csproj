@@ -704,6 +704,7 @@
     <Content Include="Views\ShoppingLists\WatchList.cshtml" />
     <Content Include="Views\AdminPanel\Index.cshtml" />
     <Content Include="Views\Shared\_Date.cshtml" />
+    <Content Include="Views\ShoppingLists\Index - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
