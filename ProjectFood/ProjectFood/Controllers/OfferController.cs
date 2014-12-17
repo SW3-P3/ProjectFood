@@ -262,11 +262,11 @@ namespace ProjectFood.Controllers
 
                 //message.To.Add(new MailAddress(user.Username));
 
-                message.Subject = string.Format("ProjectFood har {0} tilbud på dine overvågede varer!", offers.Count());
+                message.Subject = string.Format("Hej {0} \n ProjectFood har {1} tilbud på dine overvågede varer!",user.Name, offers.Count());
 
                 var body = string.Empty;
 
-                body += string.Format("Følgende tilbud er fundet til dig {0}:\n", user.Username);
+                body += string.Format("Følgende tilbud er fundet til dig ");
 
                 body = offers.Aggregate(body, (current, relevantOffer) => current + string.Format("\"{0}\" til {1} kr. i {2}\n", relevantOffer.Heading, relevantOffer.Price, relevantOffer.Store));
 
