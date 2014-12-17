@@ -150,6 +150,7 @@ namespace ProjectFood.Controllers
             }
 
             _db.SaveChanges();
+            NotifyWatchers();
 
             return RedirectToAction("Index");
         }
